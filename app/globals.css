@@ -1,26 +1,51 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  body {
+    @apply bg-ink-50 text-ink-800 font-body antialiased;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  h1, h2, h3, h4 {
+    @apply font-display text-ink-900;
+  }
+
+  ::selection {
+    @apply bg-primary-200 text-primary-900;
+  }
+
+  /* Consistent, visible focus ring across all interactive elements,
+     including React Aria components (which expose data-focus-visible). */
+  :focus-visible,
+  [data-focus-visible] {
+    outline: 2px solid theme("colors.primary.600");
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .container-page {
+    @apply mx-auto w-full max-w-8xl px-6 sm:px-8 lg:px-12;
+  }
+
+  /* Small mono "file tag" label — the recurring signature motif
+     tying every section back to the case-file / register visual language. */
+  .file-tag {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink-400;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
