@@ -16,9 +16,12 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata = {
-  title: "StyleHive — Operations, Compliance & Admin Support for UK Firms",
-  description:
-    "Practical, done-right insolvency case support, legal compliance auditing, and back-office admin for UK firms — delivered by experienced professionals, not a generic outsourcing agency.",
+  title: "Bench Strength — Operations, Compliance & Admin Support",
+  description: "Practical, done-right insolvency case support, legal compliance auditing, and back-office admin for UK firms.",
+  openGraph: {
+    title: "Bench Strength — Operations, Compliance & Admin Support",
+    description: "Practical, done-right insolvency case support, legal compliance auditing, and back-office admin for UK firms.",
+  },
 };
 
 export default function RootLayout({ children }) {
