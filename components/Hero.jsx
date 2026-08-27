@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Button } from "react-aria-components";
 
 function scrollToId(id) {
@@ -13,7 +14,7 @@ function SummaryPanel() {
     { label: "Case administration", status: "done" },
     { label: "Creditor liaison log", status: "done" },
     { label: "Statutory documentation", status: "done" },
-    { label: "GDPR record audit", status: "progress" },
+    { label: "Compliance file audit", status: "progress" },
   ];
 
   return (
@@ -30,7 +31,7 @@ function SummaryPanel() {
             <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
               <path
                 d="M4 9.5L7.2 12.7L14 5.5"
-                stroke="#059669"
+                stroke="#159A9C"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -83,6 +84,8 @@ function SummaryPanel() {
 }
 
 export default function Hero() {
+  const router = useRouter();
+
   return (
     <section id="home" className="relative bg-ink-50">
       <div className="container-page pt-20 pb-24 sm:pt-28 sm:pb-32">
@@ -93,17 +96,20 @@ export default function Hero() {
               The back office UK firms trust to get it{" "}
               <span className="text-primary-600">right</span>, not just done.
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-relaxed text-ink-600">
-              StyleHive handles the case administration, compliance auditing, and
+            <p className="mt-5 text-base font-semibold text-primary-600">
+              Bench Strength — Minimize Costs. Maximize Reserves
+            </p>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-700">
+              Bench Strength handles the case administration, compliance auditing, and
               regulatory admin that insolvency practitioners, legal teams, and advisory
-              firms can't afford to get wrong — delivered by experienced professionals,
+              firms can&apos;t afford to get wrong — delivered by experienced professionals,
               not a generic outsourcing agency.
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
               <Button
-                onPress={() => scrollToId("contact")}
-                className="cursor-pointer rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-card transition-all duration-200 hover:bg-primary-700 hover:shadow-card-hover data-[pressed]:bg-primary-800 data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2"
+                onPress={() => router.push("/contact")}
+                className="cursor-pointer rounded-lg bg-ink-900 px-6 py-3 text-sm font-semibold text-white shadow-card transition-all duration-200 hover:bg-accent-400 hover:text-ink-900 hover:shadow-card-hover data-[pressed]:bg-accent-500 data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2"
               >
                 Book a Consultation
               </Button>
@@ -118,11 +124,11 @@ export default function Hero() {
             <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-ink-500">
               <span className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-confirm-500" />
-                PIP1-certified case support
+                PIP-certified case support
               </span>
               <span className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-confirm-500" />
-                GDPR &amp; AML aligned
+                Audit-ready documentation
               </span>
             </div>
           </div>

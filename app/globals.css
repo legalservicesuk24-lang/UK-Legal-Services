@@ -5,18 +5,26 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-ink-50 text-ink-800 font-body antialiased;
+    line-height: 1.65;
+    letter-spacing: 0.005em;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-display text-ink-900;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
 
   ::selection {
-    @apply bg-primary-200 text-primary-900;
+    @apply bg-primary-200 text-ink-900;
   }
 
   /* Consistent, visible focus ring across all interactive elements,
@@ -34,15 +42,18 @@
     @apply mx-auto w-full max-w-8xl px-6 sm:px-8 lg:px-12;
   }
 
-  /* Small mono "file tag" label — the recurring signature motif
-     tying every section back to the case-file / register visual language. */
+  /* Small mono "file tag" label — the recurring signature motif tying every
+     section back to the case-file / register visual language. Rendered in
+     the professional-teal brand accent for a subtle section highlight. */
   .file-tag {
-    @apply font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink-400;
+    @apply font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-600;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

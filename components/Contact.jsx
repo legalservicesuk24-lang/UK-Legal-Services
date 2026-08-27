@@ -23,40 +23,42 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="border-t border-ink-200 bg-white">
-      <div className="container-page grid grid-cols-1 gap-14 py-24 sm:py-32 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-5">
+    <section id="contact" className="flex min-h-[calc(100vh-4rem)] items-center bg-ink-50">
+      <div className="container-page py-20 sm:py-28">
+        <div className="mx-auto flex w-full max-w-xl flex-col items-center text-center">
           <p className="file-tag mb-5">Get in Touch</p>
-          <h2 className="text-3xl font-semibold leading-tight text-ink-900 sm:text-4xl">
-            Let's scope your next case file.
-          </h2>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-ink-600">
-            Tell us what your team needs covered and we'll come back with a clear,
+          <h1 className="text-3xl font-semibold leading-tight text-ink-900 sm:text-4xl">
+            Let&apos;s scope your next case file.
+          </h1>
+          <p className="mt-5 max-w-md text-base leading-relaxed text-ink-600">
+            Tell us what your team needs covered and we&apos;ll come back with a clear,
             practical plan — no generic sales deck. Usually within one business day.
           </p>
 
-          <div className="mt-9 flex items-center gap-3 text-sm text-ink-500">
+          <div className="mt-8 flex items-center justify-center gap-3 text-sm text-ink-500">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M2 4.5L8 9L14 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
               </svg>
             </span>
-            hello@stylehive.co.uk
+            <a href="mailto:hello@benchstrength.uk" className="transition-colors hover:text-primary-700">
+              hello@benchstrength.uk
+            </a>
           </div>
         </div>
 
-        <div className="lg:col-span-7">
+        <div className="mx-auto mt-12 w-full max-w-xl rounded-2xl border border-ink-200 bg-white p-6 shadow-card sm:p-10">
           {status === "sent" ? (
-            <div className="flex flex-col items-start gap-3 rounded-2xl border border-confirm-100 bg-confirm-50 p-8">
+            <div className="flex flex-col items-start gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-confirm-100 text-confirm-700">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path d="M4 10.5L8 14.5L16 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h3 className="font-display text-lg font-semibold text-ink-900">Message sent</h3>
+              <h2 className="font-display text-lg font-semibold text-ink-900">Message sent</h2>
               <p className="text-sm leading-relaxed text-ink-600">
-                Thanks — we've logged your message and will get back to you within one
+                Thanks — we&apos;ve logged your message and will get back to you within one
                 business day.
               </p>
               <button
@@ -67,7 +69,7 @@ export default function Contact() {
               </button>
             </div>
           ) : (
-            <Form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <Form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 text-left sm:grid-cols-2">
               <TextField name="name" isRequired className="flex flex-col gap-1.5 sm:col-span-1">
                 <Label className="text-sm font-medium text-ink-700">Name</Label>
                 <Input
@@ -100,7 +102,7 @@ export default function Contact() {
                 <Button
                   type="submit"
                   isDisabled={status === "sending"}
-                  className="cursor-pointer rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-card-hover data-[pressed]:translate-y-0 data-[pressed]:bg-primary-800 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60 data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2"
+                  className="w-full cursor-pointer rounded-lg bg-ink-900 px-6 py-3 text-sm font-semibold text-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-400 hover:text-ink-900 hover:shadow-card-hover data-[pressed]:translate-y-0 data-[pressed]:bg-accent-500 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60 data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2 sm:w-auto"
                 >
                   {status === "sending" ? "Sending…" : "Send Message"}
                 </Button>

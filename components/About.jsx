@@ -18,14 +18,14 @@ export default function About() {
     <section id="about" className="border-y border-ink-200 bg-white">
       <div className="container-page grid grid-cols-1 gap-14 py-24 sm:py-32 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-5">
-          <p className="file-tag mb-5">About StyleHive</p>
+          <p className="file-tag mb-5">About Bench Strength</p>
           <h2 className="text-3xl font-semibold leading-tight text-ink-900 sm:text-4xl">
             Operations support, done properly.
           </h2>
-          <p className="mt-6 text-base leading-relaxed text-ink-600">
-            StyleHive was built on a simple observation: UK firms don't need another
-            call-centre-style outsourcer — they need admin, compliance, and case
-            support handled by people who've actually worked the files. We bring
+          <p className="mt-6 text-base leading-relaxed text-ink-700">
+            Bench Strength was built on a simple observation: UK firms don&apos;t need
+            another call-centre-style outsourcer — they need admin, compliance, and
+            case support handled by people who&apos;ve actually worked the files. We bring
             hands-on experience in insolvency case administration and litigation
             audit into the day-to-day operations work most firms struggle to keep
             on top of.

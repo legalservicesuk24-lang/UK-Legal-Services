@@ -1,19 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "react-aria-components";
 
 const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "About Us", href: "#about" },
-  { label: "Our Services", href: "#services" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "About Us", href: "/#about" },
+  { label: "Our Services", href: "/#services" },
+  { label: "Contact", href: "/contact" },
 ];
 
 function Logo() {
   return (
-    <a
-      href="#home"
+    <Link
+      href="/#home"
       className="flex items-center gap-2 font-display text-lg font-semibold text-ink-900"
     >
       <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
@@ -26,13 +28,14 @@ function Logo() {
           strokeLinejoin="round"
         />
       </svg>
-      StyleHive
-    </a>
+      Bench Strength
+    </Link>
   );
 }
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink-200 bg-ink-50/90 backdrop-blur">
@@ -42,20 +45,20 @@ export default function Navbar() {
         {/* Desktop nav */}
         <nav aria-label="Primary" className="hidden md:flex md:items-center md:gap-8">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-ink-600 transition-colors hover:text-primary-700"
+              className="text-sm font-medium text-ink-700 transition-colors hover:text-primary-600"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <div className="hidden md:block">
           <Button
-            onPress={() => (window.location.href = "#contact")}
-            className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-card transition-colors hover:bg-primary-700 pressed:bg-primary-800"
+            onPress={() => router.push("/contact")}
+            className="rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white shadow-card transition-colors hover:bg-accent-400 hover:text-ink-900 pressed:bg-accent-500"
           >
             Book a Consultation
           </Button>
@@ -96,21 +99,21 @@ export default function Navbar() {
       >
         <nav aria-label="Mobile primary" className="container-page flex flex-col gap-1 py-4">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               onClick={() => setIsOpen(false)}
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-700 hover:bg-ink-100"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
           <Button
             onPress={() => {
               setIsOpen(false);
-              window.location.href = "#contact";
+              router.push("/contact");
             }}
-            className="mt-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-700"
+            className="mt-2 rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-400 hover:text-ink-900"
           >
             Book a Consultation
           </Button>
