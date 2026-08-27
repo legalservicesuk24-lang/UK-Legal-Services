@@ -40,7 +40,7 @@ export default async function ServiceDetailPage({ params }) {
         <section className="relative border-b border-ink-200 bg-ink-50">
           <div className="container-page pt-14 pb-16 sm:pt-20 sm:pb-20">
             <Link
-              href="/#services"
+              href="/services"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-500 transition-colors hover:text-primary-700"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -60,7 +60,7 @@ export default async function ServiceDetailPage({ params }) {
                 {ICONS[service.icon]}
               </div>
               <div>
-                <p className="file-tag mb-4">Service File / {service.ref}</p>
+                <p className="file-tag mb-4">File / {service.ref}</p>
                 <h1 className="text-3xl font-semibold leading-tight tracking-tight text-ink-900 sm:text-4xl lg:text-[2.75rem]">
                   {detail.title}
                 </h1>

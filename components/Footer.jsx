@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 const FOOTER_LINKS = [
-  { label: "Home", href: "/#home" },
-  { label: "About Us", href: "/#about" },
-  { label: "Our Services", href: "/#services" },
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Our Services", href: "/services" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -12,7 +12,7 @@ export default function Footer() {
     <footer className="bg-ink-900">
       <div className="container-page flex flex-col gap-8 py-12 sm:flex-row sm:items-start sm:justify-between">
         <div className="max-w-sm">
-          <Link href="/#home" className="flex items-center gap-2 font-display text-base font-semibold text-white">
+          <Link href="/" className="flex items-center gap-2 font-display text-base font-semibold text-white">
             <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
               <rect width="30" height="30" rx="8" className="fill-primary-500" />
               <path

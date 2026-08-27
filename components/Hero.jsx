@@ -3,10 +3,6 @@
 import { useRouter } from "next/navigation";
 import { Button } from "react-aria-components";
 
-function scrollToId(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
 /* A clean, restrained summary panel — the professional equivalent of a
    "proof point" card. One accent color, real content, no decorative clutter. */
 function SummaryPanel() {
@@ -22,7 +18,7 @@ function SummaryPanel() {
       <div className="rounded-2xl border border-ink-200 bg-white shadow-card">
         <div className="flex items-center justify-between border-b border-ink-100 px-6 py-5">
           <div>
-            <p className="file-tag">Register · Live</p>
+            <p className="file-tag">Case Status • Active</p>
             <p className="mt-1.5 font-display text-base font-semibold text-ink-900">
               Compliance Case File
             </p>
@@ -91,7 +87,7 @@ export default function Hero() {
       <div className="container-page pt-20 pb-24 sm:pt-28 sm:pb-32">
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-12">
           <div>
-            <p className="file-tag mb-5">UK Operations &amp; Compliance Support</p>
+            <p className="file-tag mb-5">Operations &amp; Compliance Support</p>
             <h1 className="text-4xl font-semibold leading-[1.15] tracking-tight text-ink-900 sm:text-5xl lg:text-[3.25rem]">
               The back office UK firms trust to get it{" "}
               <span className="text-primary-600">right</span>, not just done.
@@ -114,7 +110,7 @@ export default function Hero() {
                 Book a Consultation
               </Button>
               <Button
-                onPress={() => scrollToId("services")}
+                onPress={() => router.push("/services")}
                 className="cursor-pointer rounded-lg border border-ink-300 bg-white px-6 py-3 text-sm font-semibold text-ink-700 transition-all duration-200 hover:border-primary-300 hover:text-primary-700 data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2"
               >
                 Explore Services

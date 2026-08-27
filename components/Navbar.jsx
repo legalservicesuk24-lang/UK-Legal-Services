@@ -6,16 +6,16 @@ import { useRouter } from "next/navigation";
 import { Button } from "react-aria-components";
 
 const NAV_LINKS = [
-  { label: "Home", href: "/#home" },
-  { label: "About Us", href: "/#about" },
-  { label: "Our Services", href: "/#services" },
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Our Services", href: "/services" },
   { label: "Contact", href: "/contact" },
 ];
 
 function Logo() {
   return (
     <Link
-      href="/#home"
+      href="/"
       className="flex items-center gap-2 font-display text-lg font-semibold text-ink-900"
     >
       <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
