@@ -3,6 +3,8 @@
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
+  BufferAttribute,
+  CanvasTexture,
   EquirectangularReflectionMapping,
   ExtrudeGeometry,
   MathUtils,
@@ -86,6 +88,111 @@ const SETTLE_DURATION = 1.7;
 const easeSettle = (t) => 1 - Math.pow(1 - t, 3.2);
 
 const GROUP_TILT = -0.32;
+/* Yaw matters more than it sounds. A squared stack viewed dead-on is, by
+   definition, one rectangle — which is exactly how it read: a single grey
+   slab. Turning it ~24 degrees puts the sheets' depth separation on screen as
+   layered edges, so the stack is legible as five sheets without spreading
+   them into a fan and contradicting the "squared up" idea. */
+const GROUP_YAW = -0.42;
+
+/* The page itself, painted to a canvas and used as the sheet's colour map.
+
+   Blank paper was the single biggest thing wrong with this scene: at hero
+   scale a featureless slab reads as a grey panel, not as a case file. Drawing
+   the page content is also what makes the object self-explanatory — you can
+   see it is a document without being told.
+
+   Generated in code so there is still no asset to ship, and so the palette
+   stays in sync with the site rather than being baked into an image. */
+function useDocumentTexture() {
+  return useMemo(() => {
+    const W = 620;
+    const H = 820;
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    const c = canvas.getContext("2d");
+
+    // roundRect is Chrome 99+ / Safari 16.4+. Square corners on a 9px bar are
+    // imperceptible, and degrading beats throwing into the error boundary and
+    // losing the whole scene over a cosmetic radius.
+    const rounded = typeof c.roundRect === "function";
+
+    const bar = (x, y, w, h, fill, r = h / 2) => {
+      c.fillStyle = fill;
+      if (!rounded) {
+        c.fillRect(x, y, w, h);
+        return;
+      }
+      c.beginPath();
+      c.roundRect(x, y, w, h, r);
+      c.fill();
+    };
+
+    c.fillStyle = "#FBFCFD";
+    c.fillRect(0, 0, W, H);
+
+    const PAD = 62;
+    const INK = "#0B1F33";
+    const GREY = "#C9D2D8";
+    const GREY_SOFT = "#DEE5E9";
+
+    // File reference, in the same mono small-caps idiom as the site's .file-tag
+    c.fillStyle = "#159A9C";
+    c.font = "600 19px ui-monospace, SFMono-Regular, Menlo, monospace";
+    c.letterSpacing = "3px";
+    c.fillText("CASE FILE / 04-118", PAD, PAD + 18);
+
+    // Heading
+    c.fillStyle = INK;
+    c.letterSpacing = "0px";
+    c.font = "600 44px ui-serif, Georgia, serif";
+    c.fillText("Compliance", PAD, PAD + 96);
+    c.fillText("Audit", PAD, PAD + 148);
+
+    // Rule
+    bar(PAD, PAD + 190, W - PAD * 2, 2, GREY_SOFT, 0);
+
+    // Body copy, as ruled bars — legible as text at distance without needing
+    // real sentences that would be unreadable anyway.
+    const lines = [0.92, 1, 0.78, 0.96, 0.64];
+    lines.forEach((frac, i) => {
+      bar(PAD, PAD + 224 + i * 26, (W - PAD * 2) * frac, 9, GREY);
+    });
+
+    // Checklist — the "filed" evidence, with teal ticks
+    const items = [0.68, 0.82, 0.58, 0.74];
+    items.forEach((frac, i) => {
+      const y = PAD + 400 + i * 46;
+      c.strokeStyle = "#159A9C";
+      c.lineWidth = 3;
+      c.beginPath();
+      c.arc(PAD + 9, y + 4, 10, 0, Math.PI * 2);
+      c.stroke();
+      c.beginPath();
+      c.moveTo(PAD + 4, y + 4);
+      c.lineTo(PAD + 8, y + 9);
+      c.lineTo(PAD + 15, y - 1);
+      c.stroke();
+      bar(PAD + 34, y - 1, (W - PAD * 2 - 34) * frac, 9, GREY);
+    });
+
+    // Signature block and a FILED chip, bottom aligned
+    bar(PAD, H - 150, 190, 9, GREY);
+    bar(PAD, H - 126, 130, 9, GREY_SOFT);
+
+    bar(W - PAD - 148, H - 158, 148, 46, "#EAF6F6", 23);
+    c.fillStyle = "#0F7C7E";
+    c.font = "600 17px ui-monospace, SFMono-Regular, Menlo, monospace";
+    c.letterSpacing = "2px";
+    c.fillText("FILED", W - PAD - 100, H - 128);
+
+    const texture = new CanvasTexture(canvas);
+    texture.colorSpace = SRGBColorSpace;
+    texture.anisotropy = 4;
+    return texture;
+  }, []);
+}
 
 /** A single sheet: rounded rectangle, extruded so it has real thickness. */
 function useSheetGeometry() {
@@ -114,6 +221,21 @@ function useSheetGeometry() {
       curveSegments: 8,
     });
     geometry.center();
+
+    /* ExtrudeGeometry's default UV generator maps UVs straight from the
+       shape's own coordinates, so on a 1.55 x 2.05 sheet they run roughly
+       -0.78..0.78 and -1.03..1.03 — a texture applied to that would tile and
+       mirror. Rewrite them as normalized 0..1 across the face. The side and
+       bevel faces get squashed UVs as a side effect, which is invisible at
+       0.014 units thick. */
+    const pos = geometry.attributes.position;
+    const uv = new Float32Array(pos.count * 2);
+    for (let i = 0; i < pos.count; i += 1) {
+      uv[i * 2] = (pos.getX(i) + w / 2) / w;
+      uv[i * 2 + 1] = (pos.getY(i) + h / 2) / h;
+    }
+    geometry.setAttribute("uv", new BufferAttribute(uv, 2));
+
     return geometry;
   }, []);
 }
@@ -123,6 +245,7 @@ function Stack({ pointer }) {
   const sheets = useRef([]);
   const elapsed = useRef(0);
   const geometry = useSheetGeometry();
+  const page = useDocumentTexture();
 
   useFrame((state, delta) => {
     // Cap delta so a backgrounded tab doesn't resume with one enormous step.
@@ -155,7 +278,7 @@ function Stack({ pointer }) {
     if (group.current) {
       group.current.rotation.y = MathUtils.lerp(
         group.current.rotation.y,
-        pointer.current.x * 0.16,
+        GROUP_YAW + pointer.current.x * 0.12,
         0.045,
       );
       group.current.rotation.x = MathUtils.lerp(
@@ -167,7 +290,7 @@ function Stack({ pointer }) {
   });
 
   return (
-    <group ref={group} rotation={[GROUP_TILT, 0, 0]}>
+    <group ref={group} rotation={[GROUP_TILT, GROUP_YAW, 0]}>
       {SHEETS.map((sheet, i) => (
         <mesh
           key={i}
@@ -184,7 +307,9 @@ function Stack({ pointer }) {
               property on the material itself, so paper renders as authored
               regardless of the renderer's tone-mapping setting. */}
           <meshStandardMaterial
-            color={PAPER}
+            map={page}
+            // White, so the map is shown as painted rather than tinted by it.
+            color="#ffffff"
             roughness={0.86}
             metalness={0}
             // Low but non-zero: enough for the environment gradient to vary
@@ -287,10 +412,11 @@ export default function CaseFileScene({ frameloop = "always", fill = false }) {
            which is what makes the stack read as photographed rather than
            rendered. At fov 22 and z 8.8 this frames ~3.4 units of height,
            against a ~2.2-unit subject. */
-        /* Closer in fill mode: the whole point of the dark hero is that the
-           object gets to be big. 7.2 frames ~2.8 units against a ~2.2-unit
-           subject (~79% of frame height); 8.8 is the politer inline framing. */
-        camera={{ position: [0, 0.1, fill ? 7.2 : 8.8], fov: 22 }}
+        /* 7.2 framed the sheet at 73% of viewport height before the tilt and
+           the stack spread were added on, which is why it overwhelmed the
+           panel. 10 frames ~3.9 units against a ~2.2-unit subject — still a
+           large, confident object with room to read as a stack. */
+        camera={{ position: [0, 0.1, fill ? 10 : 8.8], fov: 22 }}
         // Past 1.5 we are paying for pixels nobody can see on matte paper.
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
@@ -318,7 +444,13 @@ export default function CaseFileScene({ frameloop = "always", fill = false }) {
           shadow-camera-right={2.6}
           shadow-camera-top={2.6}
           shadow-camera-bottom={-2.6}
-          shadow-bias={-0.0004}
+          /* The sheets were shadowing themselves: a fully lit face computes to
+             sRGB 239, but the render was ~115, which is exactly ambient-only.
+             `shadow-bias` cannot fix acne on a large flat face at a shallow
+             light angle; `shadow-normalBias` offsets the shadow lookup along
+             the surface normal and does. */
+          shadow-bias={-0.0002}
+          shadow-normalBias={0.035}
         />
         {/* A whisper of fill from the opposite side so the shadowed edge of
             each sheet doesn't go dead. */}
