@@ -5,6 +5,7 @@ import { useRef } from "react";
 import CaseFileStack from "./hero/CaseFileStack";
 import StackFallback from "./hero/StackFallback";
 import { ButtonLink } from "./ui/Button";
+import Pill from "./ui/Pill";
 import CursorRing from "./ui/CursorRing";
 import TextReveal from "./ui/TextReveal";
 
@@ -107,19 +108,33 @@ export default function Hero() {
             text="The back office UK firms trust to get it right, not just done."
             accent={["right"]}
             accentClassName="text-accent-400"
-            className="font-serif text-display-2xl text-on-dark"
+            className="font-serif text-display-2xl font-medium text-on-dark"
           />
 
           <p className="mt-7 font-display text-lg font-semibold text-accent-400 sm:text-xl">
             Minimize Costs. Maximize Reserves.
           </p>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-300">
-            Bench Strength handles the case administration, compliance
-            auditing, and regulatory admin that insolvency practitioners, legal
-            teams, and advisory firms can&apos;t afford to get wrong —
-            delivered by experienced professionals, not a generic outsourcing
-            agency.
+          {/* Was a five-line paragraph listing services, clients and a
+              differentiator. The list is now pills — scanned in a second where
+              the sentence took ten — leaving one short line to carry the
+              claim. */}
+          <p className="mt-5 max-w-lg text-lg leading-relaxed text-ink-300">
+            Specialist back-office capacity for UK insolvency, legal and
+            advisory firms. Qualified people, not a generic outsourcer.
           </p>
+
+          <ul className="mt-7 flex flex-wrap gap-2">
+            {[
+              "Case administration",
+              "Compliance auditing",
+              "Regulatory admin",
+              "On demand",
+            ].map((item) => (
+              <li key={item}>
+                <Pill tone="dark">{item}</Pill>
+              </li>
+            ))}
+          </ul>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/contact" color="onDark" lift>

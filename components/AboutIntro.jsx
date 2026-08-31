@@ -7,18 +7,17 @@ export default function AboutIntro() {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-4">
             <p className="file-tag mb-5">About Bench Strength</p>
-            <h2 className="font-serif text-display-lg text-heading">
+            <h2 className="font-serif text-display-lg font-medium text-heading">
               Who we are
             </h2>
           </div>
 
           <div className="lg:col-span-8">
-            <p className="text-lg leading-relaxed text-ink-700">
-              Bench Strength is a specialist operations, compliance, and
-              case-administration partner for UK insolvency, legal, and advisory
-              firms. We handle qualified case support, compliance auditing, and
-              back-office admin on demand — scaled to exactly what your firm can
-              carry right now, without the overhead of a permanent hire.
+            <p className="text-lg leading-relaxed text-muted">
+              A specialist operations, compliance and case-administration
+              partner for UK insolvency, legal and advisory firms — scaled to
+              what your firm can carry right now, without the overhead of a
+              permanent hire.
             </p>
             <Link
               href="/about"

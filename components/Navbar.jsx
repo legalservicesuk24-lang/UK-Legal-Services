@@ -77,7 +77,7 @@ function Logo({ light }) {
         />
       </svg>
       {/* Serif wordmark, matching the display voice introduced on the page. */}
-      <span className="font-serif">Bench Strength</span>
+      <span className="font-serif font-semibold">Bench Strength</span>
     </Link>
   );
 }
@@ -138,17 +138,17 @@ export default function Navbar({ onDark = false }) {
   /* `light` = light *text*, i.e. we are over the dark hero. `onHero` also
      covers the scrolled-but-still-over-the-hero case, which takes a dark
      blurred background rather than the light one.
-     Opening the mobile panel forces the light-background treatment, since the
-     panel itself is solid. */
-  const onHero = onDark && !pastHero && !isOpen;
+     The panel is dark, so opening it no longer has to force the light
+     treatment — the header can stay dark and the two read as one surface. */
+  const onHero = onDark && !pastHero;
   const light = onHero;
 
   return (
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
         onHero
-          ? scrolled
-            ? "border-b border-white/10 bg-ink-950/80 backdrop-blur"
+          ? scrolled || isOpen
+            ? "border-b border-white/10 bg-ink-950/90 backdrop-blur"
             : "border-b border-transparent bg-transparent"
           : "border-b border-subtle bg-surface/85 backdrop-blur"
       }`}
@@ -242,15 +242,20 @@ export default function Navbar({ onDark = false }) {
         style={{ transform: "scaleX(var(--scroll-progress, 0))" }}
       />
 
+      {/* Mobile panel. Numbered serif rows rather than a generic list of
+          links, so it carries the same editorial voice as the page. Themed to
+          match the header it drops out of — dark over the hero, light on the
+          inner pages — because a dark sheet under a light bar reads as a
+          separate widget pasted on. */}
       <div
         id="mobile-menu"
-        className={`md:hidden ${isOpen ? "block" : "hidden"} border-t border-subtle bg-surface`}
+        hidden={!isOpen}
+        className={`md:hidden ${
+          light ? "border-t border-white/10 bg-ink-950" : "border-t border-subtle bg-surface"
+        }`}
       >
-        <nav
-          aria-label="Mobile primary"
-          className="container-page flex flex-col py-3"
-        >
-          {NAV_LINKS.map((link) => {
+        <nav aria-label="Mobile primary" className="container-page py-2">
+          {NAV_LINKS.map((link, i) => {
             const active =
               link.href === "/"
                 ? pathname === "/"
@@ -261,30 +266,68 @@ export default function Navbar({ onDark = false }) {
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center justify-between border-b border-hairline py-3.5 font-serif text-xl transition-colors last:border-0 ${
-                  active ? "text-brand" : "text-heading hover:text-brand"
+                className={`group flex items-baseline gap-4 py-4 transition-colors last:border-0 ${
+                  light ? "border-b border-white/10" : "border-b border-hairline"
+                } ${
+                  active
+                    ? light
+                      ? "text-accent-400"
+                      : "text-brand"
+                    : light
+                      ? "text-on-dark"
+                      : "text-heading"
                 }`}
               >
-                {link.label}
+                <span
+                  aria-hidden
+                  className={`font-mono text-[10px] font-semibold tracking-[0.16em] ${
+                    active
+                      ? light
+                        ? "text-accent-400"
+                        : "text-brand"
+                      : "text-ink-500"
+                  }`}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="font-serif text-2xl font-medium">
+                  {link.label}
+                </span>
                 {active && (
                   <span
                     aria-hidden
-                    className="h-1.5 w-1.5 rounded-full bg-primary-600"
+                    className={`ml-auto self-center h-1.5 w-1.5 rounded-full ${
+                      light ? "bg-accent-400" : "bg-primary-600"
+                    }`}
                   />
                 )}
               </Link>
             );
           })}
-          <ButtonLink
-            href="/contact"
-            onClick={() => setIsOpen(false)}
-            fullWidth
-            className="mt-5"
-          >
-            Book a Consultation
-          </ButtonLink>
+
+          <div className="flex flex-col gap-3 py-6">
+            <ButtonLink
+              href="/contact"
+              onClick={() => setIsOpen(false)}
+              color={light ? "onDark" : "navy"}
+              fullWidth
+            >
+              Book a Consultation
+            </ButtonLink>
+            <a
+              href="mailto:hello@benchstrength.uk"
+              className={`py-1 text-center text-sm transition-colors ${
+                light
+                  ? "text-ink-400 hover:text-accent-400"
+                  : "text-subtle hover:text-brand"
+              }`}
+            >
+              hello@benchstrength.uk
+            </a>
+          </div>
         </nav>
       </div>
+
     </header>
   );
 }

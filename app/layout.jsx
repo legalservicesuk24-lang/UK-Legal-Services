@@ -1,9 +1,4 @@
-import {
-  IBM_Plex_Mono,
-  Instrument_Serif,
-  Inter,
-  Manrope,
-} from "next/font/google";
+import { Fraunces, IBM_Plex_Mono, Inter, Manrope } from "next/font/google";
 import "./globals.css";
 
 const body = Inter({
@@ -20,15 +15,20 @@ const display = Manrope({
   display: "swap",
 });
 
-/* The editorial voice. A high-contrast serif is the one type choice that
-   reads as *authored* rather than templated, and for insolvency and legal
-   work it buys authority rather than spending it — the sector's own
-   documents are set in serif. Only used at display sizes: it ships a single
-   400 weight, which is correct for large headings and wrong for 14px UI
-   labels, so Manrope keeps that job. */
-const serif = Instrument_Serif({
+/* The editorial voice. A serif is the one type choice that reads as *authored*
+   rather than templated, and for insolvency and legal work it buys authority
+   rather than spending it — the sector's own documents are set in serif.
+
+   Fraunces over Instrument Serif: Instrument was the lightest of the faces
+   compared on /type, and at 96px it read delicate rather than authoritative,
+   which is the wrong note for a firm selling "we get it right". Fraunces has
+   weight to spare and real character in the terminals.
+
+   Variable, so display headings can sit at 500-600 instead of synthesising
+   bold from a single 400 master. Display sizes only; Manrope still handles
+   card titles and UI labels. */
+const serif = Fraunces({
   subsets: ["latin"],
-  weight: ["400"],
   style: ["normal", "italic"],
   variable: "--font-serif",
   display: "swap",

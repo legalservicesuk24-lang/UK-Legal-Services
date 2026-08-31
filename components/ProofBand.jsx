@@ -1,5 +1,6 @@
 import { ICONS } from "./serviceIcons";
 import { ButtonLink } from "./ui/Button";
+import Pill from "./ui/Pill";
 import CountUp from "./ui/CountUp";
 import Reveal from "./ui/Reveal";
 
@@ -51,8 +52,8 @@ export default function ProofBand() {
           {/* ── Credential ───────────────────────────────────────────── */}
           <Reveal className="lg:col-span-5">
             <p className="file-tag mb-5">Qualified, not generic</p>
-            <h2 className="font-serif text-display-xl text-heading">
-              Handled by someone qualified to know what they&apos;re looking at.
+            <h2 className="font-serif text-display-xl font-medium text-heading">
+              Qualified to know what they&apos;re looking at.
             </h2>
 
             <div className="mt-8 flex items-start gap-4 rounded-2xl border border-subtle bg-surface p-6">
@@ -65,9 +66,17 @@ export default function ProofBand() {
                 </p>
                 <p className="mt-1.5 text-sm leading-relaxed text-subtle">
                   Personal Insolvency Practical, accredited by the Money and
-                  Pensions Service. A standard built for this work — not a
-                  generic customer-service credential.
+                  Pensions Service.
                 </p>
+                <ul className="mt-3.5 flex flex-wrap gap-1.5">
+                  {["End-to-end caseload", "Debt legal advice", "Creditor negotiation"].map(
+                    (item) => (
+                      <li key={item}>
+                        <Pill tone="quiet">{item}</Pill>
+                      </li>
+                    ),
+                  )}
+                </ul>
               </div>
             </div>
 
@@ -113,11 +122,9 @@ export default function ProofBand() {
               className="mt-5 rounded-2xl border border-subtle bg-surface px-8 py-6 sm:px-10"
             >
               <p className="text-sm leading-relaxed text-subtle">
-                Every engagement runs as its own tracked file — scoped,
-                documented, and reported on from first assessment to closure.
-                Statutory decisions always remain with the instructing
-                practitioner; our job is making sure the work behind them is
-                right.
+                Every engagement is its own tracked file. Statutory decisions
+                stay with the instructing practitioner — we make sure the work
+                behind them is right.
               </p>
             </Reveal>
           </div>

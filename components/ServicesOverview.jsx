@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SERVICES } from "../app/services/servicesData";
 import { ICONS } from "./serviceIcons";
 import { ButtonLink } from "./ui/Button";
+import Pill from "./ui/Pill";
 import Reveal from "./ui/Reveal";
 
 const ARROW = (
@@ -35,7 +36,7 @@ function FeaturedCard({ service }) {
         <span className="file-tag pt-2">Register / {service.ref}</span>
       </div>
 
-      <h3 className="mt-8 font-serif text-3xl leading-tight text-heading transition-colors group-hover:text-primary-700 sm:text-4xl">
+      <h3 className="mt-8 font-serif text-3xl font-medium leading-tight text-heading transition-colors group-hover:text-primary-700 sm:text-4xl">
         {service.title}
       </h3>
       <p className="mt-4 text-base leading-relaxed text-subtle">
@@ -44,14 +45,13 @@ function FeaturedCard({ service }) {
 
       <div className="grow" />
 
-      <ul className="mt-8 space-y-3 border-t border-hairline pt-7">
+      {/* Pills rather than a bulleted list: four short phrases read faster
+          side by side than stacked, and it stops the card being a wall of
+          left-aligned text. */}
+      <ul className="mt-8 flex flex-wrap gap-2 border-t border-hairline pt-7">
         {service.includes.map((item) => (
-          <li
-            key={item}
-            className="flex items-start gap-3 text-sm leading-relaxed text-subtle"
-          >
-            <span className="mt-[7px] h-1 w-1 flex-shrink-0 rounded-full bg-primary-400 transition-colors group-hover:bg-primary-600" />
-            {item}
+          <li key={item}>
+            <Pill tone="light">{item}</Pill>
           </li>
         ))}
       </ul>
@@ -110,12 +110,12 @@ export default function ServicesOverview() {
         <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <Reveal className="max-w-2xl">
             <p className="file-tag mb-5">What we do</p>
-            <h2 className="font-serif text-display-xl text-heading">
+            <h2 className="font-serif text-display-xl font-medium text-heading">
               Five registers. One accountable team.
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              Each engagement runs as its own tracked file — scoped,
-              documented, and reported on from first assessment to closure.
+              Each one runs as its own tracked file, from first assessment to
+              closure.
             </p>
           </Reveal>
 

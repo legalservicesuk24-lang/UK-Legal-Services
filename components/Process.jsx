@@ -24,22 +24,22 @@ const STEPS = [
   {
     ref: "01",
     title: "Scope",
-    body: "We agree exactly what sits with us and what stays with your team, in writing, before anything opens.",
+    body: "Agreed in writing before anything opens: what sits with us, what stays with you.",
   },
   {
     ref: "02",
     title: "Assessment",
-    body: "Financial assessments, asset verification, and the statutory documentation the file needs to stand up.",
+    body: "Financial assessments, asset verification, statutory documentation.",
   },
   {
     ref: "03",
     title: "Progression",
-    body: "Case administration and creditor liaison, tracked at every stage with clear escalation paths.",
+    body: "Case administration and creditor liaison, tracked with clear escalation paths.",
   },
   {
     ref: "04",
     title: "Audit & closure",
-    body: "The file is audited against its regulatory requirements, reported on, and closed — audit-ready.",
+    body: "Audited against its regulatory requirements, reported on, closed.",
   },
 ];
 
@@ -52,14 +52,14 @@ export default function Process() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <p className="file-tag mb-5">How it runs</p>
-            <h2 className="font-serif text-display-xl text-heading">
+            <h2 className="font-serif text-display-xl font-medium text-heading">
               From first assessment to closure.
             </h2>
           </Reveal>
           <Reveal delay={90} className="lg:col-span-5 lg:pt-4">
             <p className="text-lg leading-relaxed text-muted">
-              Each engagement is its own tracked file. You always know which
-              stage it is at, and what is waiting on a practitioner signature.
+              You always know which stage a file is at, and what is waiting on
+              a practitioner signature.
             </p>
           </Reveal>
         </div>
