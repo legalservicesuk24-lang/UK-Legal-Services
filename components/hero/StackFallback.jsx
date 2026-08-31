@@ -16,13 +16,15 @@
    Purely decorative: the hero's real content is the h1 and the CTAs.
 --------------------------------------------------------------------------- */
 
-// Offsets are in the same visual order as the 3D scene: the active file sits
-// squarest and frontmost, the rest fan back and up.
+/* Mirrors the 3D scene's resting pose: a squared stack, offset just enough to
+   show there are five sheets. Kept in step with the `rest` values in
+   CaseFileScene — if the stack is retuned there, retune it here, or the scene
+   will visibly jump when it swaps in over this. */
 const SHEETS = [
-  { x: -22, y: 34, rotate: -3.4, tone: "bg-white", z: "z-[1]" },
-  { x: -10, y: 22, rotate: -1.8, tone: "bg-white", z: "z-[2]" },
-  { x: 2, y: 11, rotate: -0.6, tone: "bg-white", z: "z-[3]" },
-  { x: 12, y: 0, rotate: 0.7, tone: "bg-white", z: "z-[4]" },
+  { x: -9, y: -9, rotate: -1.1, z: "z-[1]" },
+  { x: -5, y: -5, rotate: -0.6, z: "z-[2]" },
+  { x: 0, y: 0, rotate: -0.2, z: "z-[3]" },
+  { x: 4, y: 4, rotate: 0.25, z: "z-[4]" },
 ];
 
 export default function StackFallback({ className = "" }) {
@@ -34,7 +36,7 @@ export default function StackFallback({ className = "" }) {
       {SHEETS.map((sheet, i) => (
         <div
           key={i}
-          className={`absolute inset-x-6 top-8 h-[74%] rounded-xl border border-ink-200/80 shadow-card ${sheet.tone} ${sheet.z}`}
+          className={`absolute inset-x-10 top-7 h-[76%] rounded-xl border border-ink-200/80 bg-white shadow-card ${sheet.z}`}
           style={{
             transform: `translate(${sheet.x}px, ${sheet.y}px) rotate(${sheet.rotate}deg)`,
           }}
@@ -43,7 +45,10 @@ export default function StackFallback({ className = "" }) {
 
       {/* The active file — squared, frontmost, teal-tabbed. Carries a few
           ruled lines so it reads as a document rather than a blank card. */}
-      <div className="absolute inset-x-6 top-8 z-[5] h-[74%] rounded-xl border border-ink-200 bg-white shadow-card-hover">
+      <div
+        className="absolute inset-x-10 top-7 z-[5] h-[76%] rounded-xl border border-ink-200 bg-white shadow-card-hover"
+        style={{ transform: "translate(8px, 8px) rotate(0.6deg)" }}
+      >
         <span className="absolute -left-px top-9 h-16 w-[3px] rounded-r bg-primary-600" />
 
         <div className="flex h-full flex-col gap-3 p-7">

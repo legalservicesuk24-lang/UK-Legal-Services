@@ -2,57 +2,85 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  ExtrudeGeometry,
-  MathUtils,
-  Shape,
-} from "three";
+import { ExtrudeGeometry, MathUtils, Shape } from "three";
 
 /* ---------------------------------------------------------------------------
-   CaseFileScene — five case files settling into alignment.
+   CaseFileScene — five case files settling into a squared stack.
 
    The concept, and why it is this rather than an abstract form: the firm
    administers case files, so the object *is* the service, and the motion —
-   scattered sheets squaring up into an ordered stack — is the value
+   scattered sheets squaring up into one flush stack — is the value
    proposition ("get it right, not just done", "audit-ready"). Nothing needs
    decoding.
 
    Material language is deliberately paper, not glass: high roughness, zero
-   metalness, one soft key light, real contact shadow, a long lens. No bloom,
-   no emissive glow, no reflections — those are what make WebGL read as a tech
-   demo, which is exactly wrong for a regulated-sector buyer.
+   metalness, one soft key light, a long lens. No bloom, no emissive glow, no
+   reflections — those are what make WebGL read as a tech demo, which is
+   exactly wrong for a regulated-sector buyer.
 
    Built on plain three rather than drei so the bundle stays small: rounded
-   sheets come from THREE.Shape + ExtrudeGeometry (the bevel doubles as paper
-   thickness), and the shadow is a ShadowMaterial plane, which renders only
-   the shadow and stays transparent everywhere else — so the canvas sits over
-   the hero background with nothing to match.
+   sheets come from Shape + ExtrudeGeometry (the bevel doubles as paper
+   thickness), so the scene needs no 3D assets at all.
+
+   Four settings here are load-bearing, and all four were wrong on the first
+   pass — they are the difference between paper and grey slabs:
+
+     - `flat` on the Canvas. R3F defaults to ACESFilmicToneMapping, which maps
+       near-white paper down to a mid grey. NoToneMapping renders the authored
+       colour.
+     - `shadows="percentage"`. A bare `shadows` selects PCFSoftShadowMap, which
+       three 0.185 has deprecated — it falls back to PCFShadowMap and warns
+       every frame. "percentage" *is* PCFShadowMap. `shadow-radius` only ever
+       applied to PCFSoft, so it is gone.
+     - Light intensities are small. Lights have used physical units since
+       three r155, so values that looked reasonable in older scenes overexpose
+       badly.
+     - The camera is well back with a narrow fov. Too close and the sheets
+       both clip and shear into trapezoids.
+
+   Pose and lighting need a real screen to judge; these are conservative
+   starting points, not sacred numbers.
 --------------------------------------------------------------------------- */
 
 const PAPER = "#FBFCFD";
 const TEAL = "#159A9C";
 
-// Resting pose per sheet, plus the scattered pose it animates from. The active
-// file (last) ends squarest and frontmost.
+const SHEET_W = 1.55;
+const SHEET_H = 2.05;
+
+/* `rest` is near-aligned on purpose. The payoff of the animation is a *flush*
+   stack, so the sheets finish squared, offset just enough to show there are
+   five of them — depth separation does the layering work instead, which reads
+   once the group is tilted and shadows fall between sheets. An earlier version
+   rested in a wide fan, which contradicted the whole idea of squaring up.
+   `from` is scattered wide and mostly outside the frame, so they fly in. */
 const SHEETS = [
-  { rest: [-0.62, 0.5, -0.36], from: [-1.5, 1.25, -0.36], tilt: -0.15 },
-  { rest: [-0.34, 0.26, -0.18], from: [-0.95, 1.0, -0.18], tilt: -0.085 },
-  { rest: [-0.1, 0.04, 0], from: [0.7, 0.95, 0], tilt: -0.035 },
-  { rest: [0.14, -0.18, 0.18], from: [1.35, -1.15, 0.18], tilt: 0.03 },
-  { rest: [0.4, -0.4, 0.36], from: [1.15, -1.5, 0.36], tilt: 0.012, active: true },
+  { rest: [-0.06, 0.06, -0.3], tilt: -0.018, from: [-1.9, 1.5], fromTilt: -0.5 },
+  { rest: [-0.03, 0.03, -0.15], tilt: -0.01, from: [-1.25, -1.65], fromTilt: 0.38 },
+  { rest: [0, 0, 0], tilt: -0.003, from: [1.75, 1.35], fromTilt: 0.46 },
+  { rest: [0.03, -0.03, 0.15], tilt: 0.004, from: [1.35, -1.7], fromTilt: -0.42 },
+  {
+    rest: [0.06, -0.06, 0.3],
+    tilt: 0.01,
+    from: [-0.45, 2.05],
+    fromTilt: 0.55,
+    active: true,
+  },
 ];
 
 const SETTLE_DURATION = 1.7;
-// easeOutBack-ish without the overshoot going silly — sheets arrive with a
-// little weight, like something set down rather than teleported.
+// Decelerating arrival — sheets land with a little weight, like something set
+// down rather than teleported into place.
 const easeSettle = (t) => 1 - Math.pow(1 - t, 3.2);
+
+const GROUP_TILT = -0.32;
 
 /** A single sheet: rounded rectangle, extruded so it has real thickness. */
 function useSheetGeometry() {
   return useMemo(() => {
-    const w = 2.05;
-    const h = 2.75;
-    const r = 0.1;
+    const w = SHEET_W;
+    const h = SHEET_H;
+    const r = 0.075;
 
     const shape = new Shape();
     shape.moveTo(-w / 2 + r, -h / 2);
@@ -66,10 +94,10 @@ function useSheetGeometry() {
     shape.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
 
     const geometry = new ExtrudeGeometry(shape, {
-      depth: 0.012,
+      depth: 0.014,
       bevelEnabled: true,
-      bevelThickness: 0.006,
-      bevelSize: 0.006,
+      bevelThickness: 0.005,
+      bevelSize: 0.005,
       bevelSegments: 2,
       curveSegments: 8,
     });
@@ -88,48 +116,46 @@ function Stack({ pointer }) {
     // Cap delta so a backgrounded tab doesn't resume with one enormous step.
     elapsed.current += Math.min(delta, 0.05);
 
-    const settle = Math.min(elapsed.current / SETTLE_DURATION, 1);
-    const eased = easeSettle(settle);
+    const eased = easeSettle(Math.min(elapsed.current / SETTLE_DURATION, 1));
     const t = state.clock.elapsedTime;
 
     SHEETS.forEach((sheet, i) => {
       const mesh = sheets.current[i];
       if (!mesh) return;
 
-      // Stagger so the stack assembles front to back rather than all at once.
-      const local = MathUtils.clamp(eased * 1.35 - i * 0.07, 0, 1);
+      // Stagger so the stack assembles rather than snapping together at once.
+      const local = MathUtils.clamp(eased * 1.35 - i * 0.06, 0, 1);
 
       mesh.position.x = MathUtils.lerp(sheet.from[0], sheet.rest[0], local);
       mesh.position.y =
         MathUtils.lerp(sheet.from[1], sheet.rest[1], local) +
-        // Idle float, only once settled. Tiny — presence, not animation.
-        Math.sin(t * 0.55 + i * 0.9) * 0.022 * local;
+        // Idle float, scaled in only once settled. Tiny — presence, not motion.
+        Math.sin(t * 0.55 + i * 0.9) * 0.018 * local;
       mesh.position.z = sheet.rest[2];
 
-      // Sheets arrive from a steeper angle and rotate flat as they land.
-      mesh.rotation.z = MathUtils.lerp(sheet.tilt * 5.5, sheet.tilt, local);
-      mesh.rotation.x = Math.sin(t * 0.4 + i * 0.7) * 0.012 * local;
+      mesh.rotation.z = MathUtils.lerp(sheet.fromTilt, sheet.tilt, local);
+      mesh.rotation.x = Math.sin(t * 0.4 + i * 0.7) * 0.01 * local;
     });
 
-    // Mouse parallax on the whole group, heavily damped. Disableable motion
-    // under WCAG 2.3.3 — the wrapper never mounts this scene when the user
-    // has asked for reduced motion.
+    // Pointer parallax on the whole group, heavily damped. This is why the
+    // wrapper refuses to mount the scene under prefers-reduced-motion — WCAG
+    // 2.3.3 covers exactly this kind of interaction-driven movement.
     if (group.current) {
       group.current.rotation.y = MathUtils.lerp(
         group.current.rotation.y,
-        pointer.current.x * 0.12,
-        0.04,
+        pointer.current.x * 0.16,
+        0.045,
       );
       group.current.rotation.x = MathUtils.lerp(
         group.current.rotation.x,
-        -0.42 + pointer.current.y * 0.06,
-        0.04,
+        GROUP_TILT + pointer.current.y * 0.07,
+        0.045,
       );
     }
   });
 
   return (
-    <group ref={group} rotation={[-0.42, 0, 0]}>
+    <group ref={group} rotation={[GROUP_TILT, 0, 0]}>
       {SHEETS.map((sheet, i) => (
         <mesh
           key={i}
@@ -140,22 +166,14 @@ function Stack({ pointer }) {
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial
-            color={PAPER}
-            roughness={0.92}
-            metalness={0}
-          />
+          <meshStandardMaterial color={PAPER} roughness={0.92} metalness={0} />
 
-          {/* The active file's edge tab — the one teal accent in the scene,
+          {/* The active file's edge tab — the single teal accent in the scene,
               and the only thing marking a file as filed. */}
           {sheet.active && (
-            <mesh position={[-1.03, 0.62, 0.012]}>
-              <boxGeometry args={[0.05, 0.62, 0.026]} />
-              <meshStandardMaterial
-                color={TEAL}
-                roughness={0.55}
-                metalness={0}
-              />
+            <mesh position={[-(SHEET_W / 2) - 0.015, 0.44, 0.014]}>
+              <boxGeometry args={[0.05, 0.6, 0.028]} />
+              <meshStandardMaterial color={TEAL} roughness={0.5} metalness={0} />
             </mesh>
           )}
         </mesh>
@@ -182,54 +200,49 @@ export default function CaseFileScene({ frameloop = "always" }) {
       }}
     >
       <Canvas
-        shadows
+        // PCFShadowMap: a bare `shadows` picks the deprecated PCFSoftShadowMap.
+        shadows="percentage"
+        // NoToneMapping: R3F's ACESFilmic default renders paper as grey.
+        flat
         /* Driven by the wrapper: the loop stops when the hero scrolls out of
            view or the tab is hidden, so we never burn battery rendering a
            canvas nobody is looking at. */
         frameloop={frameloop}
-        // A long lens (low fov) keeps perspective distortion out of it, which
-        // is what makes the stack read as photographed rather than rendered.
-        camera={{ position: [0, 0.35, 8.4], fov: 22 }}
-        // Cap at 1.5: past that we are paying for pixels nobody can see on a
-        // matte-paper subject with no fine detail.
+        /* A narrow fov pulled well back keeps perspective distortion out of it,
+           which is what makes the stack read as photographed rather than
+           rendered. At fov 22 and z 8.8 this frames ~3.4 units of height,
+           against a ~2.2-unit subject. */
+        camera={{ position: [0, 0.1, 8.8], fov: 22 }}
+        // Past 1.5 we are paying for pixels nobody can see on matte paper.
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={1.35} />
+        {/* Physical units since three r155: these are far lower than older
+            scenes would use, and raising them blows the paper to pure white. */}
+        <ambientLight intensity={0.55} />
 
-        {/* Single soft key from upper-left — one light source is what reads as
-            a photographed desk rather than a lit stage. */}
+        {/* Single soft key from upper-left — one source is what reads as a
+            photographed desk rather than a lit stage. Shadow frustum kept tight
+            to the subject so the 1024 map isn't spent on empty space. */}
         <directionalLight
-          position={[-3.2, 4.6, 3.4]}
-          intensity={1.5}
+          position={[-3.4, 4.2, 4]}
+          intensity={1.05}
           castShadow
           shadow-mapSize={[1024, 1024]}
           shadow-camera-near={0.5}
-          shadow-camera-far={16}
-          shadow-camera-left={-5}
-          shadow-camera-right={5}
-          shadow-camera-top={5}
-          shadow-camera-bottom={-5}
-          shadow-bias={-0.0006}
-          shadow-radius={5}
+          shadow-camera-far={14}
+          shadow-camera-left={-2.6}
+          shadow-camera-right={2.6}
+          shadow-camera-top={2.6}
+          shadow-camera-bottom={-2.6}
+          shadow-bias={-0.0004}
         />
-        {/* A whisper of cool fill from the opposite side so the shadow side of
+        {/* A whisper of fill from the opposite side so the shadowed edge of
             each sheet doesn't go dead. */}
-        <directionalLight position={[3, -1.5, 2]} intensity={0.28} />
+        <directionalLight position={[3, -1.2, 2]} intensity={0.18} />
 
         <Stack pointer={pointer} />
-
-        {/* ShadowMaterial renders only where shadow falls, so the plane is
-            invisible against the hero background — no colour to match. */}
-        <mesh
-          position={[0, -1.95, 0]}
-          rotation={[-Math.PI / 2, 0, 0]}
-          receiveShadow
-        >
-          <planeGeometry args={[14, 14]} />
-          <shadowMaterial transparent opacity={0.16} />
-        </mesh>
       </Canvas>
     </div>
   );
