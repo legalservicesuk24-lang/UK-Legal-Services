@@ -50,6 +50,25 @@
   }
 }
 
+/* Scroll-reveal. The pre-animation state lives in CSS rather than in React
+   so the server-rendered HTML is already in it — no flash of positioned
+   content before hydration. `Reveal` adds `.is-visible` when the element
+   intersects the viewport.
+
+   Two escape hatches matter here, because "invisible until JS says so" is a
+   content-blocking failure mode if either assumption breaks:
+     1. no JavaScript  -> the <noscript> block in app/layout.jsx unhides.
+     2. reduced motion -> the media query below unhides.
+   Both are unconditional, so content can never be stranded at opacity 0. */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+}
+
+.reveal.is-visible {
+  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -58,5 +77,14 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Zeroing animation-duration alone would leave .reveal stuck at opacity 0,
+     since the entrance never runs. Reset the resting state explicitly. */
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    animation: none;
   }
 }

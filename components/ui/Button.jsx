@@ -37,7 +37,8 @@ export const buttonStyles = tv({
     color: {
       /* Navy — the primary CTA. Inverts to light teal on hover, which is the
          established brand behaviour, so it needs a hover foreground too.
-         white on ink-900 = 15.8:1 · ink-900 on accent-400 = 8.9:1 */
+         white on ink-900 = 16.7:1 · ink-900 on accent-400 = 8.06:1
+         · ink-900 on accent-500 (pressed) = 6.60:1 */
       navy: [
         "[--solid-bg:theme(colors.ink.900)] [--solid-bg-hover:theme(colors.accent.400)]",
         "[--solid-fg:#ffffff] [--solid-fg-hover:theme(colors.ink.900)]",
@@ -48,10 +49,13 @@ export const buttonStyles = tv({
         "[--btn-ring:theme(colors.primary.400)]",
       ],
       /* Teal — secondary emphasis on light surfaces.
-         white on primary-600 = 3.6:1, so solid teal is for large text only;
-         primary-700 text on white = 5.4:1 for the outlined/plain variants. */
+         Solid fill is primary-700, not the core primary-600: white on
+         primary-600 measures 3.42:1, which fails AA for 14px button text
+         (and only clears the large-text 3:1 threshold). primary-700 = 4.99:1,
+         hover primary-800 = 7.23:1. Outlined/plain use primary-700 text on
+         white = 4.99:1. */
       brand: [
-        "[--solid-bg:theme(colors.primary.600)] [--solid-bg-hover:theme(colors.primary.700)]",
+        "[--solid-bg:theme(colors.primary.700)] [--solid-bg-hover:theme(colors.primary.800)]",
         "[--solid-fg:#ffffff] [--solid-fg-hover:#ffffff]",
         "[--outline-bg:#ffffff] [--outline-border:theme(colors.primary.300)] [--outline-border-hover:theme(colors.primary.500)]",
         "[--outline-fg:theme(colors.primary.700)] [--outline-fg-hover:theme(colors.primary.800)]",
@@ -60,8 +64,9 @@ export const buttonStyles = tv({
         "[--btn-ring:theme(colors.primary.500)]",
       ],
       /* On-dark — for the full-bleed navy sections. Light teal fill with navy
-         text (8.9:1); the outlined form uses ink-300 border on navy (7.7:1),
-         which clears WCAG 1.4.11 for non-text contrast. */
+         text = 8.06:1 (hover 10.57:1, pressed 12.24:1). The outlined form is
+         an ink-300 border on navy = 11.02:1, well clear of the 3:1 that WCAG
+         1.4.11 asks of non-text contrast, with ink-50 label text at 15.8:1. */
       onDark: [
         "[--solid-bg:theme(colors.accent.400)] [--solid-bg-hover:theme(colors.accent.300)]",
         "[--solid-fg:theme(colors.ink.900)] [--solid-fg-hover:theme(colors.ink.900)]",
@@ -114,7 +119,7 @@ export const buttonStyles = tv({
     {
       variant: "solid",
       color: "brand",
-      class: "pressed:bg-primary-800 active:bg-primary-800",
+      class: "pressed:bg-primary-900 active:bg-primary-900",
     },
     {
       variant: "solid",

@@ -44,6 +44,14 @@ export default function RootLayout({ children }) {
       data-scroll-behavior="smooth"
       className={`${body.variable} ${display.variable} ${mono.variable}`}
     >
+      <head>
+        {/* Without JS the IntersectionObserver never runs, so scroll-reveal
+            elements would stay at opacity 0 and the page would look empty.
+            Unhide them unconditionally in that case. */}
+        <noscript>
+          <style>{".reveal{opacity:1 !important;transform:none !important}"}</style>
+        </noscript>
+      </head>
       <body>
         <a
           href="#main"

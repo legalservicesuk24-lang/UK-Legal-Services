@@ -125,6 +125,35 @@ module.exports = {
       letterSpacing: {
         tightish: "-0.015em",
       },
+
+      /* ---------------------------------------------------------------
+         DISPLAY SCALE
+         Fluid clamps so the big type scales with the viewport instead of
+         stepping at breakpoints. Tracking tightens as size grows, which is
+         what keeps large headings from reading loose and amateurish.
+         These emit font-size + line-height + letter-spacing together, and
+         sit in the utilities layer, so they override the h1-h4 defaults in
+         globals.css without needing !important.
+      --------------------------------------------------------------- */
+      fontSize: {
+        "display-2xl": [
+          "clamp(2.75rem, 5.6vw, 5.25rem)", // 44px -> 84px
+          { lineHeight: "1.04", letterSpacing: "-0.032em" },
+        ],
+        "display-xl": [
+          "clamp(2.125rem, 4vw, 3.5rem)", // 34px -> 56px
+          { lineHeight: "1.08", letterSpacing: "-0.026em" },
+        ],
+        "display-lg": [
+          "clamp(1.875rem, 3vw, 2.5rem)", // 30px -> 40px
+          { lineHeight: "1.14", letterSpacing: "-0.022em" },
+        ],
+        // The oversized proof numbers in the navy band.
+        stat: [
+          "clamp(3rem, 7.5vw, 5.5rem)", // 48px -> 88px
+          { lineHeight: "0.94", letterSpacing: "-0.04em" },
+        ],
+      },
       maxWidth: {
         "8xl": "90rem",
       },
@@ -138,6 +167,13 @@ module.exports = {
           "repeating-linear-gradient(to bottom, transparent, transparent 27px, rgb(225 231 234 / 0.6) 27px, rgb(225 231 234 / 0.6) 28px)",
       },
       keyframes: {
+        /* Scroll-reveal entrance. Transform + opacity only so it composites
+           on the GPU; `both` fill keeps the pre-animation state applied. */
+        "reveal-up": {
+          from: { opacity: "0", transform: "translate3d(0, 1.25rem, 0)" },
+          to: { opacity: "1", transform: "translate3d(0, 0, 0)" },
+        },
+
         /* Slow, organic drift for the hero's soft teal "aurora" shapes.
            Transform + opacity only, so it stays on the GPU compositor. */
         "drift-a": {
@@ -157,6 +193,7 @@ module.exports = {
         },
       },
       animation: {
+        "reveal-up": "reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
         "drift-a": "drift-a 24s ease-in-out infinite alternate",
         "drift-b": "drift-b 30s ease-in-out infinite alternate",
         "drift-c": "drift-c 38s ease-in-out infinite alternate",

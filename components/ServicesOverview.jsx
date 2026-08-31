@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SERVICES } from "../app/services/servicesData";
 import { ICONS } from "./serviceIcons";
 import { ButtonLink } from "./ui/Button";
+import Reveal from "./ui/Reveal";
 
 const ARROW = (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -15,46 +16,123 @@ const ARROW = (
   </svg>
 );
 
+/* The first register is the flagship — it's the one the PIP1 qualification
+   backs — so it gets a card with real weight instead of being one of five
+   identical tiles. Equal visual weight across five cards gives the eye
+   nowhere to land, which was a large part of why the page read as flat. */
+const [featured, ...rest] = SERVICES;
+
+function FeaturedCard({ service }) {
+  return (
+    <Link
+      href={`/services/${service.slug}`}
+      className="group flex flex-col rounded-2xl border border-subtle bg-raised p-8 shadow-card transition-all duration-300 ease-out hovered:-translate-y-1 hovered:border-primary-200 hovered:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 sm:p-10"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
+          {ICONS[service.icon]}
+        </span>
+        <span className="file-tag pt-2">Register / {service.ref}</span>
+      </div>
+
+      <h3 className="mt-8 font-display text-2xl font-semibold leading-snug text-heading transition-colors group-hover:text-primary-700 sm:text-3xl">
+        {service.title}
+      </h3>
+      <p className="mt-4 text-base leading-relaxed text-subtle">
+        {service.summary}
+      </p>
+
+      <div className="grow" />
+
+      <ul className="mt-8 space-y-3 border-t border-hairline pt-7">
+        {service.includes.map((item) => (
+          <li
+            key={item}
+            className="flex items-start gap-3 text-sm leading-relaxed text-subtle"
+          >
+            <span className="mt-[7px] h-1 w-1 flex-shrink-0 rounded-full bg-primary-400 transition-colors group-hover:bg-primary-600" />
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary-700 transition-colors group-hover:text-primary-800">
+        View details
+        <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+          {ARROW}
+        </span>
+      </span>
+    </Link>
+  );
+}
+
+function CompactCard({ service }) {
+  return (
+    <Link
+      href={`/services/${service.slug}`}
+      className="group flex flex-col rounded-xl border border-subtle bg-raised p-6 shadow-card transition-all duration-300 ease-out hovered:-translate-y-1 hovered:border-primary-200 hovered:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
+          {ICONS[service.icon]}
+        </span>
+        <span className="file-tag">{service.ref}</span>
+      </div>
+
+      <h3 className="mt-5 font-display text-base font-semibold leading-snug text-heading transition-colors group-hover:text-primary-700">
+        {service.title}
+      </h3>
+
+      <div className="grow" />
+
+      <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-primary-700 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        View details
+        {ARROW}
+      </span>
+    </Link>
+  );
+}
+
 export default function ServicesOverview() {
   return (
-    <section id="services" className="border-t border-ink-200 bg-ink-50">
+    <section id="services" className="border-t border-subtle bg-surface">
       <div className="container-page py-24 sm:py-32">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="file-tag mb-5">What We Do</p>
-          <h2 className="text-3xl font-semibold text-ink-900 sm:text-4xl">
-            Five registers. One accountable team.
-          </h2>
-          <p className="mt-5 text-base leading-relaxed text-ink-600">
-            Each engagement runs as its own tracked file — scoped, documented, and
-            reported on from first assessment to closure.
-          </p>
+        {/* Header runs left with the CTA opposite, rather than the centered
+            eyebrow-over-heading stack used by the other sections. */}
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <Reveal className="max-w-2xl">
+            <p className="file-tag mb-5">What we do</p>
+            <h2 className="text-display-xl font-semibold text-heading">
+              Five registers. One accountable team.
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-muted">
+              Each engagement runs as its own tracked file — scoped,
+              documented, and reported on from first assessment to closure.
+            </p>
+          </Reveal>
+
+          <Reveal delay={90} className="flex-shrink-0">
+            <ButtonLink href="/services" variant="outlined">
+              View all services
+              {ARROW}
+            </ButtonLink>
+          </Reveal>
         </div>
 
-        <div className="mt-14 flex flex-wrap justify-center gap-4">
-          {SERVICES.map((service) => (
-            <Link
+        <div className="mt-14 grid grid-cols-1 gap-5 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
+          <Reveal className="flex lg:row-span-2 [&>*]:w-full">
+            <FeaturedCard service={featured} />
+          </Reveal>
+
+          {rest.map((service, i) => (
+            <Reveal
               key={service.slug}
-              href={`/services/${service.slug}`}
-              className="group flex w-full items-center gap-3.5 rounded-xl border border-ink-200 bg-white p-5 shadow-card transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary-200 hover:shadow-card-hover data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2 sm:w-[340px]"
+              delay={(i + 1) * 70}
+              className="flex [&>*]:w-full"
             >
-              <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
-                {ICONS[service.icon]}
-              </span>
-              <span className="font-display text-sm font-semibold leading-snug text-ink-900 transition-colors group-hover:text-primary-700">
-                {service.title}
-              </span>
-              <span className="ml-auto text-primary-500 opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100">
-                {ARROW}
-              </span>
-            </Link>
+              <CompactCard service={service} />
+            </Reveal>
           ))}
-        </div>
-
-        <div className="mt-12 text-center">
-          <ButtonLink href="/services" lift>
-            View all services
-            {ARROW}
-          </ButtonLink>
         </div>
       </div>
     </section>

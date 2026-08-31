@@ -94,14 +94,14 @@ export default function Hero() {
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-12">
           <div>
             <p className="file-tag mb-5">Operations &amp; Compliance Support</p>
-            <h1 className="text-4xl font-semibold leading-[1.15] tracking-tight text-ink-900 sm:text-5xl lg:text-[3.25rem]">
+            <h1 className="text-display-2xl font-semibold text-heading">
               The back office UK firms trust to get it{" "}
               <span className="text-primary-600">right</span>, not just done.
             </h1>
-            <p className="mt-5 text-base font-semibold text-primary-600">
-              Bench Strength — Minimize Costs. Maximize Reserves
+            <p className="mt-6 font-display text-lg font-semibold text-brand sm:text-xl">
+              Minimize Costs. Maximize Reserves.
             </p>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-700">
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
               Bench Strength handles the case administration, compliance auditing, and
               regulatory admin that insolvency practitioners, legal teams, and advisory
               firms can&apos;t afford to get wrong — delivered by experienced professionals,
