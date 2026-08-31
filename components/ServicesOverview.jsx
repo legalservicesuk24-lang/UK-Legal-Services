@@ -83,9 +83,17 @@ function CompactCard({ service }) {
         {service.title}
       </h3>
 
+      {/* These cards share their row height with the featured card, which is
+          twice as tall. Icon and title alone left most of that empty, so the
+          summary earns its place here rather than being held back for the
+          detail page. */}
+      <p className="mt-3 text-sm leading-relaxed text-subtle">
+        {service.summary}
+      </p>
+
       <div className="grow" />
 
-      <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-primary-700 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+      <span className="mt-6 inline-flex items-center gap-1.5 text-xs font-semibold text-primary-700 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100">
         View details
         {ARROW}
       </span>

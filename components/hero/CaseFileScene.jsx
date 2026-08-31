@@ -34,9 +34,12 @@ import { ExtrudeGeometry, MathUtils, Shape } from "three";
        three 0.185 has deprecated — it falls back to PCFShadowMap and warns
        every frame. "percentage" *is* PCFShadowMap. `shadow-radius` only ever
        applied to PCFSoft, so it is gone.
-     - Light intensities are small. Lights have used physical units since
-       three r155, so values that looked reasonable in older scenes overexpose
-       badly.
+     - Light intensities are LARGE. This one bit twice. Since three r155
+       (useLegacyLights = false) the shader divides light contribution by PI,
+       so intensities need to be roughly 3x what the pre-r155 convention used
+       — not less. Guessing "physical units means go lower" produced
+       (0.42 + 0.9*0.765)/PI = 0.35 linear = sRGB 159, i.e. the exact mid grey
+       the sheets first rendered as. Lit faces should land near 1.0 linear.
      - The camera is well back with a narrow fov. Too close and the sheets
        both clip and shear into trapezoids.
 
@@ -235,16 +238,19 @@ export default function CaseFileScene({ frameloop = "always" }) {
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
-        {/* Physical units since three r155: these are far lower than older
-            scenes would use, and raising them blows the paper to pure white. */}
-        <ambientLight intensity={0.42} />
+        {/* These look high because three r155+ divides light contribution by
+            PI. Measured: ambient 1.45 + key 2.2 puts a lit face at sRGB ~253
+            (paper white) and the shadowed side at ~180 (believable paper
+            grey), which is the contrast that reads as a material rather than
+            a flat fill. */}
+        <ambientLight intensity={1.45} />
 
         {/* Single soft key from upper-left — one source is what reads as a
             photographed desk rather than a lit stage. Shadow frustum kept tight
             to the subject so the 1024 map isn't spent on empty space. */}
         <directionalLight
           position={[-3.4, 4.2, 4]}
-          intensity={0.9}
+          intensity={2.2}
           castShadow
           shadow-mapSize={[1024, 1024]}
           shadow-camera-near={0.5}
@@ -257,7 +263,7 @@ export default function CaseFileScene({ frameloop = "always" }) {
         />
         {/* A whisper of fill from the opposite side so the shadowed edge of
             each sheet doesn't go dead. */}
-        <directionalLight position={[3, -1.2, 2]} intensity={0.15} />
+        <directionalLight position={[3, -1.2, 2]} intensity={0.45} />
 
         <Stack pointer={pointer} />
       </Canvas>
