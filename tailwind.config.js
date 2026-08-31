@@ -87,7 +87,13 @@ module.exports = {
         muted: "#314152", // ink-700  —  9.90:1
         subtle: "#4B586B", // ink-600  —  6.84:1
         faint: "#667085", // ink-500  —  4.71:1  (AA floor; don't go lighter)
-        brand: "#159A9C", // primary-600
+        /* primary-700, not the core primary-600. primary-600 on `surface`
+           measures 3.24:1 and fails AA for body/UI text — it is fine as a
+           non-text accent (rules, icons, fills) but not as a link or label
+           colour, which is what this token is for. primary-700 = 4.99:1.
+           On dark surfaces use `text-accent-400` (8.68:1 on ink-950) instead;
+           this token is a light-surface colour. */
+        brand: "#0F7C7E", // primary-700 — 4.99:1
         "on-dark": "#F7F9FA", // ink-50 on navy — 15.81:1
       },
       backgroundColor: {

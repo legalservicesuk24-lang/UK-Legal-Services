@@ -32,7 +32,12 @@ export default function Hero() {
     <section
       id="home"
       ref={hostRef}
-      className="relative isolate overflow-hidden bg-ink-950"
+      /* -mt pulls the section up under the sticky header (h-4.5rem) so the
+         dark ground runs behind it. Without this a transparent header would
+         reveal the light body colour as a strip above the hero — worse than
+         the opaque bar it replaced. Top padding compensates so the copy still
+         clears the header. */
+      className="relative isolate -mt-[4.5rem] overflow-hidden bg-ink-950"
     >
       {/* Environment. A single low teal wash and the ledger motif, both very
           faint — on a dark ground the object is the focal point and ambient
@@ -71,7 +76,7 @@ export default function Hero() {
 
       <CursorRing containerRef={hostRef} />
 
-      <div className="container-page relative z-20 pb-24 pt-20 sm:pb-32 sm:pt-28 lg:min-h-[42rem] lg:py-36">
+      <div className="container-page relative z-20 pb-24 pt-[8.5rem] sm:pb-32 sm:pt-[10rem] lg:min-h-[46rem] lg:pb-36 lg:pt-[12.5rem]">
         <div className="max-w-2xl">
           <p className="file-tag mb-6 text-accent-400">
             Operations &amp; Compliance Support
@@ -81,6 +86,7 @@ export default function Hero() {
             as="h1"
             text="The back office UK firms trust to get it right, not just done."
             accent={["right"]}
+            accentClassName="text-accent-400"
             className="font-serif text-display-2xl text-on-dark"
           />
 
