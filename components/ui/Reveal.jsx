@@ -29,6 +29,11 @@ export default function Reveal({
   const ref = useRef(null);
 
   useEffect(() => {
+    // Tell the inline arming script in app/layout.jsx that hydration happened,
+    // so it leaves the `.js-reveal` gate in place. If this never runs, the
+    // script drops the gate and the content shows un-animated.
+    document.documentElement.setAttribute("data-reveal-ready", "");
+
     const el = ref.current;
     if (!el) return;
 
@@ -59,7 +64,7 @@ export default function Reveal({
     <Tag
       ref={ref}
       className={`reveal ${className}`}
-      style={delay ? { animationDelay: `${delay}ms` } : undefined}
+      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
       {...props}
     >
       {children}

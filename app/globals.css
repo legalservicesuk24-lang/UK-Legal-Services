@@ -60,13 +60,32 @@
      1. no JavaScript  -> the <noscript> block in app/layout.jsx unhides.
      2. reduced motion -> the media query below unhides.
    Both are unconditional, so content can never be stranded at opacity 0. */
-.reveal {
+/* Two deliberate choices here, both learned the hard way.
+
+   1. A transition, not a keyframe animation. A `@keyframes` block declared in
+      tailwind.config.js is only emitted when its matching `animate-*` utility
+      appears in the markup — referencing the name from hand-written CSS gets
+      it tree-shaken, the animation silently does nothing, and every element
+      stays at opacity 0. A transition has no such dependency.
+
+   2. The hidden state is gated behind `.js-reveal` on <html>, set by the
+      inline script in app/layout.jsx. "Hide, then let JavaScript reveal" fails
+      catastrophically if the JavaScript never arrives — whole sections render
+      blank. Gating it means the default is visible and hiding is opt-in, so a
+      blocked bundle, a script error, or a failed hydration all degrade to
+      un-animated content instead of no content. That script also removes the
+      gate if `Reveal` never reports in. */
+.js-reveal .reveal {
   opacity: 0;
   transform: translate3d(0, 1.25rem, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.reveal.is-visible {
-  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+.js-reveal .reveal.is-visible {
+  opacity: 1;
+  transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,12 +98,14 @@
     scroll-behavior: auto !important;
   }
 
-  /* Zeroing animation-duration alone would leave .reveal stuck at opacity 0,
-     since the entrance never runs. Reset the resting state explicitly. */
-  .reveal,
-  .reveal.is-visible {
+  /* Zeroing transition-duration alone would leave .reveal stuck at opacity 0,
+     since the entrance never plays. Reset the resting state explicitly.
+     Both selectors are repeated at full specificity so they outrank the
+     gated rules above. */
+  .js-reveal .reveal,
+  .js-reveal .reveal.is-visible {
     opacity: 1;
     transform: none;
-    animation: none;
+    transition: none;
   }
 }

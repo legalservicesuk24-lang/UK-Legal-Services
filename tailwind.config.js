@@ -167,13 +167,6 @@ module.exports = {
           "repeating-linear-gradient(to bottom, transparent, transparent 27px, rgb(225 231 234 / 0.6) 27px, rgb(225 231 234 / 0.6) 28px)",
       },
       keyframes: {
-        /* Scroll-reveal entrance. Transform + opacity only so it composites
-           on the GPU; `both` fill keeps the pre-animation state applied. */
-        "reveal-up": {
-          from: { opacity: "0", transform: "translate3d(0, 1.25rem, 0)" },
-          to: { opacity: "1", transform: "translate3d(0, 0, 0)" },
-        },
-
         /* Slow, organic drift for the hero's soft teal "aurora" shapes.
            Transform + opacity only, so it stays on the GPU compositor. */
         "drift-a": {
@@ -193,7 +186,6 @@ module.exports = {
         },
       },
       animation: {
-        "reveal-up": "reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
         "drift-a": "drift-a 24s ease-in-out infinite alternate",
         "drift-b": "drift-b 30s ease-in-out infinite alternate",
         "drift-c": "drift-c 38s ease-in-out infinite alternate",
