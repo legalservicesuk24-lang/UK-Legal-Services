@@ -22,7 +22,7 @@ export default function AboutIntro() {
             </p>
             <Link
               href="/about"
-              className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700 transition-colors hover:text-primary-800"
+              className="group mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700 transition-colors hover:text-primary-800"
             >
               More about how we work
               <svg

@@ -58,7 +58,7 @@ export default function Navbar() {
         <div className="hidden md:block">
           <Button
             onPress={() => router.push("/contact")}
-            className="rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white shadow-card transition-colors hover:bg-accent-400 hover:text-ink-900 pressed:bg-accent-500"
+            className="rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white shadow-card transition-colors hover:bg-accent-400 hover:text-ink-900 data-[pressed]:bg-accent-500"
           >
             Book a Consultation
           </Button>

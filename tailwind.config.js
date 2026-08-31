@@ -13,8 +13,12 @@ module.exports = {
            Secondary brand — Professional Teal #159A9C (primary-600)
            Accent / CTA    — Light Teal     #42C6C8  (primary-400 / accent-400)
            Page background — Soft White     #F7F9FA  (ink-50)
-           Main text       — Charcoal       #172B3A  (ink-800 / ink-700)
-           Secondary text  — Slate Grey     #667085  (ink-500 / ink-600)
+           Main text       — Charcoal       #172B3A  (ink-800)
+           Secondary text  — Slate Grey     #667085  (ink-500)
+
+           ink-500 → ink-800 steps in even ~10-point L* increments so the
+           four text weights (metadata / supporting / body / emphasis) are
+           actually distinguishable; every one clears WCAG AA on ink-50.
         --------------------------------------------------------------- */
 
         // Professional teal — icons, accents, borders, links, focus rings
@@ -61,10 +65,10 @@ module.exports = {
           200: "#E1E7EA", // subtle border
           300: "#CBD3D9", // input border / light text on navy
           400: "#98A2B3", // metadata / muted
-          500: "#667085", // slate grey — secondary text
-          600: "#667085", // slate grey — descriptions & supporting copy
-          700: "#172B3A", // charcoal — body copy
-          800: "#172B3A", // charcoal — default body text
+          500: "#667085", // slate grey — muted labels & metadata
+          600: "#4B586B", // descriptions & supporting copy
+          700: "#314152", // body copy on light surfaces
+          800: "#172B3A", // charcoal — default body text & emphasis
           900: "#0B1F33", // deep navy — headings, navbar, footer, dark sections
           950: "#081826", // deepest navy
         },
