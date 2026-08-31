@@ -1,50 +1,29 @@
 import Link from "next/link";
 
-const FOOTER_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
-  { label: "Our Services", href: "/services" },
-  { label: "Contact", href: "/contact" },
-];
-
 export default function Footer() {
   return (
     <footer className="bg-ink-900">
-      <div className="container-page flex flex-col gap-8 py-12 sm:flex-row sm:items-start sm:justify-between">
-        <div className="max-w-sm">
-          <Link href="/" className="flex items-center gap-2 font-display text-base font-semibold text-white">
-            <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-              <rect width="30" height="30" rx="8" className="fill-primary-500" />
-              <path
-                d="M8 15.5L13 20.5L22 9.5"
-                stroke="white"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Bench Strength
-          </Link>
-          <p className="mt-4 text-sm font-medium leading-relaxed text-ink-300">
-            Bench Strength — Minimize Costs. Maximize Reserves
-          </p>
-          <p className="mt-3 text-sm leading-relaxed text-ink-400">
-            Operations, compliance, and case administration support for UK
-            insolvency, legal, and advisory firms.
-          </p>
-        </div>
-
-        <nav aria-label="Footer" className="flex flex-wrap gap-x-8 gap-y-2">
-          {FOOTER_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm text-ink-400 transition-colors hover:text-white"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+      <div className="container-page py-12">
+        <Link
+          href="/"
+          className="flex w-fit items-center gap-2 font-display text-base font-semibold text-white"
+        >
+          <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+            <rect width="30" height="30" rx="8" className="fill-primary-500" />
+            <path
+              d="M8 15.5L13 20.5L22 9.5"
+              stroke="white"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Bench Strength
+        </Link>
+        <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-400">
+          Operations, compliance, and case administration support for UK
+          insolvency, legal, and advisory firms.
+        </p>
       </div>
 
       <div className="border-t border-ink-800">

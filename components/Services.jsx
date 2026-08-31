@@ -12,7 +12,7 @@ function ServiceCard({ service }) {
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
           {ICONS[service.icon]}
         </div>
-        <span className="file-tag pt-1.5">File / {service.ref}</span>
+        <span className="file-tag pt-1.5">Service / {service.ref}</span>
       </div>
 
       <h3 className="mt-6 font-display text-lg font-semibold text-ink-900">

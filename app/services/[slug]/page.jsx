@@ -60,7 +60,7 @@ export default async function ServiceDetailPage({ params }) {
                 {ICONS[service.icon]}
               </div>
               <div>
-                <p className="file-tag mb-4">File / {service.ref}</p>
+                <p className="file-tag mb-4">Service / {service.ref}</p>
                 <h1 className="text-3xl font-semibold leading-tight tracking-tight text-ink-900 sm:text-4xl lg:text-[2.75rem]">
                   {detail.title}
                 </h1>

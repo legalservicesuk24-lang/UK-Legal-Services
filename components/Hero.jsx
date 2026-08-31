@@ -83,8 +83,19 @@ export default function Hero() {
   const router = useRouter();
 
   return (
-    <section id="home" className="relative bg-ink-50">
-      <div className="container-page pt-20 pb-24 sm:pt-28 sm:pb-32">
+    <section id="home" className="relative overflow-hidden bg-ink-50">
+      {/* Ambient animated backdrop — slow-drifting teal light over faint ledger
+          lines. Decorative only; motion freezes under prefers-reduced-motion
+          (handled globally in globals.css). */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="animate-drift-a absolute -left-32 -top-40 h-[34rem] w-[34rem] rounded-full bg-primary-300/25 blur-3xl" />
+        <div className="animate-drift-b absolute -right-40 top-0 h-[30rem] w-[30rem] rounded-full bg-accent-300/20 blur-3xl" />
+        <div className="animate-drift-c absolute -bottom-56 left-1/4 h-[32rem] w-[32rem] rounded-full bg-primary-200/30 blur-3xl" />
+        <div className="absolute inset-0 bg-ledger-lines opacity-50" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-ink-50" />
+      </div>
+
+      <div className="container-page relative z-10 pt-20 pb-24 sm:pt-28 sm:pb-32">
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-12">
           <div>
             <p className="file-tag mb-5">Operations &amp; Compliance Support</p>

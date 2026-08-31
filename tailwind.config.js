@@ -103,6 +103,30 @@ module.exports = {
         "ledger-lines":
           "repeating-linear-gradient(to bottom, transparent, transparent 27px, rgb(225 231 234 / 0.6) 27px, rgb(225 231 234 / 0.6) 28px)",
       },
+      keyframes: {
+        /* Slow, organic drift for the hero's soft teal "aurora" shapes.
+           Transform + opacity only, so it stays on the GPU compositor. */
+        "drift-a": {
+          "0%": { transform: "translate3d(0, 0, 0) scale(1)" },
+          "50%": { transform: "translate3d(7%, -5%, 0) scale(1.18)" },
+          "100%": { transform: "translate3d(-5%, 4%, 0) scale(0.92)" },
+        },
+        "drift-b": {
+          "0%": { transform: "translate3d(0, 0, 0) scale(1.05)" },
+          "50%": { transform: "translate3d(-8%, 6%, 0) scale(0.9)" },
+          "100%": { transform: "translate3d(6%, -4%, 0) scale(1.12)" },
+        },
+        "drift-c": {
+          "0%": { transform: "translate3d(0, 0, 0) scale(0.95)" },
+          "50%": { transform: "translate3d(5%, 7%, 0) scale(1.1)" },
+          "100%": { transform: "translate3d(-6%, -5%, 0) scale(1)" },
+        },
+      },
+      animation: {
+        "drift-a": "drift-a 24s ease-in-out infinite alternate",
+        "drift-b": "drift-b 30s ease-in-out infinite alternate",
+        "drift-c": "drift-c 38s ease-in-out infinite alternate",
+      },
     },
   },
   plugins: [],

@@ -1,49 +1,23 @@
-const CHECK = (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    aria-hidden="true"
-    className="mt-0.5 flex-shrink-0 text-primary-500"
-  >
-    <path
-      d="M2.5 7.2L5.5 10L11.5 3.5"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
+import Image from "next/image";
 
 const PARTNERS = [
   {
     name: "Syed Ali Zar Naqvi",
-    initials: "SN",
-    role: "Founding Partner — Case Administration & Compliance",
+    image: "/alizar.jpg",
+    // Low-angle photo, small face high in frame — zoom in and pull the crop up
+    imageClass: "scale-150 object-[50%_68%]",
+    role: "Founding Partner",
     summary:
-      "Operations and compliance professional with 5+ years across insolvency, regulatory compliance, contract management, and CRM operations.",
-    points: [
-      "PIP1 qualification (Merit), accredited by MaPS",
-      "Grew from insolvency case administration into operations management",
-      "Senior compliance analyst — regulatory audits and due diligence",
-      "Ran live contract databases and CRM operations to KPI standards",
-    ],
-    leads: "Case administration, compliance, and contract lifecycle management.",
+      "Case Administration & Compliance, PIP1-qualified (Merit) accredited by the Money and Pensions Service (MaPS), five years in insolvency, compliance, and process improvement.",
   },
   {
     name: "Hamad Shah Hashmi",
-    initials: "HH",
-    role: "Founding Partner — Operations & Client Systems",
+    image: "/hamadshah.jpg",
+    // Tight headshot — anchor to the top so the hairline isn't clipped
+    imageClass: "scale-105 object-top",
+    role: "Founding Partner",
     summary:
-      "Operations specialist across insolvency casework, creditor liaison, and cross-agency disputes.",
-    points: [
-      "Cross-agency disputes with the DWP, HMRC, and HMLR",
-      "Led corporate operations managing CRM platforms and systems",
-      "Delivered a large-scale recruitment programme for a major public-sector body",
-    ],
-    leads: "Operations, CRM systems, and client process support.",
+      "Operations & Client Systems, Background in insolvency casework, creditor liaison, and CRM operations.",
   },
 ];
 
@@ -62,8 +36,14 @@ export default function FoundingPartners() {
               className="flex flex-col rounded-2xl border border-ink-200 bg-white p-8 shadow-card transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-primary-200 hover:shadow-card-hover sm:p-10"
             >
               <div className="flex items-center gap-4">
-                <span className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-ink-900 font-display text-base font-semibold tracking-wide text-white ring-4 ring-primary-100">
-                  {partner.initials}
+                <span className="relative block h-16 w-16 flex-shrink-0 overflow-hidden rounded-full ring-4 ring-primary-100">
+                  <Image
+                    src={partner.image}
+                    alt={partner.name}
+                    fill
+                    sizes="64px"
+                    className={`object-cover ${partner.imageClass}`}
+                  />
                 </span>
                 <div>
                   <h3 className="font-display text-lg font-semibold text-ink-900">
@@ -77,27 +57,6 @@ export default function FoundingPartners() {
 
               <p className="mt-6 text-sm leading-relaxed text-ink-600">
                 {partner.summary}
-              </p>
-
-              <ul className="mt-5 space-y-2.5 border-t border-ink-100 pt-5">
-                {partner.points.map((point) => (
-                  <li
-                    key={point}
-                    className="flex items-start gap-2.5 text-sm leading-relaxed text-ink-700"
-                  >
-                    {CHECK}
-                    {point}
-                  </li>
-                ))}
-              </ul>
-
-              <p className="mt-auto pt-6">
-                <span className="block rounded-xl bg-ink-50 px-4 py-3 text-sm leading-relaxed text-ink-700">
-                  <span className="font-semibold text-ink-900">
-                    At Bench Strength —{" "}
-                  </span>
-                  {partner.leads}
-                </span>
               </p>
             </article>
           ))}
