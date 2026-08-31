@@ -25,9 +25,11 @@ import { ExtrudeGeometry, MathUtils, Shape } from "three";
    Four settings here are load-bearing, and all four were wrong on the first
    pass — they are the difference between paper and grey slabs:
 
-     - `flat` on the Canvas. R3F defaults to ACESFilmicToneMapping, which maps
-       near-white paper down to a mid grey. NoToneMapping renders the authored
-       colour.
+     - Tone mapping. R3F defaults to ACESFilmicToneMapping, which maps
+       near-white paper down to a mid grey. Fixed twice over: `flat` on the
+       Canvas, and `toneMapped={false}` on the materials. The second matters
+       because `flat` is applied asynchronously via root.configure() and does
+       not reliably survive HMR — the material flag always wins.
      - `shadows="percentage"`. A bare `shadows` selects PCFSoftShadowMap, which
        three 0.185 has deprecated — it falls back to PCFShadowMap and warns
        every frame. "percentage" *is* PCFShadowMap. `shadow-radius` only ever
@@ -166,14 +168,29 @@ function Stack({ pointer }) {
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial color={PAPER} roughness={0.92} metalness={0} />
+          {/* `toneMapped={false}` belts-and-braces the Canvas `flat` prop.
+              `flat` is applied asynchronously by R3F's root.configure(), so it
+              can lose a race (and does not always survive HMR); this is a
+              property on the material itself, so paper renders as authored
+              regardless of the renderer's tone-mapping setting. */}
+          <meshStandardMaterial
+            color={PAPER}
+            roughness={0.92}
+            metalness={0}
+            toneMapped={false}
+          />
 
           {/* The active file's edge tab — the single teal accent in the scene,
               and the only thing marking a file as filed. */}
           {sheet.active && (
             <mesh position={[-(SHEET_W / 2) - 0.015, 0.44, 0.014]}>
               <boxGeometry args={[0.05, 0.6, 0.028]} />
-              <meshStandardMaterial color={TEAL} roughness={0.5} metalness={0} />
+              <meshStandardMaterial
+                color={TEAL}
+                roughness={0.5}
+                metalness={0}
+                toneMapped={false}
+              />
             </mesh>
           )}
         </mesh>
@@ -220,14 +237,14 @@ export default function CaseFileScene({ frameloop = "always" }) {
       >
         {/* Physical units since three r155: these are far lower than older
             scenes would use, and raising them blows the paper to pure white. */}
-        <ambientLight intensity={0.55} />
+        <ambientLight intensity={0.42} />
 
         {/* Single soft key from upper-left — one source is what reads as a
             photographed desk rather than a lit stage. Shadow frustum kept tight
             to the subject so the 1024 map isn't spent on empty space. */}
         <directionalLight
           position={[-3.4, 4.2, 4]}
-          intensity={1.05}
+          intensity={0.9}
           castShadow
           shadow-mapSize={[1024, 1024]}
           shadow-camera-near={0.5}
@@ -240,7 +257,7 @@ export default function CaseFileScene({ frameloop = "always" }) {
         />
         {/* A whisper of fill from the opposite side so the shadowed edge of
             each sheet doesn't go dead. */}
-        <directionalLight position={[3, -1.2, 2]} intensity={0.18} />
+        <directionalLight position={[3, -1.2, 2]} intensity={0.15} />
 
         <Stack pointer={pointer} />
       </Canvas>
