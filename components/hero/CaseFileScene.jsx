@@ -378,8 +378,15 @@ function Environment() {
   return <primitive object={texture} attach="environment" />;
 }
 
-export default function CaseFileScene({ frameloop = "always", fill = false }) {
-  const pointer = useRef({ x: 0, y: 0 });
+export default function CaseFileScene({
+  frameloop = "always",
+  fill = false,
+  /* Supplied by Hero, which tracks the pointer across the whole section. The
+     local fallback keeps the component usable on its own. */
+  pointerRef,
+}) {
+  const localPointer = useRef({ x: 0, y: 0 });
+  const pointer = pointerRef ?? localPointer;
 
   return (
     <div
@@ -389,12 +396,18 @@ export default function CaseFileScene({ frameloop = "always", fill = false }) {
           ? "absolute inset-0 h-full w-full"
           : "relative mx-auto aspect-[4/3.4] w-full max-w-md"
       }
-      onPointerMove={(e) => {
-        const box = e.currentTarget.getBoundingClientRect();
-        pointer.current.x = ((e.clientX - box.left) / box.width) * 2 - 1;
-        pointer.current.y = ((e.clientY - box.top) / box.height) * 2 - 1;
-      }}
-      onPointerLeave={() => {
+      /* Only bound when no external ref was supplied. In the hero the
+         wrapper is pointer-events-none, so these would never fire. */
+      onPointerMove={
+        pointerRef
+          ? undefined
+          : (e) => {
+              const box = e.currentTarget.getBoundingClientRect();
+              pointer.current.x = ((e.clientX - box.left) / box.width) * 2 - 1;
+              pointer.current.y = ((e.clientY - box.top) / box.height) * 2 - 1;
+            }
+      }
+      onPointerLeave={pointerRef ? undefined : () => {
         pointer.current.x = 0;
         pointer.current.y = 0;
       }}

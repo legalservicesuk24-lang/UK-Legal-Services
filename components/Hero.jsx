@@ -27,17 +27,37 @@ import TextReveal from "./ui/TextReveal";
 
 export default function Hero() {
   const hostRef = useRef(null);
+  /* Pointer position is tracked here, on the whole section, rather than inside
+     the scene. The canvas wrapper is `pointer-events-none` because it is
+     decorative, which meant the scene's own pointer handler never received a
+     single event and the parallax silently did nothing. Tracking at section
+     level also behaves better: moving the mouse anywhere across the hero
+     nudges the stack, instead of only when the pointer is over the canvas. */
+  const pointer = useRef({ x: 0, y: 0 });
+
+  const onPointerMove = (e) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    pointer.current.x = ((e.clientX - box.left) / box.width) * 2 - 1;
+    pointer.current.y = ((e.clientY - box.top) / box.height) * 2 - 1;
+  };
+
+  const onPointerLeave = () => {
+    pointer.current.x = 0;
+    pointer.current.y = 0;
+  };
 
   return (
     <section
       id="home"
       ref={hostRef}
-      /* -mt pulls the section up under the sticky header (h-4.5rem) so the
-         dark ground runs behind it. Without this a transparent header would
-         reveal the light body colour as a strip above the hero — worse than
-         the opaque bar it replaced. Top padding compensates so the copy still
-         clears the header. */
-      className="relative isolate -mt-[4.5rem] overflow-hidden bg-ink-950"
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      /* Pulls the section up under the sticky header so the dark ground runs
+         behind it — otherwise a transparent header reveals the light body
+         colour above the hero. The +1px matters: the header occupies 4.5rem of
+         content *plus* its 1px bottom border, so pulling up only 4.5rem left a
+         1px light line across the top of the page. */
+      className="relative isolate -mt-[calc(4.5rem_+_1px)] overflow-hidden bg-ink-950"
     >
       {/* Environment. A single low teal wash and the ledger motif, both very
           faint — on a dark ground the object is the focal point and ambient
@@ -64,7 +84,7 @@ export default function Hero() {
         aria-hidden
         className="pointer-events-none absolute inset-y-0 right-0 hidden w-[68%] lg:block"
       >
-        <CaseFileStack />
+        <CaseFileStack pointerRef={pointer} />
       </div>
 
       {/* Scrim: guarantees the copy's contrast regardless of what the canvas

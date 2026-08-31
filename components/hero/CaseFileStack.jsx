@@ -74,7 +74,7 @@ function supportsWebGL() {
   }
 }
 
-export default function CaseFileStack({ fill = true, dark = true }) {
+export default function CaseFileStack({ fill = true, dark = true, pointerRef }) {
   const hostRef = useRef(null);
   const [enabled, setEnabled] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -136,7 +136,11 @@ export default function CaseFileStack({ fill = true, dark = true }) {
     <div ref={hostRef} className={fill ? "relative h-full w-full" : "w-full"}>
       {enabled && !failed ? (
         <SceneBoundary onFail={() => setFailed(true)}>
-          <CaseFileScene frameloop={frameloop} fill={fill} />
+          <CaseFileScene
+            frameloop={frameloop}
+            fill={fill}
+            pointerRef={pointerRef}
+          />
         </SceneBoundary>
       ) : (
         <StackFallback dark={dark} fill={fill} />

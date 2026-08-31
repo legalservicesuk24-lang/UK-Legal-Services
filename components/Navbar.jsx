@@ -14,14 +14,21 @@ import { ButtonLink } from "./ui/Button";
    across the top of the dark hero and made the header read as a separate
    object sitting on the page rather than part of it.
 
-   Two states, because the pages genuinely differ:
+   Three states, because two were not enough:
 
-     - `onDark` (the homepage, which opens on the near-black hero): starts
-       transparent with light text, then swaps to the solid light treatment
-       once scrolled past the hero, where the sections underneath are light.
-     - default: solid light from the start, for /about, /services and /contact,
-       which have light backgrounds at the top and would otherwise get an
-       invisible header.
+     - `onDark`, at rest (homepage, opening on the near-black hero):
+       transparent, light text.
+     - `onDark`, scrolled but still over the hero: dark blurred background,
+       light text. This state exists because a purely transparent header lets
+       the headline scroll up behind it and collide with the nav links, while
+       switching straight to the light treatment would put a light bar back on
+       top of the dark section.
+     - past the hero, or any other page: light blurred background, dark text.
+       /about, /services and /contact are light at the top and would get an
+       invisible header otherwise.
+
+   The hero boundary is measured off the hero element rather than guessed from
+   a fraction of the viewport.
 
    Also adds a current-page indicator, which was missing entirely — the nav
    gave no feedback about where you were. And a scroll-progress rule along the
@@ -77,7 +84,13 @@ function Logo({ light }) {
 
 export default function Navbar({ onDark = false }) {
   const [isOpen, setIsOpen] = useState(false);
+  /* Three states, not two. A single transparent/solid flip at 70% of viewport
+     height meant the headline scrolled up *behind* a still-transparent header
+     and collided with the nav links. The header now goes solid as soon as
+     anything moves under it, but stays dark while it is over the hero so we
+     do not put a light bar back on top of the dark section. */
   const [scrolled, setScrolled] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -87,9 +100,16 @@ export default function Navbar({ onDark = false }) {
     const measure = () => {
       queued = false;
       const y = window.scrollY;
-      // Swap the treatment once the header has cleared most of the viewport
-      // height — i.e. once it is over the light sections rather than the hero.
-      setScrolled(y > window.innerHeight * 0.7);
+
+      // Solid almost immediately: anything else lets content collide with the
+      // nav while the background is still see-through.
+      setScrolled(y > 8);
+
+      // Measured off the hero itself rather than a guessed fraction of the
+      // viewport, so the light treatment starts exactly when the dark section
+      // has passed under the header.
+      const hero = document.getElementById("home");
+      setPastHero(hero ? hero.getBoundingClientRect().bottom <= 76 : true);
 
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
@@ -115,15 +135,21 @@ export default function Navbar({ onDark = false }) {
     };
   }, []);
 
-  // Light treatment applies while we're still over the dark hero. Opening the
-  // mobile panel forces the solid treatment, since the panel itself is solid.
-  const light = onDark && !scrolled && !isOpen;
+  /* `light` = light *text*, i.e. we are over the dark hero. `onHero` also
+     covers the scrolled-but-still-over-the-hero case, which takes a dark
+     blurred background rather than the light one.
+     Opening the mobile panel forces the light-background treatment, since the
+     panel itself is solid. */
+  const onHero = onDark && !pastHero && !isOpen;
+  const light = onHero;
 
   return (
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
-        light
-          ? "border-b border-white/10 bg-transparent"
+        onHero
+          ? scrolled
+            ? "border-b border-white/10 bg-ink-950/80 backdrop-blur"
+            : "border-b border-transparent bg-transparent"
           : "border-b border-subtle bg-surface/85 backdrop-blur"
       }`}
     >
