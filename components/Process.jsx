@@ -52,7 +52,7 @@ export default function Process() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <p className="file-tag mb-5">How it runs</p>
-            <h2 className="font-serif text-display-xl font-medium text-heading">
+            <h2 className="font-display text-display-xl font-bold text-heading">
               From first assessment to closure.
             </h2>
           </Reveal>

@@ -36,7 +36,7 @@ function FeaturedCard({ service }) {
         <span className="file-tag pt-2">Register / {service.ref}</span>
       </div>
 
-      <h3 className="mt-8 font-serif text-3xl font-medium leading-tight text-heading transition-colors group-hover:text-primary-700 sm:text-4xl">
+      <h3 className="mt-8 font-display text-3xl font-bold leading-tight text-heading transition-colors group-hover:text-primary-700 sm:text-4xl">
         {service.title}
       </h3>
       <p className="mt-4 text-base leading-relaxed text-subtle">
@@ -110,7 +110,7 @@ export default function ServicesOverview() {
         <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <Reveal className="max-w-2xl">
             <p className="file-tag mb-5">What we do</p>
-            <h2 className="font-serif text-display-xl font-medium text-heading">
+            <h2 className="font-display text-display-xl font-bold text-heading">
               Five registers. One accountable team.
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-muted">

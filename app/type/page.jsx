@@ -1,6 +1,7 @@
 import {
   Bricolage_Grotesque,
   DM_Serif_Display,
+  Figtree,
   Fraunces,
   Instrument_Serif,
   Newsreader,
@@ -49,11 +50,22 @@ const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
 });
 
+const figtree = Figtree({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+});
+
 const CANDIDATES = [
+  {
+    name: "Figtree",
+    font: figtree,
+    note: "Now live across the site. A single variable family covering 96px display and 12px labels — the same setup the Rezibase FE uses. Geometric and quiet; the trade against the serifs below is authority for neutrality.",
+    weight: 700,
+  },
   {
     name: "Instrument Serif",
     font: instrument,
-    note: "Current. High contrast, light, editorial. Elegant at size — the risk is that it reads delicate rather than authoritative for a compliance firm.",
+    note: "High contrast, light, editorial. Elegant at size — the risk is that it reads delicate rather than authoritative for a compliance firm.",
     weight: 400,
   },
   {

@@ -29,8 +29,10 @@ export default function TextReveal({
   stagger = 60,
   /* Caller decides, because the right accent depends on the ground: the
      `text-brand` token is tuned for light surfaces, and the hero is near-black
-     (where `text-accent-400` is the legible teal). */
-  accentClassName = "text-brand",
+     (where `text-accent-400` is the legible teal).
+     `not-italic` because <em> defaults to italic, which read as deliberate on
+     the serif but reads as a slanted sans now — colour alone carries it. */
+  accentClassName = "not-italic text-brand",
   ...props
 }) {
   const words = text.split(" ");
@@ -56,7 +58,7 @@ export default function TextReveal({
               style={{ animationDelay: `${delay + i * stagger}ms` }}
             >
               {accents.has(bare) ? (
-                <em className={`italic ${accentClassName}`}>{word}</em>
+                <em className={accentClassName}>{word}</em>
               ) : (
                 word
               )}

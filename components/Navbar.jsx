@@ -77,7 +77,7 @@ function Logo({ light }) {
         />
       </svg>
       {/* Serif wordmark, matching the display voice introduced on the page. */}
-      <span className="font-serif font-semibold">Bench Strength</span>
+      <span className="font-display font-bold">Bench Strength</span>
     </Link>
   );
 }
@@ -290,7 +290,7 @@ export default function Navbar({ onDark = false }) {
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="font-serif text-2xl font-medium">
+                <span className="font-display text-2xl font-semibold">
                   {link.label}
                 </span>
                 {active && (

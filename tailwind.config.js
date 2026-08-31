@@ -110,26 +110,12 @@ module.exports = {
         field: "#667085", // ink-500
       },
       fontFamily: {
-        display: [
-          "var(--font-display)",
-          "ui-sans-serif",
-          "system-ui",
-          "-apple-system",
-          "Segoe UI",
-          "sans-serif",
-        ],
-        body: [
-          "var(--font-body)",
-          "ui-sans-serif",
-          "system-ui",
-          "-apple-system",
-          "Segoe UI",
-          "sans-serif",
-        ],
-        // Display serif. Deliberately separate from `display` (Manrope), which
-        // still handles card titles and UI labels where a 400-weight serif
-        // would fall apart.
-        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
+        /* All three point at the same variable family. `display` and `body`
+           are kept as distinct names so component intent stays readable and a
+           future second family is a one-line change here rather than a grep. */
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        body: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       letterSpacing: {
@@ -148,15 +134,15 @@ module.exports = {
       fontSize: {
         "display-2xl": [
           "clamp(3rem, 6.4vw, 6rem)", // 48px -> 96px
-          { lineHeight: "1.0", letterSpacing: "-0.018em" },
+          { lineHeight: "1.02", letterSpacing: "-0.032em" },
         ],
         "display-xl": [
           "clamp(2.25rem, 4.4vw, 3.75rem)", // 36px -> 60px
-          { lineHeight: "1.06", letterSpacing: "-0.014em" },
+          { lineHeight: "1.07", letterSpacing: "-0.026em" },
         ],
         "display-lg": [
           "clamp(1.875rem, 3.2vw, 2.625rem)", // 30px -> 42px
-          { lineHeight: "1.12", letterSpacing: "-0.012em" },
+          { lineHeight: "1.13", letterSpacing: "-0.022em" },
         ],
         // The oversized proof numbers in the navy band.
         stat: [

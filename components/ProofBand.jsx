@@ -52,7 +52,7 @@ export default function ProofBand() {
           {/* ── Credential ───────────────────────────────────────────── */}
           <Reveal className="lg:col-span-5">
             <p className="file-tag mb-5">Qualified, not generic</p>
-            <h2 className="font-serif text-display-xl font-medium text-heading">
+            <h2 className="font-display text-display-xl font-bold text-heading">
               Qualified to know what they&apos;re looking at.
             </h2>
 

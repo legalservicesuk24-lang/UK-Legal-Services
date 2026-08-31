@@ -107,8 +107,8 @@ export default function Hero() {
             as="h1"
             text="The back office UK firms trust to get it right, not just done."
             accent={["right"]}
-            accentClassName="text-accent-400"
-            className="font-serif text-display-2xl font-medium text-on-dark"
+            accentClassName="not-italic text-accent-400"
+            className="font-display text-display-2xl font-bold text-on-dark"
           />
 
           <p className="mt-7 font-display text-lg font-semibold text-accent-400 sm:text-xl">

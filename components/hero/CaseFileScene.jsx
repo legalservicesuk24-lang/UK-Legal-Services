@@ -146,7 +146,10 @@ function useDocumentTexture() {
     // Heading
     c.fillStyle = INK;
     c.letterSpacing = "0px";
-    c.font = "600 44px ui-serif, Georgia, serif";
+    // System sans stack rather than the loaded webfont: canvas painting happens
+    // before/independently of font loading, so relying on Figtree here would
+    // race. At this size the difference is not readable anyway.
+    c.font = "700 42px ui-sans-serif, -apple-system, 'Segoe UI', sans-serif";
     c.fillText("Compliance", PAD, PAD + 96);
     c.fillText("Audit", PAD, PAD + 148);
 

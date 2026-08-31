@@ -94,7 +94,7 @@ export default function StackFallback({
             Case file / 04-118
           </p>
 
-          <p className="mt-3 font-serif text-xl font-medium leading-[1.15] text-ink-900">
+          <p className="mt-3 font-display text-xl font-semibold leading-[1.15] text-ink-900">
             Compliance
             <br />
             Audit
