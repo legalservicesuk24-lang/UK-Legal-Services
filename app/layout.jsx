@@ -1,4 +1,9 @@
-import { Inter, Manrope, IBM_Plex_Mono } from "next/font/google";
+import {
+  IBM_Plex_Mono,
+  Instrument_Serif,
+  Inter,
+  Manrope,
+} from "next/font/google";
 import "./globals.css";
 
 const body = Inter({
@@ -12,6 +17,20 @@ const display = Manrope({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
   variable: "--font-display",
+  display: "swap",
+});
+
+/* The editorial voice. A high-contrast serif is the one type choice that
+   reads as *authored* rather than templated, and for insolvency and legal
+   work it buys authority rather than spending it — the sector's own
+   documents are set in serif. Only used at display sizes: it ships a single
+   400 weight, which is correct for large headings and wrong for 14px UI
+   labels, so Manrope keeps that job. */
+const serif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -42,7 +61,7 @@ export default function RootLayout({ children }) {
          long smooth scroll to the top instead of jumping. This opts back into
          the old instant-scroll behaviour while keeping smooth in-page anchors. */
       data-scroll-behavior="smooth"
-      className={`${body.variable} ${display.variable} ${mono.variable}`}
+      className={`${body.variable} ${display.variable} ${serif.variable} ${mono.variable}`}
     >
       <body>
         <a

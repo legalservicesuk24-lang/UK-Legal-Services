@@ -2,7 +2,14 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { ExtrudeGeometry, MathUtils, Shape } from "three";
+import {
+  EquirectangularReflectionMapping,
+  ExtrudeGeometry,
+  MathUtils,
+  Shape,
+  SRGBColorSpace,
+  Texture,
+} from "three";
 
 /* ---------------------------------------------------------------------------
    CaseFileScene — five case files settling into a squared stack.
@@ -178,8 +185,11 @@ function Stack({ pointer }) {
               regardless of the renderer's tone-mapping setting. */}
           <meshStandardMaterial
             color={PAPER}
-            roughness={0.92}
+            roughness={0.86}
             metalness={0}
+            // Low but non-zero: enough for the environment gradient to vary
+            // across a sheet's face without ever looking like a reflection.
+            envMapIntensity={0.35}
             toneMapped={false}
           />
 
@@ -202,13 +212,58 @@ function Stack({ pointer }) {
   );
 }
 
-export default function CaseFileScene({ frameloop = "always" }) {
+/* A two-stop vertical gradient baked to a canvas and used as the environment
+   map. Paper is a diffuse material, so it takes almost nothing from an
+   environment — but "almost nothing" is the difference between flat shading and
+   a surface that varies across its face. Generated in code rather than loaded
+   as an HDR: no asset, no request, a few KB of canvas. */
+function useStudioEnvironment() {
+  return useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 16;
+    canvas.height = 64;
+    const ctx = canvas.getContext("2d");
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 64);
+    gradient.addColorStop(0, "#dfe9ea"); // soft sky above the subject
+    gradient.addColorStop(0.5, "#5d7275");
+    gradient.addColorStop(1, "#101c24"); // dark floor, matching the section
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 16, 64);
+
+    const texture = new Texture(canvas);
+    texture.mapping = EquirectangularReflectionMapping;
+    texture.colorSpace = SRGBColorSpace;
+    texture.needsUpdate = true;
+    return texture;
+  }, []);
+}
+
+function Environment() {
+  const texture = useStudioEnvironment();
+
+  /* `attach` is the declarative equivalent of `scene.environment = texture`,
+     and the reason to prefer it is not only style: assigning to a value
+     returned from useThree mutates a hook result, which the React Compiler
+     lint rules reject. R3F sets the property on mount and restores it on
+     unmount.
+
+     Deliberately not attached as `background` — the canvas has to stay
+     transparent so the section's own gradient and grain show through. */
+  return <primitive object={texture} attach="environment" />;
+}
+
+export default function CaseFileScene({ frameloop = "always", fill = false }) {
   const pointer = useRef({ x: 0, y: 0 });
 
   return (
     <div
       aria-hidden
-      className="relative mx-auto aspect-[4/3.4] w-full max-w-md"
+      className={
+        fill
+          ? "absolute inset-0 h-full w-full"
+          : "relative mx-auto aspect-[4/3.4] w-full max-w-md"
+      }
       onPointerMove={(e) => {
         const box = e.currentTarget.getBoundingClientRect();
         pointer.current.x = ((e.clientX - box.left) / box.width) * 2 - 1;
@@ -232,25 +287,29 @@ export default function CaseFileScene({ frameloop = "always" }) {
            which is what makes the stack read as photographed rather than
            rendered. At fov 22 and z 8.8 this frames ~3.4 units of height,
            against a ~2.2-unit subject. */
-        camera={{ position: [0, 0.1, 8.8], fov: 22 }}
+        /* Closer in fill mode: the whole point of the dark hero is that the
+           object gets to be big. 7.2 frames ~2.8 units against a ~2.2-unit
+           subject (~79% of frame height); 8.8 is the politer inline framing. */
+        camera={{ position: [0, 0.1, fill ? 7.2 : 8.8], fov: 22 }}
         // Past 1.5 we are paying for pixels nobody can see on matte paper.
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
       >
-        {/* These look high because three r155+ divides light contribution by
-            PI. Measured: ambient 1.45 + key 2.2 puts a lit face at sRGB ~253
-            (paper white) and the shadowed side at ~180 (believable paper
-            grey), which is the contrast that reads as a material rather than
-            a flat fill. */}
-        <ambientLight intensity={1.45} />
+        {/* Retuned for the dark section. On the old light ground a high
+            ambient was needed to keep the paper from looking dingy against
+            off-white; against near-black the opposite is true — the key does
+            the work and ambient only lifts the shadow side enough that it
+            still reads as paper. Lit face lands ~sRGB 250, shadow side ~120,
+            which is far more form than the flat 1.45/2.2 pairing gave. */}
+        <ambientLight intensity={0.55} />
 
         {/* Single soft key from upper-left — one source is what reads as a
             photographed desk rather than a lit stage. Shadow frustum kept tight
             to the subject so the 1024 map isn't spent on empty space. */}
         <directionalLight
           position={[-3.4, 4.2, 4]}
-          intensity={2.2}
+          intensity={2.9}
           castShadow
           shadow-mapSize={[1024, 1024]}
           shadow-camera-near={0.5}
@@ -263,7 +322,9 @@ export default function CaseFileScene({ frameloop = "always" }) {
         />
         {/* A whisper of fill from the opposite side so the shadowed edge of
             each sheet doesn't go dead. */}
-        <directionalLight position={[3, -1.2, 2]} intensity={0.45} />
+        <directionalLight position={[3, -1.2, 2]} intensity={0.5} />
+
+        <Environment />
 
         <Stack pointer={pointer} />
       </Canvas>

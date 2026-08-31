@@ -120,6 +120,10 @@ module.exports = {
           "Segoe UI",
           "sans-serif",
         ],
+        // Display serif. Deliberately separate from `display` (Manrope), which
+        // still handles card titles and UI labels where a 400-weight serif
+        // would fall apart.
+        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       letterSpacing: {
@@ -137,16 +141,16 @@ module.exports = {
       --------------------------------------------------------------- */
       fontSize: {
         "display-2xl": [
-          "clamp(2.75rem, 5.6vw, 5.25rem)", // 44px -> 84px
-          { lineHeight: "1.04", letterSpacing: "-0.032em" },
+          "clamp(3rem, 6.4vw, 6rem)", // 48px -> 96px
+          { lineHeight: "1.0", letterSpacing: "-0.018em" },
         ],
         "display-xl": [
-          "clamp(2.125rem, 4vw, 3.5rem)", // 34px -> 56px
-          { lineHeight: "1.08", letterSpacing: "-0.026em" },
+          "clamp(2.25rem, 4.4vw, 3.75rem)", // 36px -> 60px
+          { lineHeight: "1.06", letterSpacing: "-0.014em" },
         ],
         "display-lg": [
-          "clamp(1.875rem, 3vw, 2.5rem)", // 30px -> 40px
-          { lineHeight: "1.14", letterSpacing: "-0.022em" },
+          "clamp(1.875rem, 3.2vw, 2.625rem)", // 30px -> 42px
+          { lineHeight: "1.12", letterSpacing: "-0.012em" },
         ],
         // The oversized proof numbers in the navy band.
         stat: [
@@ -167,6 +171,19 @@ module.exports = {
           "repeating-linear-gradient(to bottom, transparent, transparent 27px, rgb(225 231 234 / 0.6) 27px, rgb(225 231 234 / 0.6) 28px)",
       },
       keyframes: {
+        /* Masked word reveal for display headlines — each word rides up from
+           behind a clipping parent, so it reads as type being set rather than
+           text fading in. */
+        "rise-in": {
+          from: { transform: "translate3d(0, 110%, 0) rotate(2deg)" },
+          to: { transform: "translate3d(0, 0, 0) rotate(0deg)" },
+        },
+        /* Register ticker. Translates exactly -50% across a duplicated track,
+           so the loop point is seamless. */
+        marquee: {
+          from: { transform: "translate3d(0, 0, 0)" },
+          to: { transform: "translate3d(-50%, 0, 0)" },
+        },
         /* Slow, organic drift for the hero's soft teal "aurora" shapes.
            Transform + opacity only, so it stays on the GPU compositor. */
         "drift-a": {
@@ -186,6 +203,8 @@ module.exports = {
         },
       },
       animation: {
+        "rise-in": "rise-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
+        marquee: "marquee 38s linear infinite",
         "drift-a": "drift-a 24s ease-in-out infinite alternate",
         "drift-b": "drift-b 30s ease-in-out infinite alternate",
         "drift-c": "drift-c 38s ease-in-out infinite alternate",

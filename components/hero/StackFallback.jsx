@@ -27,16 +27,26 @@ const SHEETS = [
   { x: 4, y: 4, rotate: 0.25, z: "z-[4]" },
 ];
 
-export default function StackFallback({ className = "" }) {
+export default function StackFallback({
+  className = "",
+  dark = false,
+  fill = false,
+}) {
   return (
     <div
       aria-hidden
-      className={`relative mx-auto aspect-[4/3.4] w-full max-w-md ${className}`}
+      className={
+        fill
+          ? `absolute inset-0 m-auto aspect-[4/3.4] max-h-full w-full max-w-xl ${className}`
+          : `relative mx-auto aspect-[4/3.4] w-full max-w-md ${className}`
+      }
     >
       {SHEETS.map((sheet, i) => (
         <div
           key={i}
-          className={`absolute inset-x-10 top-7 h-[76%] rounded-xl border border-ink-200/80 bg-white shadow-card ${sheet.z}`}
+          className={`absolute inset-x-10 top-7 h-[76%] rounded-xl bg-white ${
+            dark ? "border border-white/15 shadow-xl" : "border border-ink-200/80 shadow-card"
+          } ${sheet.z}`}
           style={{
             transform: `translate(${sheet.x}px, ${sheet.y}px) rotate(${sheet.rotate}deg)`,
           }}
@@ -46,7 +56,9 @@ export default function StackFallback({ className = "" }) {
       {/* The active file — squared, frontmost, teal-tabbed. Carries a few
           ruled lines so it reads as a document rather than a blank card. */}
       <div
-        className="absolute inset-x-10 top-7 z-[5] h-[76%] rounded-xl border border-ink-200 bg-white shadow-card-hover"
+        className={`absolute inset-x-10 top-7 z-[5] h-[76%] rounded-xl bg-white ${
+          dark ? "border border-white/20 shadow-2xl" : "border border-ink-200 shadow-card-hover"
+        }`}
         style={{ transform: "translate(8px, 8px) rotate(0.6deg)" }}
       >
         <span className="absolute -left-px top-9 h-16 w-[3px] rounded-r bg-primary-600" />
@@ -64,7 +76,11 @@ export default function StackFallback({ className = "" }) {
       </div>
 
       {/* Contact shadow under the stack, matching the scene's ShadowMaterial. */}
-      <div className="absolute inset-x-12 bottom-2 h-6 rounded-[50%] bg-ink-900/[0.09] blur-lg" />
+      <div
+        className={`absolute inset-x-12 bottom-2 h-6 rounded-[50%] blur-lg ${
+          dark ? "bg-black/50" : "bg-ink-900/[0.09]"
+        }`}
+      />
     </div>
   );
 }

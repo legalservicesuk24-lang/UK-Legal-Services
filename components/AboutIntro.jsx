@@ -7,7 +7,7 @@ export default function AboutIntro() {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-4">
             <p className="file-tag mb-5">About Bench Strength</p>
-            <h2 className="text-3xl font-semibold leading-tight tracking-tight text-ink-900 sm:text-4xl">
+            <h2 className="font-serif text-display-lg text-heading">
               Who we are
             </h2>
           </div>

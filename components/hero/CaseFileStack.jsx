@@ -35,7 +35,7 @@ import StackFallback from "./StackFallback";
 
 const CaseFileScene = dynamic(() => import("./CaseFileScene"), {
   ssr: false,
-  loading: () => <StackFallback />,
+  loading: () => <StackFallback dark fill />,
 });
 
 /* three + @react-three/fiber is ~228KB gzipped and does not shrink with
@@ -74,7 +74,7 @@ function supportsWebGL() {
   }
 }
 
-export default function CaseFileStack() {
+export default function CaseFileStack({ fill = true, dark = true }) {
   const hostRef = useRef(null);
   const [enabled, setEnabled] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -133,13 +133,13 @@ export default function CaseFileStack() {
   }, [enabled]);
 
   return (
-    <div ref={hostRef} className="w-full">
+    <div ref={hostRef} className={fill ? "relative h-full w-full" : "w-full"}>
       {enabled && !failed ? (
         <SceneBoundary onFail={() => setFailed(true)}>
-          <CaseFileScene frameloop={frameloop} />
+          <CaseFileScene frameloop={frameloop} fill={fill} />
         </SceneBoundary>
       ) : (
-        <StackFallback />
+        <StackFallback dark={dark} fill={fill} />
       )}
     </div>
   );

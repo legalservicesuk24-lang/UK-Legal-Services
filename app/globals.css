@@ -92,6 +92,29 @@
   transform: none;
 }
 
+/* Scroll-linked process track. `--progress` is written by ScrollTrack; the
+   default of 1 means "finished", so with no JavaScript or under reduced motion
+   the rule is fully drawn and every marker is lit — the correct resting state
+   rather than an empty track. Each step also gets a `--step` (0..1) marking
+   where along the section it sits, so it lights as the line passes it. */
+.scroll-track {
+  --progress: 1;
+}
+
+.scroll-track .track-rule::after {
+  transform: scaleX(clamp(0, (var(--progress) - var(--step)) * 4, 1));
+  transform-origin: left;
+  transition: transform 0.25s linear;
+}
+
+.scroll-track .track-marker {
+  opacity: clamp(0.25, (var(--progress) - var(--step)) * 8, 1);
+  transform: scale(clamp(0.6, (var(--progress) - var(--step)) * 8, 1));
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -110,5 +133,15 @@
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  /* Track resting state: fully drawn, all markers lit. */
+  .scroll-track .track-rule::after {
+    transform: scaleX(1);
+  }
+
+  .scroll-track .track-marker {
+    opacity: 1;
+    transform: none;
   }
 }
