@@ -1,7 +1,4 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { Button } from "react-aria-components";
+import { ButtonLink } from "./ui/Button";
 
 /* A clean, restrained summary panel — the professional equivalent of a
    "proof point" card. One accent color, real content, no decorative clutter. */
@@ -80,8 +77,6 @@ function SummaryPanel() {
 }
 
 export default function Hero() {
-  const router = useRouter();
-
   return (
     <section id="home" className="relative overflow-hidden bg-ink-50">
       {/* Ambient animated backdrop — slow-drifting teal light over faint ledger
@@ -114,18 +109,12 @@ export default function Hero() {
             </p>
 
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <Button
-                onPress={() => router.push("/contact")}
-                className="cursor-pointer rounded-lg bg-ink-900 px-6 py-3 text-sm font-semibold text-white shadow-card transition-all duration-200 hover:bg-accent-400 hover:text-ink-900 hover:shadow-card-hover data-[pressed]:bg-accent-500 data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2"
-              >
+              <ButtonLink href="/contact" lift>
                 Book a Consultation
-              </Button>
-              <Button
-                onPress={() => router.push("/services")}
-                className="cursor-pointer rounded-lg border border-ink-300 bg-white px-6 py-3 text-sm font-semibold text-ink-700 transition-all duration-200 hover:border-primary-300 hover:text-primary-700 data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2"
-              >
+              </ButtonLink>
+              <ButtonLink href="/services" variant="outlined">
                 Explore Services
-              </Button>
+              </ButtonLink>
             </div>
 
             <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-ink-500">

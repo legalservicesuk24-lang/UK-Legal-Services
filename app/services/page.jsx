@@ -17,7 +17,7 @@ export default function ServicesPage() {
   return (
     <>
       <Navbar />
-      <main>
+      <main id="main">
         <Services />
       </main>
       <Footer />

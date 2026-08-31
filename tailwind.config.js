@@ -73,6 +73,36 @@ module.exports = {
           950: "#081826", // deepest navy
         },
       },
+
+      /* ---------------------------------------------------------------
+         SEMANTIC ALIASES
+         Components should reach for these, not raw ramp steps, so a
+         palette change is a one-line edit here instead of a grep across
+         every file. Ramp steps stay available for one-off cases.
+         Contrast figures are measured against `surface` (#F7F9FA).
+      --------------------------------------------------------------- */
+      textColor: {
+        heading: "#0B1F33", // ink-900  — 15.81:1
+        body: "#172B3A", // ink-800  — 13.78:1
+        muted: "#314152", // ink-700  —  9.90:1
+        subtle: "#4B586B", // ink-600  —  6.84:1
+        faint: "#667085", // ink-500  —  4.71:1  (AA floor; don't go lighter)
+        brand: "#159A9C", // primary-600
+        "on-dark": "#F7F9FA", // ink-50 on navy — 15.81:1
+      },
+      backgroundColor: {
+        surface: "#F7F9FA", // ink-50  — page ground
+        raised: "#FFFFFF", // card / panel
+        sunken: "#EDF1F3", // ink-100 — inset wells
+        inverse: "#0B1F33", // ink-900 — full-bleed dark sections
+      },
+      borderColor: {
+        hairline: "#EDF1F3", // ink-100 — dividers inside a card
+        subtle: "#E1E7EA", // ink-200 — card edges
+        // Interactive field border. #CBD3D9 is 1.43:1 on surface and fails
+        // WCAG 1.4.11 (needs 3:1); ink-500 clears it at 4.71:1.
+        field: "#667085", // ink-500
+      },
       fontFamily: {
         display: [
           "var(--font-display)",
@@ -133,5 +163,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-react-aria-components")],
 };

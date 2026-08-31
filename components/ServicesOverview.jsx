@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SERVICES } from "../app/services/servicesData";
 import { ICONS } from "./serviceIcons";
+import { ButtonLink } from "./ui/Button";
 
 const ARROW = (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -50,13 +51,10 @@ export default function ServicesOverview() {
         </div>
 
         <div className="mt-12 text-center">
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 rounded-lg bg-ink-900 px-6 py-3 text-sm font-semibold text-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-400 hover:text-ink-900 hover:shadow-card-hover"
-          >
+          <ButtonLink href="/services" lift>
             View all services
             {ARROW}
-          </Link>
+          </ButtonLink>
         </div>
       </div>
     </section>

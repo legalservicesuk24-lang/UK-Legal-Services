@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "react-aria-components";
+
+import { ButtonLink } from "./ui/Button";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -35,7 +36,6 @@ function Logo() {
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink-200 bg-ink-50/90 backdrop-blur">
@@ -56,12 +56,9 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden md:block">
-          <Button
-            onPress={() => router.push("/contact")}
-            className="rounded-lg bg-ink-900 px-4 py-2 text-sm font-semibold text-white shadow-card transition-colors hover:bg-accent-400 hover:text-ink-900 data-[pressed]:bg-accent-500"
-          >
+          <ButtonLink href="/contact" size="sm" className="shadow-card">
             Book a Consultation
-          </Button>
+          </ButtonLink>
         </div>
 
         {/* Mobile toggle */}
@@ -108,15 +105,15 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Button
-            onPress={() => {
-              setIsOpen(false);
-              router.push("/contact");
-            }}
-            className="mt-2 rounded-lg bg-ink-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-400 hover:text-ink-900"
+          <ButtonLink
+            href="/contact"
+            onClick={() => setIsOpen(false)}
+            size="sm"
+            fullWidth
+            className="mt-2"
           >
             Book a Consultation
-          </Button>
+          </ButtonLink>
         </nav>
       </div>
     </header>

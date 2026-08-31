@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Form, TextField, TextArea, Label, Input, Button, FieldError } from "react-aria-components";
+import { Form, TextField, TextArea, Label, Input, FieldError } from "react-aria-components";
+
+import { Button } from "./ui/Button";
 
 export default function Contact() {
   const [status, setStatus] = useState("idle"); // idle | sending | sent
@@ -13,12 +15,15 @@ export default function Contact() {
     // TODO: wire this to a real backend when ready — e.g. an API route at
     // /app/api/contact/route.js that sends the data via Resend/Nodemailer.
     // For now this simulates a submission so the UX is complete end-to-end.
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    // Capture the form node now: `e.currentTarget` is nulled once the event
+    // finishes dispatching, so reading it inside the timeout would throw.
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
     console.log("Contact form submission:", data);
 
     setTimeout(() => {
       setStatus("sent");
-      e.currentTarget.reset();
+      form.reset();
     }, 600);
   }
 
@@ -102,7 +107,8 @@ export default function Contact() {
                 <Button
                   type="submit"
                   isDisabled={status === "sending"}
-                  className="w-full cursor-pointer rounded-lg bg-ink-900 px-6 py-3 text-sm font-semibold text-white shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-400 hover:text-ink-900 hover:shadow-card-hover data-[pressed]:translate-y-0 data-[pressed]:bg-accent-500 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60 data-[focus-visible]:ring-2 data-[focus-visible]:ring-primary-400 data-[focus-visible]:ring-offset-2 sm:w-auto"
+                  lift
+                  className="w-full sm:w-auto"
                 >
                   {status === "sending" ? "Sending…" : "Send Message"}
                 </Button>

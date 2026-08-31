@@ -35,7 +35,7 @@ export default async function ServiceDetailPage({ params }) {
     <>
       <Navbar />
 
-      <main>
+      <main id="main">
         {/* Header — mirrors the homepage hero surface for visual continuity */}
         <section className="relative border-b border-ink-200 bg-ink-50">
           <div className="container-page pt-14 pb-16 sm:pt-20 sm:pb-20">
