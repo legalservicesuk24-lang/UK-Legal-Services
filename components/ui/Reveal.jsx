@@ -5,18 +5,22 @@ import { useEffect, useRef } from "react";
 /* ---------------------------------------------------------------------------
    Reveal — fades content up as it scrolls into view.
 
-   The hidden resting state is CSS (`.reveal` in globals.css), not React state,
-   so the server-rendered markup is already correct and nothing shifts at
-   hydration. This component's only job is to add `.is-visible` at the right
-   moment, via a ref rather than state — a re-render per element would be a lot
-   of churn for a class toggle.
+   The important property is that the server renders everything visible. This
+   component only ever *adds* a hidden state, and only to elements sitting
+   entirely below the fold, where nobody can see them become invisible. So:
 
-   Content is never permanently hidden: globals.css unhides `.reveal` under
-   `prefers-reduced-motion`, and a <noscript> block in app/layout.jsx unhides
-   it when JavaScript is unavailable.
+     - no JavaScript, blocked bundle, or failed hydration -> readable page
+     - reduced motion                                     -> readable page
+     - above-the-fold content                             -> never hidden
 
-   `delay` staggers siblings. Keep it small — a list where the last item
-   arrives a second late reads as slow, not as choreographed.
+   An earlier version hid everything in CSS and relied on JS to reveal it,
+   which blanked whole sections the moment anything went wrong, and then needed
+   a pre-paint script mutating <html> — which caused a className hydration
+   mismatch. Arming from the client instead removes both problems and drops a
+   <script> from the page.
+
+   `delay` staggers siblings. Keep it small — a list whose last item arrives a
+   second late reads as slow, not as choreographed.
 --------------------------------------------------------------------------- */
 
 export default function Reveal({
@@ -29,20 +33,18 @@ export default function Reveal({
   const ref = useRef(null);
 
   useEffect(() => {
-    // Tell the inline arming script in app/layout.jsx that hydration happened,
-    // so it leaves the `.js-reveal` gate in place. If this never runs, the
-    // script drops the gate and the content shows un-animated.
-    document.documentElement.setAttribute("data-reveal-ready", "");
-
     const el = ref.current;
     if (!el) return;
 
-    // Nothing to observe if the user has asked for less motion — globals.css
-    // has already reset the resting state, so bail out entirely.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // Anything already on screen at mount (the hero, above-the-fold content)
-    // should just appear rather than animate in after the fact.
+    // Only arm what cannot currently be seen. An element already on screen —
+    // or even partly above the fold — stays exactly as rendered rather than
+    // blinking out and fading back in.
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
+
+    el.classList.add("is-armed");
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -51,7 +53,7 @@ export default function Reveal({
           observer.unobserve(entry.target);
         }
       },
-      // Fire slightly before the element is fully in view, so the animation
+      // Fire slightly before the element is fully in view, so the transition
       // is finishing as it reaches a comfortable reading position.
       { rootMargin: "0px 0px -12% 0px", threshold: 0.01 },
     );

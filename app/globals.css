@@ -60,22 +60,26 @@
      1. no JavaScript  -> the <noscript> block in app/layout.jsx unhides.
      2. reduced motion -> the media query below unhides.
    Both are unconditional, so content can never be stranded at opacity 0. */
-/* Two deliberate choices here, both learned the hard way.
+/* Scroll-reveal. Three iterations of this got it wrong, so the reasoning is
+   worth keeping.
 
    1. A transition, not a keyframe animation. A `@keyframes` block declared in
       tailwind.config.js is only emitted when its matching `animate-*` utility
       appears in the markup — referencing the name from hand-written CSS gets
       it tree-shaken, the animation silently does nothing, and every element
-      stays at opacity 0. A transition has no such dependency.
+      stays at opacity 0.
 
-   2. The hidden state is gated behind `.js-reveal` on <html>, set by the
-      inline script in app/layout.jsx. "Hide, then let JavaScript reveal" fails
-      catastrophically if the JavaScript never arrives — whole sections render
-      blank. Gating it means the default is visible and hiding is opt-in, so a
-      blocked bundle, a script error, or a failed hydration all degrade to
-      un-animated content instead of no content. That script also removes the
-      gate if `Reveal` never reports in. */
-.js-reveal .reveal {
+   2. Nothing is hidden by default. The server renders these fully visible, so
+      no JavaScript, a blocked bundle, or a failed hydration all leave a
+      perfectly readable page. There is no gate to get stuck in the wrong
+      state and nothing for a pre-paint script to arrange.
+
+   3. `Reveal` adds `.is-armed` on mount, and only to elements sitting entirely
+      below the fold — where becoming invisible cannot be seen. Anything
+      already on screen is left alone, so above-the-fold content is never
+      hidden even briefly, and there is no pre-hydration script mutating
+      <html> (which is what caused a className hydration mismatch). */
+.reveal.is-armed {
   opacity: 0;
   transform: translate3d(0, 1.25rem, 0);
   transition:
@@ -83,7 +87,7 @@
     transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.js-reveal .reveal.is-visible {
+.reveal.is-armed.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -98,12 +102,11 @@
     scroll-behavior: auto !important;
   }
 
-  /* Zeroing transition-duration alone would leave .reveal stuck at opacity 0,
-     since the entrance never plays. Reset the resting state explicitly.
-     Both selectors are repeated at full specificity so they outrank the
-     gated rules above. */
-  .js-reveal .reveal,
-  .js-reveal .reveal.is-visible {
+  /* Reveal skips arming under reduced motion, so this is belt-and-braces for
+     a preference that changes after mount. Full specificity so it outranks
+     the rules above. */
+  .reveal.is-armed,
+  .reveal.is-armed.is-visible {
     opacity: 1;
     transform: none;
     transition: none;
