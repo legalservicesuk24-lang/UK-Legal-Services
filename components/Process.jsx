@@ -23,23 +23,23 @@ import ScrollTrack from "./ui/ScrollTrack";
 const STEPS = [
   {
     ref: "01",
-    title: "Scope",
-    body: "Agreed in writing before anything opens: what sits with us, what stays with you.",
+    title: "Scope & Alignment",
+    body: "Defined in writing before anything opens: establishing parameters, objectives, and responsibilities for what sits with us and what stays with your team.",
   },
   {
     ref: "02",
-    title: "Assessment",
-    body: "Financial assessments, asset verification, statutory documentation.",
+    title: "Execution & Integration",
+    body: "Systematic handling of your files, audits, databases, or workflows, managed through rigorous tracking and standardized documentation.",
   },
   {
     ref: "03",
-    title: "Progression",
-    body: "Case administration and creditor liaison, tracked with clear escalation paths.",
+    title: "Progression & Review",
+    body: "Ongoing administration, data cleanup, or compliance monitoring handled with clear escalation paths and regular milestone tracking.",
   },
   {
     ref: "04",
-    title: "Audit & closure",
-    body: "Audited against its regulatory requirements, reported on, closed.",
+    title: "Sign-off & Handover",
+    body: "Audited against all regulatory or internal requirements, fully reported on, and delivered ready for final approval.",
   },
 ];
 

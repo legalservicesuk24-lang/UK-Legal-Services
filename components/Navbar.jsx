@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "react-aria-components";
 
 import { ButtonLink } from "./ui/Button";
+import { SERVICES } from "../app/services/servicesData";
 
 /* ---------------------------------------------------------------------------
    Navbar — transparent over a dark hero, solid once you scroll off it.
@@ -37,14 +38,46 @@ import { ButtonLink } from "./ui/Button";
 
    Progress is written to a CSS custom property inside rAF, so scrolling does
    not re-render this component; only the boolean state flip does.
+
+   The "Our Services" link carries a dropdown of every service page, so the
+   individual registers are reachable in one move from anywhere on the site
+   rather than only via the /services index.
 --------------------------------------------------------------------------- */
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
-  { label: "Our Services", href: "/services" },
+  { label: "Our Services", href: "/services", menu: true },
   { label: "Contact", href: "/contact" },
 ];
+
+/* Built from the single service registry, so a new service page appears in the
+   nav automatically. */
+const SERVICE_LINKS = SERVICES.map((s) => ({
+  label: s.title,
+  href: `/services/${s.slug}`,
+}));
+
+function Chevron({ open }) {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden="true"
+      className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+    >
+      <path
+        d="M2.5 4.5L6 8L9.5 4.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function Logo({ light }) {
   return (
@@ -91,6 +124,11 @@ export default function Navbar({ onDark = false }) {
      do not put a light bar back on top of the dark section. */
   const [scrolled, setScrolled] = useState(false);
   const [pastHero, setPastHero] = useState(false);
+  /* Desktop "Our Services" dropdown. Opens on hover for pointer users and on
+     click/Enter for keyboard and touch; closes on Escape, on a click outside,
+     and whenever the route changes. */
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const servicesRef = useRef(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -135,6 +173,31 @@ export default function Navbar({ onDark = false }) {
     };
   }, []);
 
+  /* No "close on route change" effect is needed: each page mounts its own
+     <Navbar>, so navigating remounts this component and both menus reset. The
+     link onClick handlers below also close them for same-page cases. */
+
+  // Escape closes the services dropdown; a click outside it does too.
+  useEffect(() => {
+    if (!servicesOpen) return;
+
+    const onKey = (e) => {
+      if (e.key === "Escape") setServicesOpen(false);
+    };
+    const onClick = (e) => {
+      if (servicesRef.current && !servicesRef.current.contains(e.target)) {
+        setServicesOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onClick);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onClick);
+    };
+  }, [servicesOpen]);
+
   /* `light` = light *text*, i.e. we are over the dark hero. `onHero` also
      covers the scrolled-but-still-over-the-hero case, which takes a dark
      blurred background rather than the light one.
@@ -142,6 +205,14 @@ export default function Navbar({ onDark = false }) {
      treatment — the header can stay dark and the two read as one surface. */
   const onHero = onDark && !pastHero;
   const light = onHero;
+
+  const linkClass = (active) =>
+    `relative rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+      light ? "text-ink-300 hover:text-on-dark" : "text-muted hover:text-brand"
+    } ${active ? (light ? "text-on-dark" : "text-brand") : ""}`;
+
+  const isActive = (href) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <header
@@ -161,20 +232,98 @@ export default function Navbar({ onDark = false }) {
           className="hidden md:flex md:items-center md:gap-1"
         >
           {NAV_LINKS.map((link) => {
-            const active =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
+            const active = isActive(link.href);
+
+            if (link.menu) {
+              return (
+                <div
+                  key={link.href}
+                  ref={servicesRef}
+                  className="relative"
+                  onMouseEnter={() => setServicesOpen(true)}
+                  onMouseLeave={() => setServicesOpen(false)}
+                >
+                  <span className="flex items-center">
+                    <Link
+                      href={link.href}
+                      aria-current={active ? "page" : undefined}
+                      className={`${linkClass(active)} pr-1`}
+                    >
+                      {link.label}
+                      {active && (
+                        <span
+                          aria-hidden
+                          className={`absolute inset-x-3 -bottom-0.5 h-px ${
+                            light ? "bg-accent-400" : "bg-primary-600"
+                          }`}
+                        />
+                      )}
+                    </Link>
+                    <button
+                      type="button"
+                      aria-label="Toggle services menu"
+                      aria-expanded={servicesOpen}
+                      aria-controls="services-menu"
+                      onClick={() => setServicesOpen((v) => !v)}
+                      className={`-ml-1 rounded-md p-1 transition-colors ${
+                        light
+                          ? "text-ink-300 hover:text-on-dark"
+                          : "text-muted hover:text-brand"
+                      }`}
+                    >
+                      <Chevron open={servicesOpen} />
+                    </button>
+                  </span>
+
+                  {/* pt-2 wrapper keeps a hover bridge between trigger and card
+                      so the pointer never crosses a dead gap. */}
+                  <div
+                    id="services-menu"
+                    hidden={!servicesOpen}
+                    className="absolute left-0 top-full z-50 pt-2"
+                  >
+                    <ul className="w-72 overflow-hidden rounded-xl border border-subtle bg-surface p-1.5 shadow-card-hover">
+                      {SERVICE_LINKS.map((s) => {
+                        const sActive = pathname === s.href;
+                        return (
+                          <li key={s.href}>
+                            <Link
+                              href={s.href}
+                              aria-current={sActive ? "page" : undefined}
+                              onClick={() => setServicesOpen(false)}
+                              className={`block rounded-lg px-3 py-2 text-sm transition-colors ${
+                                sActive
+                                  ? "bg-primary-50 text-brand"
+                                  : "text-muted hover:bg-sunken hover:text-brand"
+                              }`}
+                            >
+                              {s.label}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                      <li className="mt-1 border-t border-hairline pt-1">
+                        <Link
+                          href="/services"
+                          onClick={() => setServicesOpen(false)}
+                          className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-brand transition-colors hover:bg-sunken"
+                        >
+                          View all services
+                          <span aria-hidden>&rarr;</span>
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  light
-                    ? "text-ink-300 hover:text-on-dark"
-                    : "text-muted hover:text-brand"
-                } ${active ? (light ? "text-on-dark" : "text-brand") : ""}`}
+                className={linkClass(active)}
               >
                 {link.label}
                 {/* Current-page rule. Sized to the label rather than the
@@ -256,52 +405,90 @@ export default function Navbar({ onDark = false }) {
       >
         <nav aria-label="Mobile primary" className="container-page py-2">
           {NAV_LINKS.map((link, i) => {
-            const active =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
+            const active = isActive(link.href);
             return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={active ? "page" : undefined}
-                onClick={() => setIsOpen(false)}
-                className={`group flex items-baseline gap-4 py-4 transition-colors last:border-0 ${
-                  light ? "border-b border-white/10" : "border-b border-hairline"
-                } ${
-                  active
-                    ? light
-                      ? "text-accent-400"
-                      : "text-brand"
-                    : light
-                      ? "text-on-dark"
-                      : "text-heading"
-                }`}
-              >
-                <span
-                  aria-hidden
-                  className={`font-mono text-[10px] font-semibold tracking-[0.16em] ${
+              <div key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  onClick={() => setIsOpen(false)}
+                  className={`group flex items-baseline gap-4 py-4 transition-colors ${
+                    light ? "border-b border-white/10" : "border-b border-hairline"
+                  } ${
                     active
                       ? light
                         ? "text-accent-400"
                         : "text-brand"
-                      : "text-ink-500"
+                      : light
+                        ? "text-on-dark"
+                        : "text-heading"
                   }`}
                 >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="font-display text-2xl font-semibold">
-                  {link.label}
-                </span>
-                {active && (
                   <span
                     aria-hidden
-                    className={`ml-auto self-center h-1.5 w-1.5 rounded-full ${
-                      light ? "bg-accent-400" : "bg-primary-600"
+                    className={`font-mono text-[10px] font-semibold tracking-[0.16em] ${
+                      active
+                        ? light
+                          ? "text-accent-400"
+                          : "text-brand"
+                        : "text-ink-500"
                     }`}
-                  />
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-display text-2xl font-semibold">
+                    {link.label}
+                  </span>
+                  {active && (
+                    <span
+                      aria-hidden
+                      className={`ml-auto self-center h-1.5 w-1.5 rounded-full ${
+                        light ? "bg-accent-400" : "bg-primary-600"
+                      }`}
+                    />
+                  )}
+                </Link>
+
+                {/* Service pages listed inline under "Our Services" so they are
+                    reachable directly from the mobile menu. */}
+                {link.menu && (
+                  <ul
+                    className={`flex flex-col ${
+                      light ? "border-b border-white/10" : "border-b border-hairline"
+                    }`}
+                  >
+                    {SERVICE_LINKS.map((s) => {
+                      const sActive = pathname === s.href;
+                      return (
+                        <li key={s.href}>
+                          <Link
+                            href={s.href}
+                            aria-current={sActive ? "page" : undefined}
+                            onClick={() => setIsOpen(false)}
+                            className={`flex items-center gap-3 py-2.5 pl-9 text-sm transition-colors ${
+                              sActive
+                                ? light
+                                  ? "text-accent-400"
+                                  : "text-brand"
+                                : light
+                                  ? "text-ink-300"
+                                  : "text-muted"
+                            }`}
+                          >
+                            <span
+                              aria-hidden
+                              className={`h-1 w-1 flex-shrink-0 rounded-full ${
+                                light ? "bg-accent-400/70" : "bg-primary-600/70"
+                              }`}
+                            />
+                            {s.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 )}
-              </Link>
+              </div>
             );
           })}
 
@@ -315,14 +502,14 @@ export default function Navbar({ onDark = false }) {
               Book a Consultation
             </ButtonLink>
             <a
-              href="mailto:hello@benchstrength.uk"
+              href="mailto:info@benchstrength.uk"
               className={`py-1 text-center text-sm transition-colors ${
                 light
                   ? "text-ink-400 hover:text-accent-400"
                   : "text-subtle hover:text-brand"
               }`}
             >
-              hello@benchstrength.uk
+              info@benchstrength.uk
             </a>
           </div>
         </nav>

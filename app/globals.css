@@ -115,6 +115,14 @@
     transform 0.3s ease-out;
 }
 
+/* Register ticker. Kept running for everyone — the strip reads as dead when
+   frozen. Hovering the bar pauses it, which is the "stop the motion" affordance
+   WCAG 2.2.2 asks for. */
+.register-marquee:hover .register-marquee__track,
+.register-marquee:focus-within .register-marquee__track {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -123,6 +131,22 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Opt the ticker back out of the blanket freeze above. Slower here than the
+     38s default, so it stays gentle for a viewer who asked for less motion. */
+  .register-marquee__track {
+    animation-duration: 60s !important;
+    animation-iteration-count: infinite !important;
+  }
+
+  /* Keep the hero's floating card labels drifting. It's a ~9px bob on a handful
+     of small tags — well short of the scrolling/parallax motion 2.2.2 targets —
+     and the card reads as inert without it. Held to one slow cycle; the inline
+     per-tag animation-delay still staggers them out of lockstep. */
+  .animate-float {
+    animation-duration: 7s !important;
+    animation-iteration-count: infinite !important;
   }
 
   /* Reveal skips arming under reduced motion, so this is belt-and-braces for

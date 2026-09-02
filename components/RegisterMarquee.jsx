@@ -1,7 +1,7 @@
 import { SERVICES } from "../app/services/servicesData";
 
 /* ---------------------------------------------------------------------------
-   RegisterMarquee — a slow ticker of the five register names, sitting between
+   RegisterMarquee — a slow ticker of the six register names, sitting between
    the dark hero and the light page below it as a transition band.
 
    A marquee is unashamedly a gimmick, but it is a defensible one here: the
@@ -14,10 +14,10 @@ import { SERVICES } from "../app/services/servicesData";
 
      - The track is duplicated, and the second copy is `aria-hidden`, so the
        list is announced once rather than twice.
-     - It runs on `animate-marquee`, so `prefers-reduced-motion` freezes it via
-       the global rule in globals.css — WCAG 2.2.2 asks for a way to stop
-       motion that runs longer than five seconds, and honouring the OS
-       preference is the mechanism that scales.
+     - The strip is kept running deliberately (see the `.register-marquee`
+       rules in globals.css, which re-enable it under `prefers-reduced-motion`).
+       WCAG 2.2.2 asks for a way to stop motion that runs longer than five
+       seconds — hovering the bar pauses it, via `animation-play-state`.
 
    `animate-marquee` is referenced as a utility class on purpose: that is what
    makes Tailwind emit the @keyframes.
@@ -53,7 +53,7 @@ export default function RegisterMarquee() {
   return (
     <section
       aria-label="Service registers"
-      className="relative overflow-hidden border-y border-white/10 bg-ink-950 py-3.5"
+      className="register-marquee relative overflow-hidden border-y border-white/10 bg-ink-950 py-3.5"
     >
       {/* Fade the ends so names enter and leave rather than being cut off. */}
       <div
@@ -68,7 +68,7 @@ export default function RegisterMarquee() {
       {/* The track is exactly two copies wide and translates -50%, so the loop
           point lands where the second copy's first item sits under the first
           copy's — seamless. */}
-      <div className="animate-marquee flex w-max">
+      <div className="register-marquee__track animate-marquee flex w-max">
         <Track />
         <Track hidden />
       </div>

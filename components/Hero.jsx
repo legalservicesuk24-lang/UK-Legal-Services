@@ -2,25 +2,21 @@
 
 import { useRef } from "react";
 
-import CaseFileStack from "./hero/CaseFileStack";
-import StackFallback from "./hero/StackFallback";
+import OperationsCard from "./hero/OperationsCard";
 import { ButtonLink } from "./ui/Button";
 import Pill from "./ui/Pill";
 import CursorRing from "./ui/CursorRing";
 import TextReveal from "./ui/TextReveal";
 
 /* ---------------------------------------------------------------------------
-   Hero — full-bleed dark, with the case-file stack as the subject.
+   Hero — full-bleed dark, with the copy carrying the weight and a compact
+   operations card alongside it.
 
-   This is the Hubtown play: one confident object in a dark environment, given
-   room. The previous light hero put a ~450px object politely in a column on an
-   off-white ground, and scale plus environment turned out to be most of the
-   perceived impact — the object itself barely changed.
-
-   The stack now spans the full section behind the copy on large screens rather
-   than sitting beside it, which is what lets it be big. Copy sits in the left
-   half with a gradient scrim behind it so text contrast never depends on what
-   the canvas happens to be rendering underneath.
+   The earlier version put a large WebGL case-file stack behind the copy. That
+   has been replaced by OperationsCard: a smaller supporting graphic that
+   sketches how an engagement runs, ringed by the service names. It is CSS
+   only, so there is no lazy WebGL bundle, no error boundary, and no reduced-
+   motion carve-out beyond the global one.
 
    Client component only because CursorRing needs a ref to this element. The
    headline itself is server-rendered markup with a CSS animation — no JS.
@@ -28,31 +24,11 @@ import TextReveal from "./ui/TextReveal";
 
 export default function Hero() {
   const hostRef = useRef(null);
-  /* Pointer position is tracked here, on the whole section, rather than inside
-     the scene. The canvas wrapper is `pointer-events-none` because it is
-     decorative, which meant the scene's own pointer handler never received a
-     single event and the parallax silently did nothing. Tracking at section
-     level also behaves better: moving the mouse anywhere across the hero
-     nudges the stack, instead of only when the pointer is over the canvas. */
-  const pointer = useRef({ x: 0, y: 0 });
-
-  const onPointerMove = (e) => {
-    const box = e.currentTarget.getBoundingClientRect();
-    pointer.current.x = ((e.clientX - box.left) / box.width) * 2 - 1;
-    pointer.current.y = ((e.clientY - box.top) / box.height) * 2 - 1;
-  };
-
-  const onPointerLeave = () => {
-    pointer.current.x = 0;
-    pointer.current.y = 0;
-  };
 
   return (
     <section
       id="home"
       ref={hostRef}
-      onPointerMove={onPointerMove}
-      onPointerLeave={onPointerLeave}
       /* Pulls the section up under the sticky header so the dark ground runs
          behind it — otherwise a transparent header reveals the light body
          colour above the hero. The +1px matters: the header occupies 4.5rem of
@@ -78,18 +54,18 @@ export default function Hero() {
         />
       </div>
 
-      {/* The object. Behind the copy and full-height from lg up, so it can be
-          large; stacked underneath on small screens where overlaying text on a
-          canvas would be a contrast problem. */}
+      {/* The supporting card, sitting in the right half from lg up. Above the
+          scrim (z-10) so its floating tags stay legible; the copy is z-20 and
+          keeps priority where they meet. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 hidden w-[68%] lg:block"
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-[54%] items-center justify-center px-6 lg:flex xl:w-[48%] xl:px-10"
       >
-        <CaseFileStack pointerRef={pointer} />
+        <OperationsCard />
       </div>
 
-      {/* Scrim: guarantees the copy's contrast regardless of what the canvas
-          renders behind it. Left-to-right so the object stays readable. */}
+      {/* Scrim: guarantees the copy's contrast regardless of what sits behind
+          it. Left-to-right so the card stays readable. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-ink-950 via-ink-950/85 to-transparent lg:block"
@@ -144,25 +120,12 @@ export default function Hero() {
               Explore Services
             </ButtonLink>
           </div>
-
-          <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-ink-400">
-            <span className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-400" />
-              PIP-certified case support
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-400" />
-              Audit-ready documentation
-            </span>
-          </div>
         </div>
 
-        {/* Small screens get the CSS stack in flow, not a second CaseFileStack.
-            Below 768px `sceneIsWorthIt` declines WebGL anyway, so mounting the
-            full wrapper here would only ever resolve to this same fallback —
-            while risking a second canvas in the md..lg band. */}
-        <div className="mt-16 lg:hidden">
-          <StackFallback dark />
+        {/* Small screens get the card in flow, below the copy. Extra vertical
+            margin leaves room for the tags that float above and below it. */}
+        <div className="mb-16 mt-28 lg:hidden">
+          <OperationsCard />
         </div>
       </div>
     </section>

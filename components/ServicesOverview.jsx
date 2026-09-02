@@ -18,8 +18,8 @@ const ARROW = (
 );
 
 /* The first register is the flagship — it's the one the PIP1 qualification
-   backs — so it gets a card with real weight instead of being one of five
-   identical tiles. Equal visual weight across five cards gives the eye
+   backs — so it gets a card with real weight instead of being one of six
+   identical tiles. Equal visual weight across six cards gives the eye
    nowhere to land, which was a large part of why the page read as flat. */
 const [featured, ...rest] = SERVICES;
 
@@ -111,7 +111,7 @@ export default function ServicesOverview() {
           <Reveal className="max-w-2xl">
             <p className="file-tag mb-5">What we do</p>
             <h2 className="font-display text-display-xl font-bold text-heading">
-              Five registers. One accountable team.
+              Six registers. One accountable team.
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-muted">
               Each one runs as its own tracked file, from first assessment to
@@ -127,8 +127,8 @@ export default function ServicesOverview() {
           </Reveal>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
-          <Reveal className="flex lg:row-span-2 [&>*]:w-full">
+        <div className="mt-14 grid grid-cols-1 gap-5 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-3">
+          <Reveal className="flex lg:col-span-2 lg:row-span-2 [&>*]:w-full">
             <FeaturedCard service={featured} />
           </Reveal>
 

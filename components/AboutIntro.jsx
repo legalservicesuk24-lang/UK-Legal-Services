@@ -1,5 +1,26 @@
 import Link from "next/link";
 
+import CountUp from "./ui/CountUp";
+
+/* The two headline metrics moved here from the former "Qualified, not generic"
+   band — kept as compact proof cards alongside the intro rather than carrying
+   a full section of their own. */
+const METRICS = [
+  {
+    value: 100,
+    suffix: "%",
+    label: "Audit pass rate",
+    note: "Across every compliance file we've submitted.",
+  },
+  {
+    prefix: "<",
+    value: 24,
+    suffix: " hrs",
+    label: "Average response time",
+    note: "From first contact to a scoped, practical answer.",
+  },
+];
+
 export default function AboutIntro() {
   return (
     <section id="about" className="border-t border-ink-200 bg-white">
@@ -41,6 +62,31 @@ export default function AboutIntro() {
                 />
               </svg>
             </Link>
+
+            <dl className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {METRICS.map((metric) => (
+                <div
+                  key={metric.label}
+                  className="rounded-xl border border-subtle bg-surface p-5 sm:p-6"
+                >
+                  <dd className="font-display text-3xl font-semibold text-heading sm:text-4xl">
+                    <CountUp
+                      to={metric.value}
+                      prefix={metric.prefix ?? ""}
+                    />
+                    <span className="ml-0.5 text-[0.5em] font-semibold text-brand">
+                      {metric.suffix}
+                    </span>
+                  </dd>
+                  <dt className="mt-2 text-sm font-semibold text-brand">
+                    {metric.label}
+                  </dt>
+                  <p className="mt-1 text-xs leading-relaxed text-subtle">
+                    {metric.note}
+                  </p>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </div>

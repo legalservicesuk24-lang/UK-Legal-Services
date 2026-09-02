@@ -6,25 +6,45 @@ import { Form, TextField, TextArea, Label, Input, FieldError } from "react-aria-
 import { Button } from "./ui/Button";
 
 export default function Contact() {
-  const [status, setStatus] = useState("idle"); // idle | sending | sent
+  const [status, setStatus] = useState("idle"); // idle | sending | sent | error
+  const [errorMsg, setErrorMsg] = useState("");
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setStatus("sending");
 
-    // TODO: wire this to a real backend when ready — e.g. an API route at
-    // /app/api/contact/route.js that sends the data via Resend/Nodemailer.
-    // For now this simulates a submission so the UX is complete end-to-end.
     // Capture the form node now: `e.currentTarget` is nulled once the event
-    // finishes dispatching, so reading it inside the timeout would throw.
+    // finishes dispatching, so reading it after an await would throw.
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form));
-    console.log("Contact form submission:", data);
 
-    setTimeout(() => {
-      setStatus("sent");
+    setStatus("sending");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setErrorMsg(
+          body.error ||
+            "Something went wrong sending your message. Please try again, or email info@benchstrength.uk.",
+        );
+        setStatus("error");
+        return;
+      }
+
       form.reset();
-    }, 600);
+      setStatus("sent");
+    } catch {
+      setErrorMsg(
+        "Couldn't reach the server. Please check your connection and try again, or email info@benchstrength.uk.",
+      );
+      setStatus("error");
+    }
   }
 
   return (
@@ -47,8 +67,8 @@ export default function Contact() {
                 <rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
               </svg>
             </span>
-            <a href="mailto:hello@benchstrength.uk" className="transition-colors hover:text-primary-700">
-              hello@benchstrength.uk
+            <a href="mailto:info@benchstrength.uk" className="transition-colors hover:text-primary-700">
+              info@benchstrength.uk
             </a>
           </div>
         </div>
@@ -75,6 +95,15 @@ export default function Contact() {
             </div>
           ) : (
             <Form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 text-left sm:grid-cols-2">
+              {status === "error" && (
+                <p
+                  role="alert"
+                  className="sm:col-span-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                >
+                  {errorMsg}
+                </p>
+              )}
+
               <TextField name="name" isRequired className="flex flex-col gap-1.5 sm:col-span-1">
                 <Label className="text-sm font-medium text-ink-700">Name</Label>
                 <Input
@@ -102,6 +131,14 @@ export default function Contact() {
                 />
                 <FieldError className="text-xs text-red-600" />
               </TextField>
+
+              {/* Honeypot — hidden from users, catches naive bots. */}
+              <div aria-hidden className="hidden">
+                <label>
+                  Company
+                  <input name="company" type="text" tabIndex={-1} autoComplete="off" />
+                </label>
+              </div>
 
               <div className="sm:col-span-2">
                 <Button
