@@ -3,13 +3,19 @@ import Image from "next/image";
 const PARTNERS = [
   {
     name: "Syed Ali Zar Naqvi",
-    image: "/alizar.jpg",
-    // Low-angle photo, small face high in frame — zoom in and pull the crop up
-    imageClass: "scale-150 object-[50%_68%]",
+    image: "/alizarr.jpeg",
+    // Studio headshot, face in the upper-middle — anchor to the top and zoom
+    // in so the face fills the circle rather than the suit and shoulders.
+    imageClass: "scale-150 object-top",
     role: "Founder",
     summary:
       "Case Administration & Compliance. PIP1-qualified (Merit), accredited by the Money and Pensions Service (MaPS), with five years in insolvency, compliance, and process improvement.",
     engagements: [
+      {
+        client: "Intuitive Legal",
+        detail:
+          "Compliance Analyst overseeing legal audits, due diligence, and risk compliance across business energy, financial misselling, and housing disrepair claims.",
+      },
       {
         client: "Anchorage Chambers",
         detail:
