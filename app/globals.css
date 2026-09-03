@@ -140,15 +140,6 @@
     animation-iteration-count: infinite !important;
   }
 
-  /* Keep the hero's floating card labels drifting. It's a ~9px bob on a handful
-     of small tags — well short of the scrolling/parallax motion 2.2.2 targets —
-     and the card reads as inert without it. Held to one slow cycle; the inline
-     per-tag animation-delay still staggers them out of lockstep. */
-  .animate-float {
-    animation-duration: 7s !important;
-    animation-iteration-count: infinite !important;
-  }
-
   /* Reveal skips arming under reduced motion, so this is belt-and-braces for
      a preference that changes after mount. Full specificity so it outranks
      the rules above. */

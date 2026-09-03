@@ -193,13 +193,6 @@ module.exports = {
           "50%": { transform: "translate3d(5%, 7%, 0) scale(1.1)" },
           "100%": { transform: "translate3d(-6%, -5%, 0) scale(1)" },
         },
-        /* Gentle bob for the hero's floating service tags. Transform only, so
-           it stays on the compositor; the global reduced-motion rule freezes
-           it. Per-tag variation comes from inline animation-delay/-duration. */
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-9px)" },
-        },
       },
       animation: {
         "rise-in": "rise-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
@@ -207,7 +200,6 @@ module.exports = {
         "drift-a": "drift-a 24s ease-in-out infinite alternate",
         "drift-b": "drift-b 30s ease-in-out infinite alternate",
         "drift-c": "drift-c 38s ease-in-out infinite alternate",
-        float: "float 6s ease-in-out infinite",
       },
     },
   },
