@@ -1,25 +1,27 @@
 /* ---------------------------------------------------------------------------
    POST /api/contact — delivers a contact-form submission by email.
 
-   Delivery goes through Web3Forms (https://web3forms.com) via its REST API.
-   Web3Forms needs no account: you enter the destination inbox on their site
-   and they email back an access key. The key is what decides where mail is
-   delivered, so the recipient address lives with the key, not in this file
-   (it was set to info@benchstrength.uk when the key was generated).
+   Delivery goes straight through GoDaddy Workspace Email's own SMTP server
+   (smtpout.secureserver.net) via nodemailer, logging in as the mailbox that
+   receives the enquiries. There's no third-party delivery service and no
+   public API key: the previous approach (Web3Forms) turned out to reject
+   server-side submissions on its free tier — it only accepts calls made
+   directly from a browser — so a Next.js API route could never use it
+   without a paid plan.
 
-     WEB3FORMS_ACCESS_KEY — required. Set it in `.env.local` for development
-                            and in the host's env for production (see
-                            `.env.example`).
+     SMTP_USER — required. The mailbox's full address (info@benchstrength.uk).
+     SMTP_PASS — required. That mailbox's password.
 
-   With no key configured the route returns 503 and the form shows an
+   Both live in `.env.local` for development and in the host's env for
+   production (see `.env.example`). Neither is ever sent to the client.
+
+   With no credentials configured the route returns 503 and the form shows an
    "email us instead" message rather than pretending the mail was sent.
-
-   Swapping providers (Resend / Postmark / Nodemailer + SMTP) is a change to
-   `deliver()` alone — the validation and response contract around it stay
-   the same.
 --------------------------------------------------------------------------- */
 
-const ENDPOINT = "https://api.web3forms.com/submit";
+import nodemailer from "nodemailer";
+
+const RECIPIENT = "info@benchstrength.uk";
 
 // Deliberately loose — just enough to reject an obvious non-address. Real
 // validation is "did the reply land", which no regex can tell you.
@@ -35,50 +37,56 @@ function clean(value, max) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
-async function deliver({ name, email, message }) {
-  const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
-  if (!accessKey) return { ok: false, status: 503, error: "not_configured" };
+// Escaped once, used in both the HTML body and reused nowhere else — no
+// templating library needed for four interpolated fields.
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
-  let res;
-  try {
-    res = await fetch(ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        access_key: accessKey,
-        subject: `New enquiry from ${name}`,
-        from_name: "Bench Strength website",
-        name,
-        email,
-        // So a reply in the inbox goes straight back to the sender.
-        replyto: email,
-        message: `${message}\n\n— sent from the benchstrength.uk contact form`,
-      }),
+let transporter = null;
+function getTransporter() {
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  if (!user || !pass) return null;
+
+  // Built once and reused across requests (nodemailer pools connections
+  // internally), rather than logging in to GoDaddy's SMTP server fresh on
+  // every submission.
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: "smtpout.secureserver.net",
+      port: 465,
+      secure: true,
+      auth: { user, pass },
     });
-  } catch {
-    // Network error reaching Web3Forms.
-    return { ok: false, status: 502, error: "send_failed" };
   }
+  return transporter;
+}
 
-  // Web3Forms answers 200 + { success: true } on delivery, and a 4xx +
-  // { success: false, message } for a bad or disabled key.
-  let data = null;
+async function deliver({ name, email, message }) {
+  const smtp = getTransporter();
+  if (!smtp) return { ok: false, status: 503, error: "not_configured" };
+
   try {
-    data = await res.json();
-  } catch {
-    /* fall through to the check below */
-  }
-
-  if (!res.ok || !data?.success) {
-    return {
-      ok: false,
-      status: 502,
-      error: "send_failed",
-      detail: data?.message || `HTTP ${res.status}`,
-    };
+    await smtp.sendMail({
+      from: `"Bench Strength website" <${process.env.SMTP_USER}>`,
+      to: RECIPIENT,
+      // So a reply in the inbox goes straight back to the sender.
+      replyTo: `"${name}" <${email}>`,
+      subject: `New enquiry from ${name}`,
+      text: `${message}\n\n— sent from the benchstrength.uk contact form\nFrom: ${name} <${email}>`,
+      html: `
+        <p><strong>${escapeHtml(name)}</strong> (${escapeHtml(email)}) sent this via the benchstrength.uk contact form:</p>
+        <p>${escapeHtml(message).replace(/\n/g, "<br>")}</p>
+      `,
+    });
+  } catch (err) {
+    console.error("[/api/contact] SMTP send failed:", err?.message || err);
+    return { ok: false, status: 502, error: "send_failed" };
   }
 
   return { ok: true, status: 200 };
@@ -112,7 +120,7 @@ export async function POST(request) {
   if (!result.ok) {
     if (result.error === "not_configured") {
       console.error(
-        "[/api/contact] WEB3FORMS_ACCESS_KEY is not set — cannot send mail.",
+        "[/api/contact] SMTP_USER / SMTP_PASS are not set — cannot send mail.",
       );
       return json(
         {
@@ -122,10 +130,6 @@ export async function POST(request) {
         503,
       );
     }
-    console.error(
-      "[/api/contact] delivery failed:",
-      result.detail || result.error,
-    );
     return json(
       {
         error:
