@@ -6,7 +6,7 @@ const PARTNERS = [
     image: "/alizarr.jpeg",
     // Studio headshot, face in the upper-middle — anchor to the top and zoom
     // in so the face fills the circle rather than the suit and shoulders.
-    imageClass: "scale-150 object-top",
+    imageClass: "scale-[1.85] object-top",
     role: "Founder",
     summary:
       "Case Administration & Compliance. PIP1-qualified (Merit), accredited by the Money and Pensions Service (MaPS), with five years in insolvency, compliance, and process improvement.",
@@ -76,7 +76,8 @@ export default function FoundingPartners() {
                     src={partner.image}
                     alt={partner.name}
                     fill
-                    sizes="64px"
+                    sizes="128px"
+                    quality={90}
                     className={`object-cover ${partner.imageClass}`}
                   />
                 </span>
