@@ -66,26 +66,34 @@ export default function StackFallback({
       {SHEETS.map((sheet, i) => (
         <div
           key={i}
-          className={`absolute inset-x-6 top-4 bottom-6 rounded-xl bg-white ${
+          className={`absolute inset-x-6 top-4 bottom-6 animate-sheet-settle rounded-xl bg-white ${
             dark
               ? "border border-white/15 shadow-xl"
               : "border border-ink-200/80 shadow-card"
           } ${sheet.z}`}
           style={{
-            transform: `translate(${sheet.x}px, ${sheet.y}px) rotate(${sheet.rotate}deg)`,
+            "--to-x": `${sheet.x}px`,
+            "--to-y": `${sheet.y}px`,
+            "--to-rot": `${sheet.rotate}deg`,
+            animationDelay: `${i * 70}ms`,
           }}
         />
       ))}
 
       {/* The active file — squared, frontmost, teal-tabbed, and carrying the
-          page itself. */}
+          page itself. Settles last, on top of the rest. */}
       <div
-        className={`absolute inset-x-6 top-4 bottom-6 z-[5] overflow-hidden rounded-xl bg-white ${
+        className={`absolute inset-x-6 top-4 bottom-6 z-[5] animate-sheet-settle overflow-hidden rounded-xl bg-white ${
           dark
             ? "border border-white/20 shadow-2xl"
             : "border border-ink-200 shadow-card-hover"
         }`}
-        style={{ transform: "translate(8px, 8px) rotate(0.6deg)" }}
+        style={{
+          "--to-x": "8px",
+          "--to-y": "8px",
+          "--to-rot": "0.6deg",
+          animationDelay: `${SHEETS.length * 70}ms`,
+        }}
       >
         <span className="absolute -left-px top-10 h-14 w-[3px] rounded-r bg-primary-600" />
 
