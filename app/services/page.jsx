@@ -4,9 +4,9 @@ import Services from "../../components/Services";
 import { pageMetadata } from "../../lib/metadata";
 
 export const metadata = pageMetadata({
-  title: "Services — Bench Strength — Minimize Costs. Maximize Reserves",
+  title: "Services",
   description:
-    "Six tracked registers — personal insolvency case support, legal & compliance auditing, contract lifecycle admin, CRM data management, operations & process support, and end-to-end software development.",
+    "Six specialist registers for UK firms: insolvency case support, compliance auditing, contract and CRM admin, operations support and software development.",
   path: "/services",
 });
 

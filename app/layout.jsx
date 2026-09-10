@@ -26,7 +26,11 @@ const mono = IBM_Plex_Mono({
   display: "swap",
 });
 
-const TITLE = "Bench Strength — Minimize Costs. Maximize Reserves";
+/* Home <title>. Descriptive and keyword-led — the slogan lives in the hero,
+   not the tab. `template` appends the brand to every child page's own title
+   ("About" -> "About | Bench Strength") without each page restating it. */
+const DEFAULT_TITLE =
+  "Bench Strength — Insolvency & Compliance Support for UK Firms";
 const DESCRIPTION =
   "Practical, done-right insolvency case support, legal compliance auditing, and back-office admin for UK firms.";
 
@@ -35,7 +39,10 @@ export const metadata = {
      `openGraph.url: "/"` and `alternates.canonical` emit absolute URLs and the
      build no longer falls back to localhost. */
   metadataBase: new URL(SITE_URL),
-  title: TITLE,
+  title: {
+    default: DEFAULT_TITLE,
+    template: `%s | ${SITE_NAME}`,
+  },
   description: DESCRIPTION,
   alternates: {
     canonical: "/",
@@ -45,12 +52,12 @@ export const metadata = {
     url: "/",
     siteName: SITE_NAME,
     locale: "en_GB",
-    title: TITLE,
+    title: DEFAULT_TITLE,
     description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: TITLE,
+    title: DEFAULT_TITLE,
     description: DESCRIPTION,
   },
 };

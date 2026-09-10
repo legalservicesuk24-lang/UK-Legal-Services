@@ -25,9 +25,9 @@ export default function StatsBand() {
           {/* Column 1 — section title */}
           <div className="flex flex-col justify-center">
             <p className="file-tag !text-accent-400">Track record</p>
-            <p className="mt-3 font-display text-2xl font-semibold leading-tight text-white">
+            <h2 className="mt-3 font-display text-2xl font-semibold leading-tight text-white">
               Measured, not claimed.
-            </p>
+            </h2>
           </div>
 
           {/* Columns 2–4 — metrics */}

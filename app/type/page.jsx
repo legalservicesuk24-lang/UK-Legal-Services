@@ -20,7 +20,7 @@ import {
 --------------------------------------------------------------------------- */
 
 export const metadata = {
-  title: "Typeface comparison — Bench Strength",
+  title: { absolute: "Typeface comparison — Bench Strength" },
   robots: { index: false, follow: false },
 };
 

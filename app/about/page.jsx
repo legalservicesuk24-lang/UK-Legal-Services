@@ -10,9 +10,9 @@ import FoundingPartners from "../../components/FoundingPartners";
 import { pageMetadata } from "../../lib/metadata";
 
 export const metadata = pageMetadata({
-  title: "About — Bench Strength — Minimize Costs. Maximize Reserves",
+  title: "About",
   description:
-    "Specialist case administration, compliance, and operations capacity — on demand, without the overhead of a permanent hire.",
+    "Specialist case administration, compliance and operations capacity for UK insolvency and legal firms — on demand, without the overhead of a permanent hire.",
   path: "/about",
 });
 

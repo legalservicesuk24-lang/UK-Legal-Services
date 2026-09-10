@@ -4,7 +4,7 @@ import Contact from "../../components/Contact";
 import { pageMetadata } from "../../lib/metadata";
 
 export const metadata = pageMetadata({
-  title: "Contact — Bench Strength — Minimize Costs. Maximize Reserves",
+  title: "Contact",
   description:
     "Scope your next case file with Bench Strength. Tell us what your team needs covered and we'll come back with a clear, practical plan.",
   path: "/contact",

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }) {
   if (!service) return {};
 
   return pageMetadata({
-    title: `${service.detail.title} — Bench Strength`,
+    title: service.detail.title,
     description: service.summary,
     path: `/services/${service.slug}`,
   });
