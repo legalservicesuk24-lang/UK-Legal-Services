@@ -4,7 +4,10 @@ import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import { ButtonLink } from "../../../components/ui/Button";
 import { ICONS } from "../../../components/serviceIcons";
+import JsonLd from "../../../components/JsonLd";
 import { SERVICES, getService } from "../servicesData";
+import { pageMetadata } from "../../../lib/metadata";
+import { SITE_URL, SITE_NAME } from "../../../lib/site";
 
 export function generateStaticParams() {
   return SERVICES.map((service) => ({ slug: service.slug }));
@@ -15,13 +18,11 @@ export async function generateMetadata({ params }) {
   const service = getService(slug);
   if (!service) return {};
 
-  const title = `${service.detail.title} — Bench Strength`;
-  const description = service.summary;
-  return {
-    title,
-    description,
-    openGraph: { title, description },
-  };
+  return pageMetadata({
+    title: `${service.detail.title} — Bench Strength`,
+    description: service.summary,
+    path: `/services/${service.slug}`,
+  });
 }
 
 export default async function ServiceDetailPage({ params }) {
@@ -32,8 +33,42 @@ export default async function ServiceDetailPage({ params }) {
   const { detail } = service;
   const otherServices = SERVICES.filter((s) => s.slug !== service.slug);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        name: detail.title,
+        description: detail.overview,
+        serviceType: service.title,
+        url: `${SITE_URL}/services/${service.slug}`,
+        provider: { "@id": `${SITE_URL}/#organization` },
+        areaServed: { "@type": "Country", name: "United Kingdom" },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: SITE_NAME, item: SITE_URL },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Services",
+            item: `${SITE_URL}/services`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: detail.title,
+            item: `${SITE_URL}/services/${service.slug}`,
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       <Navbar />
 
       <main id="main">

@@ -1,5 +1,7 @@
 import { Figtree, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import JsonLd from "../components/JsonLd";
+import { SITE_URL, SITE_NAME } from "../lib/site";
 
 /* One typeface for everything, which is how the Rezibase FE is set up
    (`--font-sans: 'Figtree'`). Figtree is variable across 300-900, so a single
@@ -24,21 +26,72 @@ const mono = IBM_Plex_Mono({
   display: "swap",
 });
 
+const TITLE = "Bench Strength — Minimize Costs. Maximize Reserves";
+const DESCRIPTION =
+  "Practical, done-right insolvency case support, legal compliance auditing, and back-office admin for UK firms.";
+
 export const metadata = {
-  title: "Bench Strength — Minimize Costs. Maximize Reserves",
-  description:
-    "Practical, done-right insolvency case support, legal compliance auditing, and back-office admin for UK firms.",
-  openGraph: {
-    title: "Bench Strength — Minimize Costs. Maximize Reserves",
-    description:
-      "Practical, done-right insolvency case support, legal compliance auditing, and back-office admin for UK firms.",
+  /* Resolves relative OG/canonical URLs against the production origin, so
+     `openGraph.url: "/"` and `alternates.canonical` emit absolute URLs and the
+     build no longer falls back to localhost. */
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: {
+    canonical: "/",
   },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: SITE_NAME,
+    locale: "en_GB",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+};
+
+/* Organization + WebSite structured data. Rendered once on every page via the
+   root layout so crawlers and AI assistants have a stable entity for the firm
+   regardless of entry point. */
+const ORG_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      email: "info@benchstrength.uk",
+      description:
+        "Specialist operations, compliance, and case-administration support for UK insolvency, legal, and advisory firms.",
+      areaServed: { "@type": "Country", name: "United Kingdom" },
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "info@benchstrength.uk",
+        contactType: "sales",
+        availableLanguage: "English",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      inLanguage: "en-GB",
+    },
+  ],
 };
 
 export default function RootLayout({ children }) {
   return (
     <html
-      lang="en"
+      lang="en-GB"
       /* Next 16 no longer overrides `scroll-behavior: smooth` (set on html in
          globals.css) during route transitions, so navigation would animate a
          long smooth scroll to the top instead of jumping. This opts back into
@@ -47,6 +100,7 @@ export default function RootLayout({ children }) {
       className={`${sans.variable} ${mono.variable}`}
     >
       <body>
+        <JsonLd data={ORG_JSON_LD} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-ink-900 focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white"

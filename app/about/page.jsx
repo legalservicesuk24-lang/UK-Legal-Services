@@ -7,17 +7,14 @@ import Practitioners from "../../components/Practitioners";
 import WhyOutsource from "../../components/WhyOutsource";
 import WhatWeDontDo from "../../components/WhatWeDontDo";
 import FoundingPartners from "../../components/FoundingPartners";
+import { pageMetadata } from "../../lib/metadata";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "About — Bench Strength — Minimize Costs. Maximize Reserves",
   description:
     "Specialist case administration, compliance, and operations capacity — on demand, without the overhead of a permanent hire.",
-  openGraph: {
-    title: "About — Bench Strength — Minimize Costs. Maximize Reserves",
-    description:
-      "Specialist case administration, compliance, and operations capacity — on demand, without the overhead of a permanent hire.",
-  },
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

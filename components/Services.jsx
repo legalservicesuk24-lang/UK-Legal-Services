@@ -15,9 +15,9 @@ function ServiceCard({ service }) {
         <span className="file-tag pt-1.5">Service / {service.ref}</span>
       </div>
 
-      <h3 className="mt-6 font-display text-lg font-semibold text-ink-900">
+      <h2 className="mt-6 font-display text-lg font-semibold text-ink-900">
         {service.title}
-      </h3>
+      </h2>
       <p className="mt-3 text-sm leading-relaxed text-ink-600 sm:min-h-[3.75rem]">
         {service.summary}
       </p>
@@ -63,9 +63,9 @@ export default function Services() {
     <section id="services" className="container-page py-24 sm:py-32">
       <div className="mx-auto max-w-2xl text-center">
         <p className="file-tag mb-5">Our Services</p>
-        <h2 className="text-3xl font-semibold text-ink-900 sm:text-4xl">
+        <h1 className="text-3xl font-semibold text-ink-900 sm:text-4xl">
           Six registers. One accountable team.
-        </h2>
+        </h1>
         <p className="mt-5 text-base leading-relaxed text-ink-600">
           Each engagement runs as its own tracked file — scoped, documented, and
           reported on, from first assessment to closure.
