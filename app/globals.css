@@ -115,6 +115,20 @@
     transform 0.3s ease-out;
 }
 
+/* Scroll-linked reveal for content sitting on a step. Fades and lifts in as
+   the scroll progress passes the step, so a row of these appears one by one
+   rather than all at once. Default `--progress: 1` leaves everything shown,
+   so no-JS and reduced-motion both resolve to the finished state. */
+.scroll-track .track-reveal {
+  opacity: clamp(0, (var(--progress) - var(--step)) * 6, 1);
+  transform: translateY(
+    clamp(0px, (0.16 - (var(--progress) - var(--step))) * 90px, 14px)
+  );
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
+}
+
 /* Register ticker. Kept running for everyone — the strip reads as dead when
    frozen. Hovering the bar pauses it, which is the "stop the motion" affordance
    WCAG 2.2.2 asks for. */
@@ -156,6 +170,11 @@
   }
 
   .scroll-track .track-marker {
+    opacity: 1;
+    transform: none;
+  }
+
+  .scroll-track .track-reveal {
     opacity: 1;
     transform: none;
   }

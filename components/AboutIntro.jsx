@@ -1,92 +1,71 @@
-import Link from "next/link";
+import Image from "next/image";
 
-import CountUp from "./ui/CountUp";
+import { ButtonLink } from "./ui/Button";
 
-/* The two headline metrics moved here from the former "Qualified, not generic"
-   band — kept as compact proof cards alongside the intro rather than carrying
-   a full section of their own. */
-const METRICS = [
-  {
-    value: 100,
-    suffix: "%",
-    label: "Audit pass rate",
-    note: "Across every compliance file we've submitted.",
-  },
-  {
-    prefix: "<",
-    value: 24,
-    suffix: " hrs",
-    label: "Average response time",
-    note: "From first contact to a scoped, practical answer.",
-  },
-];
+const ARROW = (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path
+      d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 export default function AboutIntro() {
   return (
     <section id="about" className="border-t border-ink-200 bg-white">
       <div className="container-page py-24 sm:py-32">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-4">
+        {/* Two narrow portrait crops of the team, then the section copy in a
+            wide right-hand column. Photos pair up on sm; everything stacks on
+            mobile. */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-[minmax(0,17rem)_minmax(0,17rem)_1fr] lg:gap-8">
+          {/* Column 1 — founder. Held at its natural vertical position. */}
+          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-ink-200 shadow-card">
+            <Image
+              src="/boy1.jpg"
+              alt="Bench Strength founder working at a laptop"
+              fill
+              sizes="(min-width: 1024px) 17rem, (min-width: 640px) 45vw, 100vw"
+              className="object-cover object-center"
+            />
+          </div>
+
+          {/* Column 2 — co-founder. Nudged down on desktop for a staggered
+              pairing, and the crop biased lower so the subject and laptop fill
+              the frame rather than empty backdrop. */}
+          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-ink-200 shadow-card lg:mt-12">
+            <Image
+              src="/boy2.jpg"
+              alt="Bench Strength co-founder working at a laptop"
+              fill
+              sizes="(min-width: 1024px) 17rem, (min-width: 640px) 45vw, 100vw"
+              className="object-cover object-[center_82%]"
+            />
+          </div>
+
+          {/* Column 3 — copy, aligned to the left of the column. */}
+          <div className="flex flex-col items-start text-left sm:col-span-2 lg:col-span-1">
             <p className="file-tag mb-5">About Bench Strength</p>
             <h2 className="font-display text-display-lg font-bold text-heading">
               Who we are
             </h2>
-          </div>
-
-          <div className="lg:col-span-8">
-            <p className="text-lg leading-relaxed text-muted">
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
               A specialist operations, compliance and case-administration
               partner for UK insolvency, legal and advisory firms — scaled to
               what your firm can carry right now, without the overhead of a
               permanent hire.
             </p>
-            <Link
-              href="/about"
-              className="group mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700 transition-colors hover:text-primary-800"
-            >
-              More about how we work
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden="true"
-                className="transition-transform duration-200 group-hover:translate-x-0.5"
-              >
-                <path
-                  d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Link>
 
-            <dl className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {METRICS.map((metric) => (
-                <div
-                  key={metric.label}
-                  className="rounded-xl border border-subtle bg-surface p-5 sm:p-6"
-                >
-                  <dd className="font-display text-3xl font-semibold text-heading sm:text-4xl">
-                    <CountUp
-                      to={metric.value}
-                      prefix={metric.prefix ?? ""}
-                    />
-                    <span className="ml-0.5 text-[0.5em] font-semibold text-brand">
-                      {metric.suffix}
-                    </span>
-                  </dd>
-                  <dt className="mt-2 text-sm font-semibold text-brand">
-                    {metric.label}
-                  </dt>
-                  <p className="mt-1 text-xs leading-relaxed text-subtle">
-                    {metric.note}
-                  </p>
-                </div>
-              ))}
-            </dl>
+            {/* CTA — same outlined treatment as the "What we do" section. */}
+            <div className="mt-10 flex w-full justify-start lg:mt-auto lg:pt-10">
+              <ButtonLink href="/about" variant="outlined">
+                Read More
+                {ARROW}
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </div>

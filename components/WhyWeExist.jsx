@@ -1,9 +1,22 @@
+import Image from "next/image";
+
+import ScrollTrack from "./ui/ScrollTrack";
+
 const NON_FEE_WORK = [
   "Case files",
   "Compliance audits",
   "Contract renewals",
   "CRM records",
   "Process admin",
+];
+
+/* Each photo stands for one strand of the non-fee-earning work described
+   above, laid out as a connected timeline — the line draws through and each
+   frame reveals in turn as the section scrolls past. */
+const EVIDENCE = [
+  { src: "/files.jpg", alt: "Stacked case files and statutory paperwork" },
+  { src: "/sign.jpg", alt: "A contract being signed" },
+  { src: "/laptop.jpg", alt: "Working at a laptop on records and process admin" },
 ];
 
 const OPTIONS = [
@@ -63,8 +76,48 @@ export default function WhyWeExist() {
           </div>
         </div>
 
+        {/* The same work, shown — a scroll-linked timeline of three small
+            frames connected by a drawing rule. Each frame fades in on its own
+            as the scroll progress reaches it. */}
+        <ScrollTrack>
+          <ol className="mx-auto mt-14 grid max-w-2xl grid-cols-1 gap-8 sm:mt-16 sm:grid-cols-3 sm:gap-5">
+            {EVIDENCE.map((shot, i) => (
+              <li
+                key={shot.src}
+                className="relative pt-7"
+                style={{ "--step": (i / EVIDENCE.length).toFixed(3) }}
+              >
+                {/* Base rule, then the teal rule that draws over it, then the
+                    marker that lights as the line reaches it. */}
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-0 h-px w-full bg-ink-200"
+                />
+                <span
+                  aria-hidden
+                  className="track-rule absolute left-0 top-0 h-px w-full after:absolute after:inset-0 after:bg-primary-600 after:content-['']"
+                />
+                <span
+                  aria-hidden
+                  className="track-marker absolute -top-[3px] left-0 h-[7px] w-[7px] rounded-full bg-primary-600"
+                />
+
+                <figure className="track-reveal relative aspect-square overflow-hidden rounded-xl border border-ink-200 bg-white shadow-card">
+                  <Image
+                    src={shot.src}
+                    alt={shot.alt}
+                    fill
+                    sizes="(min-width: 640px) 12rem, 90vw"
+                    className="object-cover"
+                  />
+                </figure>
+              </li>
+            ))}
+          </ol>
+        </ScrollTrack>
+
         {/* The options */}
-        <p className="mt-12 max-w-2xl text-base leading-relaxed text-ink-600">
+        <p className="mt-16 max-w-2xl text-base leading-relaxed text-ink-600">
           The usual fix is one of two things. Bench Strength is a third.
         </p>
         <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-3">
