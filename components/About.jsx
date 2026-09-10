@@ -18,15 +18,17 @@ export default function About() {
             </p>
           </div>
 
-          {/* Clip of the team at work. Not autoplayed: the file is large, so
-              `preload="none"` means nothing downloads until the visitor hits
-              play. The poster carries the frame until then. */}
+          {/* Ambient clip of the team at work. Muted + looping so it plays
+              inline without sound; poster paints immediately while the file
+              streams in. */}
           <figure className="relative overflow-hidden rounded-2xl border border-ink-200 shadow-card-hover">
             <video
               className="aspect-video h-full w-full object-cover"
-              controls
+              autoPlay
+              muted
+              loop
               playsInline
-              preload="none"
+              preload="metadata"
               poster="/laptop.jpg"
               aria-label="Bench Strength team at work"
             >
