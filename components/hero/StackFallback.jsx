@@ -103,9 +103,9 @@ export default function StackFallback({
           </p>
 
           <p className="mt-3 font-display text-xl font-semibold leading-[1.15] text-ink-900">
-            Compliance
+            Our
             <br />
-            Audit
+            Services
           </p>
 
           <span className="mt-4 block h-px w-full bg-ink-100" />

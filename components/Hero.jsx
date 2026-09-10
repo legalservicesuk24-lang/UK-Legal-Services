@@ -55,10 +55,10 @@ export default function Hero() {
       onPointerLeave={onPointerLeave}
       /* Pulls the section up under the sticky header so the dark ground runs
          behind it — otherwise a transparent header reveals the light body
-         colour above the hero. The +1px matters: the header occupies 4.5rem of
-         content *plus* its 1px bottom border, so pulling up only 4.5rem left a
+         colour above the hero. The +1px matters: the header occupies 5rem of
+         content *plus* its 1px bottom border, so pulling up only 5rem left a
          1px light line across the top of the page. */
-      className="relative isolate -mt-[calc(4.5rem_+_1px)] overflow-hidden bg-ink-950"
+      className="relative isolate -mt-[calc(5rem_+_1px)] overflow-hidden bg-ink-950"
     >
       {/* Environment. A single low teal wash and the ledger motif, both very
           faint — on a dark ground the object is the focal point and ambient

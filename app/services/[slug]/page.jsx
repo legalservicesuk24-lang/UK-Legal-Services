@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
+import { ButtonLink } from "../../../components/ui/Button";
 import { ICONS } from "../../../components/serviceIcons";
 import { SERVICES, getService } from "../servicesData";
 
@@ -129,12 +130,14 @@ export default async function ServiceDetailPage({ params }) {
                   with a clear, practical plan — usually within one business day.
                 </p>
               </div>
-              <Link
+              <ButtonLink
                 href="/contact"
-                className="flex-shrink-0 rounded-lg bg-accent-400 px-6 py-3 text-sm font-semibold text-ink-900 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent-300 hover:shadow-card-hover"
+                color="onDark"
+                lift
+                className="flex-shrink-0"
               >
                 Book a Consultation
-              </Link>
+              </ButtonLink>
             </div>
           </div>
         </section>

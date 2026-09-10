@@ -4,9 +4,10 @@ const PARTNERS = [
   {
     name: "Syed Ali Zar Naqvi",
     image: "/alizarr.jpeg",
-    // Studio headshot, face in the upper-middle — anchor to the top and zoom
-    // in so the face fills the circle rather than the suit and shoulders.
-    imageClass: "scale-[1.85] object-top",
+    // Studio headshot on a portrait crop — pull the framing back so the head,
+    // tie and shoulders all sit centred in the circle. Bias the crop down so
+    // the suit and tie read rather than empty backdrop above the head.
+    imageClass: "scale-110 object-[center_65%]",
     role: "Founder",
     summary:
       "Case Administration & Compliance. PIP1-qualified (Merit), accredited by the Money and Pensions Service (MaPS), with five years in insolvency, compliance, and process improvement.",
@@ -30,9 +31,11 @@ const PARTNERS = [
   },
   {
     name: "Hamad Shah Hashmi",
-    image: "/hamadshah.jpg",
-    // Tight headshot — anchor to the top so the hairline isn't clipped
-    imageClass: "scale-105 object-top",
+    // Widened canvas (matching-grey padding added to the sides + top of the
+    // original, no pixels resampled) so object-cover sits the subject smaller
+    // in the circle — same framing weight as Alizar's photo.
+    image: "/hamadshah-wide.jpg",
+    imageClass: "object-[center_35%]",
     role: "Co-founder",
     summary:
       "Operations & Client Systems. Background in insolvency casework, creditor liaison, and CRM operations.",
@@ -70,13 +73,13 @@ export default function FoundingPartners() {
               key={partner.name}
               className="flex flex-col rounded-2xl border border-ink-200 bg-white p-8 shadow-card transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-primary-200 hover:shadow-card-hover sm:p-10"
             >
-              <div className="flex items-center gap-4">
-                <span className="relative block h-16 w-16 flex-shrink-0 overflow-hidden rounded-full ring-4 ring-primary-100">
+              <div className="flex items-center gap-5">
+                <span className="relative block h-24 w-24 flex-shrink-0 overflow-hidden rounded-full ring-4 ring-primary-100 sm:h-28 sm:w-28">
                   <Image
                     src={partner.image}
                     alt={partner.name}
                     fill
-                    sizes="128px"
+                    sizes="(min-width: 640px) 112px, 96px"
                     quality={90}
                     className={`object-cover ${partner.imageClass}`}
                   />
@@ -91,7 +94,10 @@ export default function FoundingPartners() {
                 </div>
               </div>
 
-              <p className="mt-6 text-sm leading-relaxed text-ink-600">
+              {/* Reserve a consistent height on the two-column layout so the
+                  divider below lines up across both cards regardless of how
+                  many lines each bio wraps to. */}
+              <p className="mt-6 text-sm leading-relaxed text-ink-600 lg:min-h-[5.5rem]">
                 {partner.summary}
               </p>
 

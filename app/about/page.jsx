@@ -1,5 +1,6 @@
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import ScrollEndToggle from "../../components/ScrollEndToggle";
 import About from "../../components/About";
 import WhyWeExist from "../../components/WhyWeExist";
 import Practitioners from "../../components/Practitioners";
@@ -31,6 +32,7 @@ export default function AboutPage() {
         <FoundingPartners />
       </main>
       <Footer />
+      <ScrollEndToggle />
     </>
   );
 }
