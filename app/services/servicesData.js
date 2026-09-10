@@ -199,6 +199,45 @@ export const SERVICES = [
       note: "We operate inside your existing tools and processes. The goal is to reduce cost and reclaim reserve capacity — not to impose a new system.",
     },
   },
+  {
+    slug: "end-to-end-software-development",
+    ref: "06",
+    icon: "code",
+    title: "End-to-End Software Development",
+    summary:
+      "Custom portal, CRM, and web development for HR companies and professional firms that need software built around how they actually work.",
+    includes: [
+      "Portal & internal tool development",
+      "CRM design & custom builds",
+      "Web application development",
+      "Discovery, delivery & handover",
+    ],
+    detail: {
+      title: "End-to-End Software Development",
+      overview:
+        "Custom software delivery for HR companies and professional firms — portals, CRMs, and web applications built from first scope through to deployment and handover. When an off-the-shelf tool does not fit the way your team works, we design and build the system around your process rather than the other way round.",
+      featuresTitle: "Key Features",
+      features: [
+        {
+          name: "Portal & Internal Tool Development",
+          body: "Client, candidate, and staff portals that consolidate the workflows currently spread across spreadsheets, email, and disconnected tools.",
+        },
+        {
+          name: "CRM Design & Custom Builds",
+          body: "Bespoke CRM systems — or tailored extensions to an existing one — modelled on your pipeline, records, and reporting rather than a generic template.",
+        },
+        {
+          name: "Web Development",
+          body: "Marketing sites, web applications, and customer-facing tools, built responsive, accessible, and straightforward to maintain.",
+        },
+        {
+          name: "Discovery, Delivery & Handover",
+          body: "Scoped requirements, staged delivery with regular review points, and a clean handover with documentation and full source access.",
+        },
+      ],
+      note: "Scope, stack, and hosting are agreed in writing before build starts. You retain full ownership of the code and data.",
+    },
+  },
 ];
 
 export function getService(slug) {

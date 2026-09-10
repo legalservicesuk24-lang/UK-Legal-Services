@@ -14,9 +14,13 @@ import StackFallback from "./StackFallback";
 
      - `ssr: false` + dynamic import, so three.js is never in the initial
        bundle and cannot delay first paint. The hero h1 stays the LCP element.
-     - The CSS fallback renders until the scene is ready, so the hero looks
-       finished at all times — there is no empty box and no layout shift,
-       because both states share the same aspect ratio.
+     - The CSS fallback covers the very first paint, so the hero is never an
+       empty box — both states share the same aspect ratio, so there's no
+       layout shift either. On a device that will never get the scene, it
+       stays up permanently. On one that will, it's hidden again the moment
+       that's known (before the bundle has even loaded), so the scene's own
+       fly-in — not a re-animated version of a stack the visitor already saw
+       finished — is the first thing anyone actually sees settle into place.
      - `prefers-reduced-motion` means the bundle is never even requested. This
        is both a WCAG 2.3.3 obligation (the scene has parallax) and the right
        performance call for anyone who has asked for calm.
@@ -33,9 +37,14 @@ import StackFallback from "./StackFallback";
    canvas is content, which is why it carries `aria-hidden`.
 --------------------------------------------------------------------------- */
 
+/* No `loading` fallback here on purpose: by the time this dynamic import is
+   even requested, the CSS fallback has already been hidden (see the effect
+   below) so the scene's fly-in is the first thing the visitor sees settle
+   into place. Rendering the assembled StackFallback here while the chunk
+   downloads would undo that — the same "already finished, then resets"
+   problem this file exists to avoid. */
 const CaseFileScene = dynamic(() => import("./CaseFileScene"), {
   ssr: false,
-  loading: () => <StackFallback dark fill />,
 });
 
 /* three + @react-three/fiber is ~228KB gzipped and does not shrink with
@@ -76,6 +85,9 @@ function supportsWebGL() {
 
 export default function CaseFileStack({ fill = true, dark = true, pointerRef }) {
   const hostRef = useRef(null);
+  /* Wraps the CSS fallback so it can be hidden with a direct DOM write
+     rather than React state (see below) — a plain ref, not tracked state. */
+  const fallbackRef = useRef(null);
   const [enabled, setEnabled] = useState(false);
   const [failed, setFailed] = useState(false);
   const [frameloop, setFrameloop] = useState("always");
@@ -84,6 +96,23 @@ export default function CaseFileStack({ fill = true, dark = true, pointerRef }) 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!sceneIsWorthIt()) return;
     if (!supportsWebGL()) return;
+
+    /* This device will load the WebGL scene, so the CSS fallback shouldn't
+       sit there fully assembled for the whole bundle download — otherwise
+       the scene's fly-in, once it finally mounts, visibly resets a stack
+       the visitor already saw finished. Hide the fallback immediately
+       instead, so the scene's own settle animation is the first thing
+       anyone actually sees happen.
+
+       A direct style write, not React state: this only ever needs to hide
+       an already-rendered node once, as a one-off sync with a browser
+       capability that isn't known until the client mounts — there's no
+       following render that depends on the "eligible" value, so routing it
+       through state would just add a render pass for nothing. On a device
+       that never reaches this branch (reduced motion, narrow viewport, slow
+       connection, no WebGL) the fallback is left alone as the permanent
+       picture, exactly as before. */
+    if (fallbackRef.current) fallbackRef.current.style.display = "none";
 
     const el = hostRef.current;
     if (!el) return;
@@ -143,7 +172,11 @@ export default function CaseFileStack({ fill = true, dark = true, pointerRef }) 
           />
         </SceneBoundary>
       ) : (
-        <StackFallback dark={dark} fill={fill} />
+        // `contents`: a plain wrapper for the hide-on-mount ref, invisible
+        // to layout so it doesn't interfere with StackFallback's own sizing.
+        <div ref={fallbackRef} className="contents">
+          <StackFallback dark={dark} fill={fill} />
+        </div>
       )}
     </div>
   );

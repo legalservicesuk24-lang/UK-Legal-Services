@@ -193,6 +193,24 @@ module.exports = {
           "50%": { transform: "translate3d(5%, 7%, 0) scale(1.1)" },
           "100%": { transform: "translate3d(-6%, -5%, 0) scale(1)" },
         },
+        /* Case-file stack entrance (StackFallback). Each sheet carries its own
+           resting transform as CSS custom properties (--to-x/--to-y/--to-rot,
+           set inline per sheet); this keyframe only defines the shared "from"
+           pose relative to that, scattered wider and rotated further so the
+           sheets read as arriving rather than fading in place. Pure CSS so it
+           plays the instant the fallback paints — no bundle to wait for. */
+        "sheet-settle": {
+          from: {
+            opacity: "0",
+            transform:
+              "translate3d(calc(var(--to-x) * 5), calc(var(--to-y) * 5 - 26px), 0) rotate(calc(var(--to-rot) * 4 - 5deg))",
+          },
+          to: {
+            opacity: "1",
+            transform:
+              "translate3d(var(--to-x), var(--to-y), 0) rotate(var(--to-rot))",
+          },
+        },
       },
       animation: {
         "rise-in": "rise-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
@@ -200,6 +218,7 @@ module.exports = {
         "drift-a": "drift-a 24s ease-in-out infinite alternate",
         "drift-b": "drift-b 30s ease-in-out infinite alternate",
         "drift-c": "drift-c 38s ease-in-out infinite alternate",
+        "sheet-settle": "sheet-settle 0.8s cubic-bezier(0.16, 1, 0.3, 1) both",
       },
     },
   },

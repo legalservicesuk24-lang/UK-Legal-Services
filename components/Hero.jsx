@@ -144,17 +144,6 @@ export default function Hero() {
               Explore Services
             </ButtonLink>
           </div>
-
-          <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-ink-400">
-            <span className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-400" />
-              PIP-certified case support
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-400" />
-              Audit-ready documentation
-            </span>
-          </div>
         </div>
 
         {/* Small screens get the CSS stack in flow, not a second CaseFileStack.

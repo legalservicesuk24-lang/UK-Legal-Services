@@ -64,7 +64,7 @@ export default function Services() {
       <div className="mx-auto max-w-2xl text-center">
         <p className="file-tag mb-5">Our Services</p>
         <h2 className="text-3xl font-semibold text-ink-900 sm:text-4xl">
-          Five registers. One accountable team.
+          Six registers. One accountable team.
         </h2>
         <p className="mt-5 text-base leading-relaxed text-ink-600">
           Each engagement runs as its own tracked file — scoped, documented, and

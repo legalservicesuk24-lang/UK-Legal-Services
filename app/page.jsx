@@ -1,7 +1,6 @@
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import RegisterMarquee from "../components/RegisterMarquee";
-import ProofBand from "../components/ProofBand";
 import AboutIntro from "../components/AboutIntro";
 import ServicesOverview from "../components/ServicesOverview";
 import Process from "../components/Process";
@@ -14,7 +13,6 @@ export default function Home() {
       <main id="main">
         <Hero />
         <RegisterMarquee />
-        <ProofBand />
         <AboutIntro />
         <ServicesOverview />
         <Process />

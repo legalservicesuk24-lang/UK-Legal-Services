@@ -430,9 +430,10 @@ export default function CaseFileScene({
            against a ~2.2-unit subject. */
         /* 7.2 framed the sheet at 73% of viewport height before the tilt and
            the stack spread were added on, which is why it overwhelmed the
-           panel. 10 frames ~3.9 units against a ~2.2-unit subject — still a
-           large, confident object with room to read as a stack. */
-        camera={{ position: [0, 0.1, fill ? 10 : 8.8], fov: 22 }}
+           panel. 9 frames ~3.5 units against a ~2.2-unit subject — a large,
+           confident object, a touch bigger than the earlier z 10, with room
+           to still read as a stack. */
+        camera={{ position: [0, 0.1, fill ? 9 : 8.8], fov: 22 }}
         // Past 1.5 we are paying for pixels nobody can see on matte paper.
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
