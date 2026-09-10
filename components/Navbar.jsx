@@ -147,7 +147,7 @@ export default function Navbar({ onDark = false }) {
       // viewport, so the light treatment starts exactly when the dark section
       // has passed under the header.
       const hero = document.getElementById("home");
-      setPastHero(hero ? hero.getBoundingClientRect().bottom <= 76 : true);
+      setPastHero(hero ? hero.getBoundingClientRect().bottom <= 84 : true);
 
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
@@ -207,7 +207,7 @@ export default function Navbar({ onDark = false }) {
   const light = onHero;
 
   const linkClass = (active) =>
-    `relative rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+    `relative rounded-lg px-3 py-2.5 text-base font-medium transition-colors ${
       light ? "text-ink-300 hover:text-on-dark" : "text-muted hover:text-brand"
     } ${active ? (light ? "text-on-dark" : "text-brand") : ""}`;
 
@@ -224,12 +224,12 @@ export default function Navbar({ onDark = false }) {
           : "border-b border-subtle bg-surface/85 backdrop-blur"
       }`}
     >
-      <div className="container-page flex h-[4.5rem] items-center justify-between gap-6">
+      <div className="container-page flex h-20 items-center justify-between gap-6">
         <Logo light={light} />
 
         <nav
           aria-label="Primary"
-          className="hidden md:flex md:items-center md:gap-1"
+          className="hidden md:flex md:items-center md:gap-1.5"
         >
           {NAV_LINKS.map((link) => {
             const active = isActive(link.href);
@@ -344,7 +344,6 @@ export default function Navbar({ onDark = false }) {
         <div className="hidden md:block">
           <ButtonLink
             href="/contact"
-            size="sm"
             color={light ? "onDark" : "navy"}
             className={light ? undefined : "shadow-card"}
           >

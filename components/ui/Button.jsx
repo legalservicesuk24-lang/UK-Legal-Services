@@ -92,10 +92,14 @@ export const buttonStyles = tv({
         "hovered:bg-[var(--plain-bg-hover)] hovered:text-[var(--plain-fg-hover)]",
       ],
     },
+    /* One button size carries the whole site — `md`, the default. It was
+       bumped up alongside the nav so the CTAs don't read as small next to the
+       larger heading and link type. `sm`/`lg` stay on the same ramp for the
+       rare off-size, but nothing should reach for them without a reason. */
     size: {
-      sm: "px-4 py-2 text-sm [&>svg]:size-4",
-      md: "px-6 py-3 text-sm [&>svg]:size-4",
-      lg: "px-7 py-3.5 text-base [&>svg]:size-5",
+      sm: "px-5 py-2.5 text-sm [&>svg]:size-4",
+      md: "px-7 py-3.5 text-[0.9375rem] [&>svg]:size-4",
+      lg: "px-8 py-4 text-base [&>svg]:size-5",
     },
     /* Opt-in elevation. Deliberately off by default: a lift reads as wrong in
        a sticky header, and the Navbar CTA is the reason this is a flag. */

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import Reveal from "./ui/Reveal";
 import ScrollTrack from "./ui/ScrollTrack";
 
@@ -45,24 +47,32 @@ const STEPS = [
 
 export default function Process() {
   return (
-    <section id="process" className="border-t border-subtle bg-raised">
+    <section
+      id="process"
+      className="relative isolate overflow-hidden border-t border-white/10 bg-ink-950"
+    >
+      {/* Desk photo behind the timeline. Carried on a dark navy wash so the
+          section reads as its own band and the white copy sits at full
+          contrast — the image is texture under it, not competing with it. */}
+      <Image
+        src="/paper.jpg"
+        alt=""
+        aria-hidden
+        fill
+        sizes="100vw"
+        className="-z-10 object-cover object-center"
+      />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-ink-950/85" />
+
       <div className="container-page py-24 sm:py-32">
-        {/* Asymmetric header — left-aligned and offset, against the centered
-            eyebrow/heading stack used elsewhere. */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <Reveal className="lg:col-span-7">
-            <p className="file-tag mb-5">How it runs</p>
-            <h2 className="font-display text-display-xl font-bold text-heading">
-              From first assessment to closure.
-            </h2>
-          </Reveal>
-          <Reveal delay={90} className="lg:col-span-5 lg:pt-4">
-            <p className="text-lg leading-relaxed text-muted">
-              You always know which stage a file is at, and what is waiting on
-              a practitioner signature.
-            </p>
-          </Reveal>
-        </div>
+        {/* Asymmetric header — left-aligned and held to a column, against the
+            centered eyebrow/heading stack used elsewhere. */}
+        <Reveal className="max-w-2xl">
+          <p className="file-tag mb-5 !text-accent-400">How it runs</p>
+          <h2 className="font-display text-display-xl font-bold text-on-dark">
+            From first assessment to closure.
+          </h2>
+        </Reveal>
 
         <ScrollTrack>
           <ol className="mt-16 grid grid-cols-1 gap-10 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
@@ -77,7 +87,7 @@ export default function Process() {
                 {/* Base rule, then the teal rule that draws over it. */}
                 <span
                   aria-hidden
-                  className="absolute left-0 top-0 h-px w-full bg-subtle"
+                  className="absolute left-0 top-0 h-px w-full bg-white/15"
                 />
                 <span
                   aria-hidden
@@ -88,11 +98,11 @@ export default function Process() {
                   className="track-marker absolute -top-[3px] left-0 h-[7px] w-[7px] rounded-full bg-primary-600"
                 />
 
-                <p className="file-tag">{step.ref}</p>
-                <h3 className="mt-3 font-display text-lg font-semibold text-heading">
+                <p className="file-tag !text-accent-400">{step.ref}</p>
+                <h3 className="mt-3 font-display text-lg font-semibold text-on-dark">
                   {step.title}
                 </h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-subtle">
+                <p className="mt-2.5 text-sm leading-relaxed text-ink-300">
                   {step.body}
                 </p>
               </li>

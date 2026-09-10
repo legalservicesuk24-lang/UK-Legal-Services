@@ -150,8 +150,8 @@ function useDocumentTexture() {
     // before/independently of font loading, so relying on Figtree here would
     // race. At this size the difference is not readable anyway.
     c.font = "700 42px ui-sans-serif, -apple-system, 'Segoe UI', sans-serif";
-    c.fillText("Compliance", PAD, PAD + 96);
-    c.fillText("Audit", PAD, PAD + 148);
+    c.fillText("Our", PAD, PAD + 96);
+    c.fillText("Services", PAD, PAD + 148);
 
     // Rule
     bar(PAD, PAD + 190, W - PAD * 2, 2, GREY_SOFT, 0);
