@@ -3,10 +3,10 @@ import Footer from "../../components/Footer";
 import ScrollEndToggle from "../../components/ScrollEndToggle";
 import About from "../../components/About";
 import WhyWeExist from "../../components/WhyWeExist";
-import Practitioners from "../../components/Practitioners";
 import WhyOutsource from "../../components/WhyOutsource";
 import WhatWeDontDo from "../../components/WhatWeDontDo";
 import FoundingPartners from "../../components/FoundingPartners";
+import ClientReviews from "../../components/ClientReviews";
 import { pageMetadata } from "../../lib/metadata";
 
 export const metadata = pageMetadata({
@@ -23,10 +23,10 @@ export default function AboutPage() {
       <main id="main">
         <About />
         <WhyWeExist />
-        <Practitioners />
         <WhyOutsource />
         <WhatWeDontDo />
         <FoundingPartners />
+        <ClientReviews />
       </main>
       <Footer />
       <ScrollEndToggle />

@@ -25,7 +25,7 @@ const PARTNERS = [
       {
         client: "Kenwood Travel",
         detail:
-          "Brought the company back from drowning and fear of liquidation, and helped them not only sustain their position in the market but set up an offshore office for administration in Pakistan.",
+          "Managed live contract database work, loading and updating supplier contracts, monitoring inventory and stop-sale changes, and validating data against strict deadlines and compliance standards, and helped the firm set up an offshore office for administration in Pakistan.",
       },
     ],
   },
@@ -53,7 +53,7 @@ const PARTNERS = [
       {
         client: "Kenwood Travel",
         detail:
-          "Brought the company back from drowning and fear of liquidation, and helped them not only sustain their position in the market but set up an offshore office for administration in Pakistan.",
+          "Corporate operations and administration executive, managing day-to-day operational systems and inventory processes for the business. Also helped them set up an offshore office for administration in Pakistan.",
       },
     ],
   },
