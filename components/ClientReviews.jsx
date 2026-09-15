@@ -20,7 +20,7 @@ const SLIDES = [
         "Alizar’s oversight in legal audits and risk compliance was crucial for our claims operations. He handles complex due diligence across energy and housing disrepair cases with exceptional precision and attention to detail.",
       author: "Director of Legal Operations",
       company: "Intuitive Legal",
-      tag: "Syed Ali Zar Naqvi",
+      tag: "Syed Naqvi",
     },
     {
       quote:
@@ -33,10 +33,10 @@ const SLIDES = [
   [
     {
       quote:
-        "Anchorage Chambers would like to congratulate Syed Ali Zar Naqvi for not just clearing, but excelling in their PIP Exam with distinction. Your dedication, hard work, and commitment to excellence have truly paid off, showcasing the depth of your knowledge and skills.",
+        "Anchorage Chambers would like to congratulate Syed Naqvi for not just clearing, but excelling in their PIP Exam with distinction. Your dedication, hard work, and commitment to excellence have truly paid off, showcasing the depth of your knowledge and skills.",
       author: "Practice Management",
       company: "Anchorage Chambers",
-      tag: "Syed Ali Zar Naqvi",
+      tag: "Syed Naqvi",
     },
     {
       quote:
@@ -52,7 +52,7 @@ const SLIDES = [
         "Alizar played a key role in managing our live contract databases and inventory accuracy under tight deadlines. His work during the setup of our offshore administration office in Pakistan was seamless and invaluable.",
       author: "Head of Commercial Operations",
       company: "Kenwood Travel",
-      tag: "Syed Ali Zar Naqvi",
+      tag: "Syed Naqvi",
     },
     {
       quote:
@@ -112,7 +112,7 @@ export default function ClientReviews() {
           <div>
             <p className="file-tag !text-accent-400">Client reviews</p>
             <h2 className="mt-3 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
-              Endorsements from the firms we&apos;ve worked with.
+              What Our Clients Say
             </h2>
             <div className="mt-3 flex gap-1" aria-label="5 out of 5 stars">
               {Array.from({ length: 5 }).map((_, starIndex) => (
