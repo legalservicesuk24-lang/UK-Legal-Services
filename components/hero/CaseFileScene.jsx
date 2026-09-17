@@ -56,8 +56,8 @@ import {
    starting points, not sacred numbers.
 --------------------------------------------------------------------------- */
 
-const PAPER = "#FBFCFD";
-const TEAL = "#159A9C";
+const PAPER = "#FAF6F0";
+const ACCENT = "#C8823B";
 
 const SHEET_W = 1.55;
 const SHEET_H = 2.05;
@@ -129,16 +129,16 @@ function useDocumentTexture() {
       c.fill();
     };
 
-    c.fillStyle = "#FBFCFD";
+    c.fillStyle = PAPER;
     c.fillRect(0, 0, W, H);
 
     const PAD = 62;
-    const INK = "#0B1F33";
-    const GREY = "#C9D2D8";
-    const GREY_SOFT = "#DEE5E9";
+    const INK = "#1E1815";
+    const GREY = "#D8CBBD";
+    const GREY_SOFT = "#E9E0D5";
 
     // File reference, in the same mono small-caps idiom as the site's .file-tag
-    c.fillStyle = "#159A9C";
+    c.fillStyle = ACCENT;
     c.font = "600 19px ui-monospace, SFMono-Regular, Menlo, monospace";
     c.letterSpacing = "3px";
     c.fillText("CASE FILE / 04-118", PAD, PAD + 18);
@@ -163,11 +163,11 @@ function useDocumentTexture() {
       bar(PAD, PAD + 224 + i * 26, (W - PAD * 2) * frac, 9, GREY);
     });
 
-    // Checklist — the "filed" evidence, with teal ticks
+    // Checklist — the "filed" evidence, with ochre ticks
     const items = [0.68, 0.82, 0.58, 0.74];
     items.forEach((frac, i) => {
       const y = PAD + 400 + i * 46;
-      c.strokeStyle = "#159A9C";
+      c.strokeStyle = ACCENT;
       c.lineWidth = 3;
       c.beginPath();
       c.arc(PAD + 9, y + 4, 10, 0, Math.PI * 2);
@@ -184,8 +184,8 @@ function useDocumentTexture() {
     bar(PAD, H - 150, 190, 9, GREY);
     bar(PAD, H - 126, 130, 9, GREY_SOFT);
 
-    bar(W - PAD - 148, H - 158, 148, 46, "#EAF6F6", 23);
-    c.fillStyle = "#0F7C7E";
+    bar(W - PAD - 148, H - 158, 148, 46, "#FAF6F5", 23);
+    c.fillStyle = "#7C3922";
     c.font = "600 17px ui-monospace, SFMono-Regular, Menlo, monospace";
     c.letterSpacing = "2px";
     c.fillText("FILED", W - PAD - 100, H - 128);
@@ -321,13 +321,13 @@ function Stack({ pointer }) {
             toneMapped={false}
           />
 
-          {/* The active file's edge tab — the single teal accent in the scene,
+          {/* The active file's edge tab — the single ochre accent in the scene,
               and the only thing marking a file as filed. */}
           {sheet.active && (
             <mesh position={[-(SHEET_W / 2) - 0.015, 0.44, 0.014]}>
               <boxGeometry args={[0.05, 0.6, 0.028]} />
               <meshStandardMaterial
-                color={TEAL}
+                color={ACCENT}
                 roughness={0.5}
                 metalness={0}
                 toneMapped={false}
@@ -353,9 +353,9 @@ function useStudioEnvironment() {
     const ctx = canvas.getContext("2d");
 
     const gradient = ctx.createLinearGradient(0, 0, 0, 64);
-    gradient.addColorStop(0, "#dfe9ea"); // soft sky above the subject
-    gradient.addColorStop(0.5, "#5d7275");
-    gradient.addColorStop(1, "#101c24"); // dark floor, matching the section
+    gradient.addColorStop(0, "#ede4d9"); // soft warm sky above the subject
+    gradient.addColorStop(0.5, "#8a7566");
+    gradient.addColorStop(1, "#120e0d"); // dark floor, matching the section
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 16, 64);
 

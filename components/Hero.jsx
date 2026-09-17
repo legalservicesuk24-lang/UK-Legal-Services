@@ -55,10 +55,16 @@ export default function Hero() {
       onPointerLeave={onPointerLeave}
       /* Pulls the section up under the sticky header so the dark ground runs
          behind it — otherwise a transparent header reveals the light body
-         colour above the hero. The +1px matters: the header occupies 5rem of
-         content *plus* its 1px bottom border, so pulling up only 5rem left a
-         1px light line across the top of the page. */
-      className="relative isolate -mt-[calc(5rem_+_1px)] overflow-hidden bg-ink-950"
+         colour above the hero. Must match the header's actual rendered
+         height exactly, or the gap reappears as a light strip across the
+         top of the page (it did: the header grew when the logo did, and
+         this was left pointing at the old, smaller height).
+
+         The header's height is content-driven — py-4 (2rem) plus the logo's
+         own height (h-16, sm:h-20) — so this tracks the same two
+         breakpoints: 4rem logo + 2rem padding = 6rem below sm, 5rem + 2rem =
+         7rem from sm up. The +1px is the header's bottom border. */
+      className="relative isolate -mt-[calc(6rem_+_1px)] overflow-hidden bg-ink-950 sm:-mt-[calc(7rem_+_1px)]"
     >
       {/* Environment. A single low teal wash and the ledger motif, both very
           faint — on a dark ground the object is the focal point and ambient

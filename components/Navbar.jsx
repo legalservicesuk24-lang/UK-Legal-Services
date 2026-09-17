@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "react-aria-components";
@@ -61,8 +62,8 @@ const SERVICE_LINKS = SERVICES.map((s) => ({
 function Chevron({ open }) {
   return (
     <svg
-      width="12"
-      height="12"
+      width="14"
+      height="14"
       viewBox="0 0 12 12"
       fill="none"
       aria-hidden="true"
@@ -80,37 +81,21 @@ function Chevron({ open }) {
 }
 
 function Logo({ light }) {
+  /* logo-light/-dark are derived from public/benchstrength-4d-logo.png: bg
+     keyed out to transparent, and (for -dark) the near-black ink swapped for
+     cream so the mark stays legible over the espresso hero — the source
+     file's ink is baked into fixed pixels, so one asset can't serve both
+     surfaces. Sits directly on the header, no card behind it. */
   return (
-    <Link
-      href="/"
-      className={`group flex items-center gap-2.5 text-xl transition-colors ${
-        light ? "text-on-dark" : "text-heading"
-      }`}
-    >
-      <svg
-        width="30"
-        height="30"
-        viewBox="0 0 30 30"
-        fill="none"
-        aria-hidden="true"
-        className="flex-shrink-0"
-      >
-        <rect
-          width="30"
-          height="30"
-          rx="8"
-          className="fill-primary-600 transition-colors group-hover:fill-accent-400"
-        />
-        <path
-          d="M8 15.5L13 20.5L22 9.5"
-          stroke="white"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      {/* Serif wordmark, matching the display voice introduced on the page. */}
-      <span className="font-display font-bold">Bench Strength</span>
+    <Link href="/" aria-label="Bench Strength — home" className="flex items-center">
+      <Image
+        src={light ? "/logo-dark.png" : "/logo-light.png"}
+        alt="Bench Strength"
+        width={1545}
+        height={415}
+        priority
+        className="h-16 w-auto object-contain sm:h-20"
+      />
     </Link>
   );
 }
@@ -145,9 +130,12 @@ export default function Navbar({ onDark = false }) {
 
       // Measured off the hero itself rather than a guessed fraction of the
       // viewport, so the light treatment starts exactly when the dark section
-      // has passed under the header.
+      // has passed under the header. 116 covers the header's tallest
+      // (sm and up) rendered height — py-4 + the h-20 logo + its 1px border
+      // — with a small buffer; below sm the header is a little shorter, so
+      // this switches a few px later there, which is harmless.
       const hero = document.getElementById("home");
-      setPastHero(hero ? hero.getBoundingClientRect().bottom <= 84 : true);
+      setPastHero(hero ? hero.getBoundingClientRect().bottom <= 116 : true);
 
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
@@ -207,7 +195,7 @@ export default function Navbar({ onDark = false }) {
   const light = onHero;
 
   const linkClass = (active) =>
-    `relative rounded-lg px-3 py-2.5 text-base font-medium transition-colors ${
+    `relative rounded-lg px-3 py-2.5 text-lg font-medium transition-colors ${
       light ? "text-ink-300 hover:text-on-dark" : "text-muted hover:text-brand"
     } ${active ? (light ? "text-on-dark" : "text-brand") : ""}`;
 
@@ -224,12 +212,17 @@ export default function Navbar({ onDark = false }) {
           : "border-b border-subtle bg-surface/85 backdrop-blur"
       }`}
     >
-      <div className="container-page flex h-20 items-center justify-between gap-6">
+      {/* Height comes from padding around the logo, not a fixed h-*, so the
+          bar can never clip it: whatever the logo's rendered height is, py-4
+          guarantees the same breathing room above and below. (Hero.jsx's
+          negative margin has to be kept in step with the result — see the
+          comment there.) */}
+      <div className="container-page flex items-center justify-between gap-6 py-4">
         <Logo light={light} />
 
         <nav
           aria-label="Primary"
-          className="hidden md:flex md:items-center md:gap-1.5"
+          className="hidden md:flex md:items-center md:gap-2"
         >
           {NAV_LINKS.map((link) => {
             const active = isActive(link.href);

@@ -1,24 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
   return (
     <footer className="bg-ink-900">
       <div className="container-page py-12">
-        <Link
-          href="/"
-          className="flex w-fit items-center gap-2 font-display text-base font-semibold text-white"
-        >
-          <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-            <rect width="30" height="30" rx="8" className="fill-primary-500" />
-            <path
-              d="M8 15.5L13 20.5L22 9.5"
-              stroke="white"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Bench Strength
+        <Link href="/" aria-label="Bench Strength — home" className="flex w-fit items-center">
+          {/* Footer is always the dark espresso surface, so it always wants
+              the reversed (cream-ink) variant — see Navbar's Logo comment. */}
+          <Image
+            src="/logo-dark.png"
+            alt="Bench Strength"
+            width={1545}
+            height={415}
+            className="h-20 w-auto object-contain"
+          />
         </Link>
         <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-400">
           Operations, compliance, and case administration support for UK

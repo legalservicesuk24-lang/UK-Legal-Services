@@ -8,69 +8,69 @@ module.exports = {
     extend: {
       colors: {
         /* ---------------------------------------------------------------
-           Bench Strength design system
-           Primary brand   — Deep Navy      #0B1F33  (ink-900)
-           Secondary brand — Professional Teal #159A9C (primary-600)
-           Accent / CTA    — Light Teal     #42C6C8  (primary-400 / accent-400)
-           Page background — Soft White     #F7F9FA  (ink-50)
-           Main text       — Charcoal       #172B3A  (ink-800)
-           Secondary text  — Slate Grey     #667085  (ink-500)
+           StyleHive brand system
+           Primary brand   — Dark        #1E1815  (ink-900)
+           Primary accent  — Clay        #9C482B  (primary-600)
+           Secondary accent— Ochre       #C8823B  (accent-400)
+           Light text/surf — Cream       #FAF6F0  (ink-50)
 
-           ink-500 → ink-800 steps in even ~10-point L* increments so the
-           four text weights (metadata / supporting / body / emphasis) are
-           actually distinguishable; every one clears WCAG AA on ink-50.
+           Ramps below are generated from those four anchors (clay at
+           primary-600, ochre at accent-400, cream at ink-50, dark at
+           ink-900) by interpolating lightness while holding each anchor's
+           hue/saturation — same shape as the previous palette, so every
+           semantic alias and component keeps working unchanged.
         --------------------------------------------------------------- */
 
-        // Professional teal — icons, accents, borders, links, focus rings
+        // Clay — icons, accents, borders, links, focus rings
         primary: {
-          50: "#EAF6F6",
-          100: "#CFEAEA",
-          200: "#B4E2E3",
-          300: "#7FD4D5",
-          400: "#42C6C8", // light teal
-          500: "#22ABAD",
-          600: "#159A9C", // core teal
-          700: "#0F7C7E",
-          800: "#0C6163",
-          900: "#0A4B4D",
-          950: "#052F30",
+          50: "#FAF6F5",
+          100: "#F2EBE8",
+          200: "#E8D1CA",
+          300: "#D9B3A6",
+          400: "#D78A6F",
+          500: "#CC6947",
+          600: "#9C482B", // core clay
+          700: "#7C3922",
+          800: "#602C1A",
+          900: "#482114",
+          950: "#2E140B",
         },
 
-        // Light-teal call-to-action ramp (buttons on dark surfaces, hovers)
+        // Ochre call-to-action ramp (buttons on dark surfaces, hovers)
         accent: {
-          50: "#ECFAFA",
-          100: "#D3F2F3",
-          200: "#AEE7E8",
-          300: "#7FDDDE",
-          400: "#42C6C8",
-          500: "#2BB4B6",
-          600: "#1E9C9E",
-          700: "#177C7E",
+          50: "#F9F7F4",
+          100: "#F2EDE7",
+          200: "#E7D8C9",
+          300: "#E3BF9B",
+          400: "#C8823B", // core ochre
+          500: "#A2682E",
+          600: "#835425",
+          700: "#67421D",
         },
 
-        // Success / "audit-ready" signifiers — kept on-palette (teal)
+        // Success / "audit-ready" signifiers — kept on-palette (ochre)
         confirm: {
-          50: "#EAF6F6",
-          100: "#CFEAEA",
-          400: "#42C6C8",
-          500: "#159A9C",
-          600: "#0F7C7E",
-          700: "#0C6163",
+          50: "#F9F7F4",
+          100: "#F2EDE7",
+          400: "#C8823B",
+          500: "#A2682E",
+          600: "#835425",
+          700: "#67421D",
         },
 
-        // Neutral "ink" ramp — navy → charcoal → slate → soft white
+        // Neutral "ink" ramp — dark → warm brown → cream
         ink: {
-          50: "#F7F9FA", // soft white — page & section background
-          100: "#EDF1F3", // faint surface / hairline divider
-          200: "#E1E7EA", // subtle border
-          300: "#CBD3D9", // input border / light text on navy
-          400: "#98A2B3", // metadata / muted
-          500: "#667085", // slate grey — muted labels & metadata
-          600: "#4B586B", // descriptions & supporting copy
-          700: "#314152", // body copy on light surfaces
-          800: "#172B3A", // charcoal — default body text & emphasis
-          900: "#0B1F33", // deep navy — headings, navbar, footer, dark sections
-          950: "#081826", // deepest navy
+          50: "#FAF6F0", // cream — page & section background
+          100: "#F3EADD", // faint surface / hairline divider
+          200: "#E6D3BD", // subtle border
+          300: "#D3B697", // input border / light text on dark
+          400: "#BA936E", // metadata / muted
+          500: "#8B674B", // muted labels & metadata
+          600: "#6E5240", // descriptions & supporting copy
+          700: "#523F33", // body copy on light surfaces
+          800: "#372B24", // default body text & emphasis
+          900: "#1E1815", // dark — headings, navbar, footer, dark sections
+          950: "#120E0D", // deepest dark
         },
       },
 
@@ -79,35 +79,35 @@ module.exports = {
          Components should reach for these, not raw ramp steps, so a
          palette change is a one-line edit here instead of a grep across
          every file. Ramp steps stay available for one-off cases.
-         Contrast figures are measured against `surface` (#F7F9FA).
+         Contrast figures are measured against `surface` (#FAF6F0).
       --------------------------------------------------------------- */
       textColor: {
-        heading: "#0B1F33", // ink-900  — 15.81:1
-        body: "#172B3A", // ink-800  — 13.78:1
-        muted: "#314152", // ink-700  —  9.90:1
-        subtle: "#4B586B", // ink-600  —  6.84:1
-        faint: "#667085", // ink-500  —  4.71:1  (AA floor; don't go lighter)
+        heading: "#1E1815", // ink-900  — 16.30:1
+        body: "#372B24", // ink-800  — 12.72:1
+        muted: "#523F33", // ink-700  —  9.21:1
+        subtle: "#6E5240", // ink-600  —  6.63:1
+        faint: "#8B674B", // ink-500  —  4.71:1  (AA floor; don't go lighter)
         /* primary-700, not the core primary-600. primary-600 on `surface`
-           measures 3.24:1 and fails AA for body/UI text — it is fine as a
-           non-text accent (rules, icons, fills) but not as a link or label
-           colour, which is what this token is for. primary-700 = 4.99:1.
-           On dark surfaces use `text-accent-400` (8.68:1 on ink-950) instead;
-           this token is a light-surface colour. */
-        brand: "#0F7C7E", // primary-700 — 4.99:1
-        "on-dark": "#F7F9FA", // ink-50 on navy — 15.81:1
+           measures 5.78:1, which clears AA for body/UI text, but primary-700
+           (7.91:1) keeps more margin and matches the deeper "clay" the brand
+           mark uses for its wordmark stroke. On dark surfaces use
+           `text-accent-400` (6.13:1 on ink-950) instead; this token is a
+           light-surface colour. */
+        brand: "#7C3922", // primary-700 — 7.91:1
+        "on-dark": "#FAF6F0", // ink-50 on dark — 16.30:1
       },
       backgroundColor: {
-        surface: "#F7F9FA", // ink-50  — page ground
+        surface: "#FAF6F0", // ink-50  — page ground
         raised: "#FFFFFF", // card / panel
-        sunken: "#EDF1F3", // ink-100 — inset wells
-        inverse: "#0B1F33", // ink-900 — full-bleed dark sections
+        sunken: "#F3EADD", // ink-100 — inset wells
+        inverse: "#1E1815", // ink-900 — full-bleed dark sections
       },
       borderColor: {
-        hairline: "#EDF1F3", // ink-100 — dividers inside a card
-        subtle: "#E1E7EA", // ink-200 — card edges
-        // Interactive field border. #CBD3D9 is 1.43:1 on surface and fails
-        // WCAG 1.4.11 (needs 3:1); ink-500 clears it at 4.71:1.
-        field: "#667085", // ink-500
+        hairline: "#F3EADD", // ink-100 — dividers inside a card
+        subtle: "#E6D3BD", // ink-200 — card edges
+        // Interactive field border. Needs 3:1 against `surface` per WCAG
+        // 1.4.11; ink-500 clears it at 4.71:1.
+        field: "#8B674B", // ink-500
       },
       fontFamily: {
         /* All three point at the same variable family. `display` and `body`
@@ -154,13 +154,13 @@ module.exports = {
         "8xl": "90rem",
       },
       boxShadow: {
-        card: "0 1px 2px 0 rgb(11 31 51 / 0.04), 0 1px 3px 0 rgb(11 31 51 / 0.06)",
+        card: "0 1px 2px 0 rgb(30 24 21 / 0.04), 0 1px 3px 0 rgb(30 24 21 / 0.06)",
         "card-hover":
-          "0 8px 24px -4px rgb(11 31 51 / 0.12), 0 3px 8px -3px rgb(11 31 51 / 0.07)",
+          "0 8px 24px -4px rgb(30 24 21 / 0.12), 0 3px 8px -3px rgb(30 24 21 / 0.07)",
       },
       backgroundImage: {
         "ledger-lines":
-          "repeating-linear-gradient(to bottom, transparent, transparent 27px, rgb(225 231 234 / 0.6) 27px, rgb(225 231 234 / 0.6) 28px)",
+          "repeating-linear-gradient(to bottom, transparent, transparent 27px, rgb(230 211 189 / 0.6) 27px, rgb(230 211 189 / 0.6) 28px)",
       },
       keyframes: {
         /* Masked word reveal for display headlines — each word rides up from

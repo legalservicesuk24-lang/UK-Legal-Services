@@ -15,10 +15,10 @@ export const alt =
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const INK_950 = "#081826";
-const INK_900 = "#0B1F33";
-const ACCENT = "#42C6C8";
-const MUTED = "#98A2B3";
+const INK_950 = "#120E0D";
+const INK_900 = "#1E1815";
+const ACCENT = "#C8823B";
+const MUTED = "#BA936E";
 
 export default function Image() {
   return new ImageResponse(
