@@ -6,13 +6,11 @@ export default function Footer() {
     <footer className="bg-ink-900">
       <div className="container-page py-12">
         <Link href="/" aria-label="Bench Strength — home" className="flex w-fit items-center">
-          {/* Footer is always the dark espresso surface, so it always wants
-              the reversed (cream-ink) variant — see Navbar's Logo comment. */}
           <Image
-            src="/logo-dark.png"
+            src="/benchstrength-logo-dark-bg.png"
             alt="Bench Strength"
-            width={1545}
-            height={415}
+            width={1548}
+            height={337}
             className="h-20 w-auto object-contain"
           />
         </Link>

@@ -81,18 +81,21 @@ function Chevron({ open }) {
 }
 
 function Logo({ light }) {
-  /* logo-light/-dark are derived from public/benchstrength-4d-logo.png: bg
-     keyed out to transparent, and (for -dark) the near-black ink swapped for
-     cream so the mark stays legible over the espresso hero — the source
-     file's ink is baked into fixed pixels, so one asset can't serve both
-     surfaces. Sits directly on the header, no card behind it. */
+  /* `light` = over the dark hero (homepage top section only), where the
+     cream-on-transparent lockup is used. Everywhere else the header sits on
+     a light/white surface, so the dark-ink variant is used instead. Sits
+     directly on the header, no card behind it. */
   return (
     <Link href="/" aria-label="Bench Strength — home" className="flex items-center">
       <Image
-        src={light ? "/logo-dark.png" : "/logo-light.png"}
+        src={
+          light
+            ? "/benchstrength-logo-dark-bg.png"
+            : "/benchstrength-logo-transparent-dark-ink.png"
+        }
         alt="Bench Strength"
-        width={1545}
-        height={415}
+        width={1548}
+        height={337}
         priority
         className="h-16 w-auto object-contain sm:h-20"
       />
