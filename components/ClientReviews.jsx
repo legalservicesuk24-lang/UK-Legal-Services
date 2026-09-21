@@ -17,7 +17,7 @@ const SLIDES = [
   [
     {
       quote:
-        "Alizar’s oversight in legal audits and risk compliance was crucial for our claims operations. He handles complex due diligence across energy and housing disrepair cases with exceptional precision and attention to detail.",
+        "Syed Naqvi’s oversight in legal audits and risk compliance was crucial for our claims operations. He handles complex due diligence across energy and housing disrepair cases with exceptional precision and attention to detail.",
       author: "Director of Legal Operations",
       company: "Intuitive Legal",
       tag: "Syed Naqvi",
@@ -49,7 +49,7 @@ const SLIDES = [
   [
     {
       quote:
-        "Alizar played a key role in managing our live contract databases and inventory accuracy under tight deadlines. His work during the setup of our offshore administration office in Pakistan was seamless and invaluable.",
+        "Syed Naqvi played a key role in managing our live contract databases and inventory accuracy under tight deadlines. His work during the setup of our offshore administration office in Pakistan was seamless and invaluable.",
       author: "Head of Commercial Operations",
       company: "Kenwood Travel",
       tag: "Syed Naqvi",
@@ -110,9 +110,9 @@ export default function ClientReviews() {
       <div className="container-page relative py-16 sm:py-20">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="file-tag !text-accent-400">Client reviews</p>
+            <p className="file-tag !text-accent-400">Our Experience</p>
             <h2 className="mt-3 font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
-              What Our Clients Say
+              Before Bench Strength
             </h2>
             <div className="mt-3 flex gap-1" aria-label="5 out of 5 stars">
               {Array.from({ length: 5 }).map((_, starIndex) => (
