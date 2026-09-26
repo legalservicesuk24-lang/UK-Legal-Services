@@ -81,23 +81,27 @@ function Chevron({ open }) {
 }
 
 function Logo({ light }) {
-  /* `light` = over the dark hero (homepage top section only), where the
-     cream-on-transparent lockup is used. Everywhere else the header sits on
-     a light/white surface, so the dark-ink variant is used instead. Sits
-     directly on the header, no card behind it. */
+  /* The compact lockup is the site-wide logo (header and footer), in two
+     colourways cut from benchstrength-logo-dark-compact.png — trimmed, with
+     its flat background keyed out so no box shows on any surface:
+       - `light` = over the dark hero: cream lettering
+         (benchstrength-logo-dark-compact-transparent.png)
+       - otherwise the header is light/white: ink lettering
+         (benchstrength-logo-compact-dark-ink.png)
+     Sits directly on the header, no card behind it. */
   return (
     <Link href="/" aria-label="Bench Strength — home" className="flex items-center">
       <Image
         src={
           light
-            ? "/benchstrength-logo-dark-bg.png"
-            : "/benchstrength-logo-transparent-dark-ink.png"
+            ? "/benchstrength-logo-dark-compact-transparent.png"
+            : "/benchstrength-logo-compact-dark-ink.png"
         }
         alt="Bench Strength"
-        width={1548}
-        height={337}
+        width={1699}
+        height={321}
         priority
-        className="h-16 w-auto object-contain sm:h-20"
+        className="h-14 w-auto object-contain sm:h-16"
       />
     </Link>
   );
@@ -133,12 +137,12 @@ export default function Navbar({ onDark = false }) {
 
       // Measured off the hero itself rather than a guessed fraction of the
       // viewport, so the light treatment starts exactly when the dark section
-      // has passed under the header. 116 covers the header's tallest
-      // (sm and up) rendered height — py-4 + the h-20 logo + its 1px border
+      // has passed under the header. 88 covers the header's tallest
+      // (sm and up) rendered height — py-2 + the h-16 logo + its 1px border
       // — with a small buffer; below sm the header is a little shorter, so
       // this switches a few px later there, which is harmless.
       const hero = document.getElementById("home");
-      setPastHero(hero ? hero.getBoundingClientRect().bottom <= 116 : true);
+      setPastHero(hero ? hero.getBoundingClientRect().bottom <= 88 : true);
 
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
@@ -216,11 +220,14 @@ export default function Navbar({ onDark = false }) {
       }`}
     >
       {/* Height comes from padding around the logo, not a fixed h-*, so the
-          bar can never clip it: whatever the logo's rendered height is, py-4
-          guarantees the same breathing room above and below. (Hero.jsx's
+          bar can never clip it: whatever the logo's rendered height is, py-2
+          guarantees the same breathing room above and below. (app/page.jsx's
           negative margin has to be kept in step with the result — see the
-          comment there.) */}
-      <div className="container-page flex items-center justify-between gap-6 py-4">
+          comment there.)
+          From md up it is a 1fr/auto/1fr grid rather than justify-between, so
+          the nav sits at the true centre of the bar regardless of the logo and
+          CTA having different widths. */}
+      <div className="container-page flex items-center justify-between gap-6 py-2 md:grid md:grid-cols-[1fr_auto_1fr]">
         <Logo light={light} />
 
         <nav
@@ -337,11 +344,12 @@ export default function Navbar({ onDark = false }) {
           })}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden md:block md:justify-self-end">
+          {/* Fixed 36px (h-9) so the CTA stays compact in the slimmer bar. */}
           <ButtonLink
             href="/contact"
             color={light ? "onDark" : "navy"}
-            className={light ? undefined : "shadow-card"}
+            className={`h-9 px-5 py-0 text-sm ${light ? "" : "shadow-card"}`}
           >
             Book a Consultation
           </ButtonLink>

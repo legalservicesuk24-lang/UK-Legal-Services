@@ -25,11 +25,11 @@ export default function Home() {
         {/* `home` keeps the Navbar in its dark treatment for the whole page
             (it measures this element's bottom edge). The negative margin pulls
             the chapters up under the sticky header — it must match the
-            header's rendered height: py-4 + h-16 logo (+1px border) below sm,
-            py-4 + h-20 logo from sm up. */}
+            header's rendered height: py-2 + h-14 logo (+1px border) below sm,
+            py-2 + h-16 logo from sm up. */}
         <div
           id="home"
-          className="chapters -mt-[calc(6rem_+_1px)] sm:-mt-[calc(7rem_+_1px)]"
+          className="chapters -mt-[calc(4.5rem_+_1px)] sm:-mt-[calc(5rem_+_1px)]"
         >
           <Hero />
           <AboutIntro />

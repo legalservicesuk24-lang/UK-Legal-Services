@@ -7,10 +7,10 @@ export default function Footer() {
       <div className="container-page py-12">
         <Link href="/" aria-label="Bench Strength — home" className="flex w-fit items-center">
           <Image
-            src="/benchstrength-logo-dark-bg.png"
+            src="/benchstrength-logo-dark-compact-transparent.png"
             alt="Bench Strength"
-            width={1548}
-            height={337}
+            width={1699}
+            height={321}
             className="h-20 w-auto object-contain"
           />
         </Link>
