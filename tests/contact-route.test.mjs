@@ -10,10 +10,12 @@ import nodemailer from "nodemailer";
 // `nodemailer.createTransport` at request time, so patching the shared module
 // object is enough.
 let createCalls = 0;
+let lastTransportOptions = null;
 let sent = [];
 let sendImpl = async () => ({ messageId: "test" });
-nodemailer.createTransport = () => {
+nodemailer.createTransport = (options) => {
   createCalls += 1;
+  lastTransportOptions = options;
   return { sendMail: (mail) => (sent.push(mail), sendImpl(mail)) };
 };
 
@@ -174,6 +176,21 @@ test("returns 502 when SMTP send fails, and rebuilds the transport next time", a
   const res2 = await post(valid);
   assert.equal(res2.status, 200);
   assert.equal(createCalls, before + 1, "transport should be recreated after a failure");
+});
+
+test("pins TLS servername to the SMTP hostname", async () => {
+  sendImpl = async () => {
+    throw new Error("force a fresh transport next time");
+  };
+  await post(valid);
+  sendImpl = async () => ({ messageId: "ok" });
+  await post(valid);
+
+  // host is the OS-resolved IP (or the hostname if lookup failed); either
+  // way certificate checks must run against the real hostname.
+  assert.equal(lastTransportOptions.servername, "smtpout.secureserver.net");
+  assert.equal(lastTransportOptions.port, 465);
+  assert.equal(lastTransportOptions.secure, true);
 });
 
 test("reuses the transport across successful sends", async () => {

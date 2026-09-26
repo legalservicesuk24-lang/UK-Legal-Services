@@ -19,9 +19,11 @@
    "email us instead" message rather than pretending the mail was sent.
 --------------------------------------------------------------------------- */
 
+import { lookup } from "node:dns/promises";
 import nodemailer from "nodemailer";
 
 const RECIPIENT = "info@benchstrength.uk";
+const SMTP_HOST = "smtpout.secureserver.net";
 
 // Deliberately loose — just enough to reject an obvious non-address. Real
 // validation is "did the reply land", which no regex can tell you.
@@ -56,8 +58,24 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
+// Resolve the SMTP host with the OS resolver (getaddrinfo) rather than letting
+// nodemailer do it. nodemailer queries the configured DNS servers directly,
+// which fails with ENOTFOUND / ETIMEOUT on networks that block or drop direct
+// DNS traffic, even though normal OS lookups for the same name work. Handing
+// it an IP skips its own resolution; `servername` keeps SNI and certificate
+// verification pinned to the real hostname. If the OS lookup fails too, fall
+// back to the hostname and let nodemailer try.
+async function resolveSmtpHost() {
+  try {
+    const { address } = await lookup(SMTP_HOST);
+    return address;
+  } catch {
+    return SMTP_HOST;
+  }
+}
+
 let transporter = null;
-function getTransporter() {
+async function getTransporter() {
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
   if (!user || !pass) return null;
@@ -67,7 +85,8 @@ function getTransporter() {
   // every submission.
   if (!transporter) {
     transporter = nodemailer.createTransport({
-      host: "smtpout.secureserver.net",
+      host: await resolveSmtpHost(),
+      servername: SMTP_HOST,
       port: 465,
       secure: true,
       auth: { user, pass },
@@ -82,7 +101,7 @@ function getTransporter() {
 }
 
 async function deliver({ name, email, message }) {
-  const smtp = getTransporter();
+  const smtp = await getTransporter();
   if (!smtp) return { ok: false, status: 503, error: "not_configured" };
 
   try {
