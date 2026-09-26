@@ -97,8 +97,21 @@
    the rule is fully drawn and every marker is lit — the correct resting state
    rather than an empty track. Each step also gets a `--step` (0..1) marking
    where along the section it sits, so it lights as the line passes it. */
+/* Registered so it can transition: on the homepage, ChapterDirector flips it
+   0 -> 1 when the process chapter arrives and the line draws itself over
+   time, since chapters no longer have a scroll hold to draw it across. */
+@property --progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
 .scroll-track {
   --progress: 1;
+}
+
+.chapters .scroll-track {
+  transition: --progress 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .scroll-track .track-rule::after {
@@ -179,6 +192,8 @@
   position: fixed;
   inset: 0;
   z-index: 0;
+  /* The canvas is sized to innerWidth, which includes the scrollbar. */
+  overflow: hidden;
   pointer-events: none;
   background: theme("colors.ink.950");
 }
@@ -205,11 +220,17 @@
   );
 }
 
-/* Content must never run under the rail. */
+/* Content must never run under the rail.
+   overflow-x: clip because the copy scrims (::before, inset -6vw) reach past
+   the viewport's sides; without it the page scrolls sideways, and the
+   horizontal scrollbar shortens the viewport enough that a one-screen chapter
+   no longer fits and snapping stalls inside it. `clip`, not `hidden`, so no
+   scroll container is created and the sticky pins keep working. */
 .chapters {
   --rail-lane: 0px;
   position: relative;
   z-index: 2;
+  overflow-x: clip;
 }
 
 @media (min-width: 981px) {
@@ -223,19 +244,36 @@
   padding-right: max(3rem, var(--rail-lane));
 }
 
-/* Height is the scroll budget: one viewport of pin plus the hold. Tall pins
-   are grown to fit by ChapterDirector. */
+/* One screen per chapter, no hold: a single scroll moves on to the next
+   chapter (and the globe spins once on the way). Tall pins are grown to fit
+   by ChapterDirector. */
 .chapter {
-  --hold: 110vh;
   position: relative;
-  height: calc(100vh + var(--hold));
+  height: 100vh;
 }
 
-.chapter:first-child {
-  --hold: 90vh;
+/* Snap so one wheel/trackpad gesture lands squarely on the next chapter.
+   Scoped to the homepage (the only page with .chapters) and to tablet and up:
+   on phones several chapters are taller than the screen and free scrolling
+   reads better. A chapter taller than the viewport still scrolls freely
+   inside itself — browsers only snap at its edges. */
+@media (min-width: 768px) {
+  html:has(.chapters) {
+    scroll-snap-type: y mandatory;
+  }
+
+  .chapter {
+    scroll-snap-align: start;
+  }
+
+  /* The footer follows the last chapter; give it a snap point so it can be
+     reached at all under mandatory snapping. */
+  main:has(.chapters) + * {
+    scroll-snap-align: end;
+  }
 }
 
-/* Top padding clears the sticky header (py-4 + h-16/h-20 logo + 1px border).
+/* Top padding clears the sticky header (py-2 + h-14/h-16 logo + 1px border).
    `safe center` stops tall content centring up underneath it. */
 .chapter-pin {
   position: sticky;
@@ -244,12 +282,12 @@
   align-items: center;
   align-items: safe center;
   min-height: 100vh;
-  padding: calc(6rem + 1px + 1.5rem) 0 2.75rem;
+  padding: calc(4.5rem + 1px + 1.5rem) 0 2.75rem;
 }
 
 @media (min-width: 640px) {
   .chapter-pin {
-    padding-top: calc(7rem + 1px + 1.5rem);
+    padding-top: calc(5rem + 1px + 1.5rem);
   }
 }
 

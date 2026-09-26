@@ -10,12 +10,12 @@ import { useLayoutEffect, useState } from "react";
        own rect, not the chapter's or the pin's — content is centred in a
        100vh pin, so either of those leaves blank screens between chapters.
      - Tall chapters: a pin whose content is taller than the viewport gets a
-       negative sticky `top`, so it scrolls through until its bottom edge
-       reaches the viewport's and holds there. The chapter grows to match, so
-       the hold budget is the same as a short chapter's.
-     - Process track: a `.scroll-track` inside a chapter gets `--progress`
-       from how far through its chapter's hold the page is. (ScrollTrack's own
-       rect-based progress freezes once the section is pinned.)
+       negative sticky `top`, and the chapter grows to the pin's height, so it
+       simply scrolls through (chapters have no hold of their own).
+     - Process track: a `.scroll-track` inside a chapter gets `--progress` 1
+       once its chapter is mostly on screen and 0 once it has gone. The value
+       is a registered custom property with a transition (globals.css), so
+       the line draws itself over time rather than across a scroll hold.
      - Rail: one button per chapter along the right edge.
 
    The hidden `.fx` state only exists under `.chapters.is-live`, which is
@@ -72,7 +72,7 @@ export default function ChapterDirector({ rootId, labels }) {
       const n = chapters.length;
       const enter = new Array(n);
       const exit = new Array(n);
-      const hold = new Array(n);
+      const shown = new Array(n);
       let current = 0;
       const ramp = H * 0.24;
       for (let ci = 0; ci < n; ci++) {
@@ -86,11 +86,7 @@ export default function ChapterDirector({ rootId, labels }) {
         const bottom = Math.max(b.bottom, mid + H * 0.3);
         enter[ci] = clamp((H + 40 - top) / ramp, 0, 1);
         exit[ci] = clamp((bottom + 40) / ramp, 0, 1);
-        if (tracks[ci]) {
-          const pinH = pins[ci].offsetHeight;
-          const stick = Math.min(0, H - pinH);
-          hold[ci] = clamp((stick - r.top) / Math.max(r.height - pinH, 1), -1, 1);
-        }
+        if (tracks[ci]) shown[ci] = r.top < H * 0.35 && r.bottom > H * 0.5;
         if (r.top <= H * 0.5 && r.bottom > H * 0.5) current = ci;
       }
       // pass 2 — writes only
@@ -108,11 +104,7 @@ export default function ChapterDirector({ rootId, labels }) {
           s.filter = e > 0.985 ? "none" : `blur(${((1 - e) * 6).toFixed(2)}px)`;
         }
         if (tracks[ci] && !reduce) {
-          // the line starts just before the pin locks and is drawn by 60% of the hold
-          tracks[ci].style.setProperty(
-            "--progress",
-            clamp((hold[ci] + 0.1) / 0.7, 0, 1).toFixed(3),
-          );
+          tracks[ci].style.setProperty("--progress", shown[ci] ? "1" : "0");
         }
       }
       if (current !== activeR) {

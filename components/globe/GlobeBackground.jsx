@@ -48,6 +48,25 @@ const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const smooth = (t) => t * t * (3 - 2 * t);
 const mix = (a, b, t) => a + (b - a) * t;
 
+/* Scroll position in chapters (the unit KEYS are written in): i while chapter
+   i fills the screen, rising to i + 1 as the next one scrolls in. A chapter
+   taller than the viewport holds at i until its bottom edge reaches the
+   viewport's, so the spin happens on the way out, not while reading it. */
+function chapterProgress(chapters, H) {
+  const y = window.scrollY;
+  const n = chapters.length;
+  if (!n) return 0;
+  for (let i = 0; i < n - 1; i++) {
+    const a = chapters[i].getBoundingClientRect();
+    const top = a.top + y;
+    const start = top + Math.max(0, a.height - H); // chapter i starts leaving
+    const end = chapters[i + 1].getBoundingClientRect().top + y; // next is in place
+    if (y < start) return i;
+    if (y < end) return i + (y - start) / Math.max(end - start, 1);
+  }
+  return n - 1;
+}
+
 function camAt(p, cam) {
   let i = 0;
   while (i < KEYS.length - 2 && p > KEYS[i + 1].p) i++;
@@ -102,6 +121,9 @@ export default function GlobeBackground() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    // The homepage chapters the camera keys are indexed by (a live list, so
+    // their rects are always current; ChapterDirector resizes tall ones).
+    const chapters = document.getElementsByClassName("chapter");
     const ctx = canvas.getContext("2d");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const lowPower =
@@ -159,8 +181,7 @@ export default function GlobeBackground() {
       if (!reduce) spin += dt * SPIN_RATE * (0.6 + cam.r * 0.5);
       const ease = (k) => 1 - Math.pow(1 - k, dt * 60);
 
-      const doc = Math.max(document.documentElement.scrollHeight - H, 1);
-      const prog = clamp(window.scrollY / doc, 0, 1);
+      const prog = chapterProgress(chapters, H);
       // critically damped spring: accelerates and settles, never overshoots
       const acc = SCROLL_SPRING * SCROLL_SPRING * (prog - progR) - 2 * SCROLL_SPRING * progV;
       progV += acc * dt;

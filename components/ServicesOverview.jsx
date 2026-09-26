@@ -47,9 +47,9 @@ function ServiceCard({ service }) {
   );
 }
 
-/* Chapter 4 of the globe homepage. Taller than a viewport on most screens,
-   so ChapterDirector gives its pin a negative sticky top: it scrolls through
-   to the last card, then holds while the globe forms its horizon. */
+/* Chapter 3 of the globe homepage. Can be taller than a viewport, in which
+   case ChapterDirector gives its pin a negative sticky top and it scrolls
+   through to the last card before the next chapter snaps in. */
 export default function ServicesOverview() {
   return (
     <Chapter id="services" label="What we do">

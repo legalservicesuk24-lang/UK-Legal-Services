@@ -1,4 +1,5 @@
 import Chapter from "./globe/Chapter";
+import StatsBand from "./StatsBand";
 import { ButtonLink } from "./ui/Button";
 
 const ARROW = (
@@ -14,7 +15,9 @@ const ARROW = (
 );
 
 /* Chapter 2 of the globe homepage. Copy sits in the right column, opposite
-   the hero's, as the globe starts to grow and sink behind it. */
+   the hero's, as the globe starts to grow and sink behind it. The track-record
+   figures run along the bottom of the same chapter instead of taking a screen
+   of their own. */
 export default function AboutIntro() {
   return (
     <Chapter id="about" label="Who we are">
@@ -45,6 +48,11 @@ export default function AboutIntro() {
             </ButtonLink>
           </div>
         </div>
+
+        <StatsBand
+          fxStart={4}
+          className="chapter-scrim mt-14 border-t border-white/10 pt-8 sm:mt-16"
+        />
       </div>
     </Chapter>
   );

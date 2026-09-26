@@ -12,10 +12,10 @@ import Chapter from "./globe/Chapter";
    one on mobile, so it reads differently from every card grid on the site —
    part of breaking the uniform section rhythm.
 
-   The rule is scroll-linked: it draws left to right as the page moves through
-   this chapter's hold, and each marker lights as the line reaches it. This is
-   the last globe chapter, so it holds over the globe's horizon and never
-   fades out. ChapterDirector writes `--progress` on the `.scroll-track`.
+   The rule draws left to right once this chapter scrolls into place, and each
+   marker lights as the line reaches it. This is the last globe chapter, so it
+   sits over the globe's horizon and never fades out. ChapterDirector writes
+   `--progress` on the `.scroll-track`.
 --------------------------------------------------------------------------- */
 
 const STEPS = [

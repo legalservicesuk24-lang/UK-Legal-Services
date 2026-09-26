@@ -1,9 +1,9 @@
 /* ---------------------------------------------------------------------------
    Chapter — one pinned panel of the globe homepage.
 
-   The section's height is its scroll budget; the inner `.chapter-pin` is
-   sticky and at least one viewport tall, so the copy holds on screen while the
-   globe moves behind it. ChapterDirector drives the reveal of every `.fx`
+   The section is one screen tall (its scroll budget; the homepage snaps
+   chapter to chapter); the inner `.chapter-pin` is sticky and at least one
+   viewport tall. ChapterDirector drives the reveal of every `.fx`
    descendant (use `data-fx` for the stagger index) and names the rail tick
    after `label`.
 
