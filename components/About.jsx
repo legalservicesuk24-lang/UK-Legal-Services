@@ -28,7 +28,7 @@ export default function About() {
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="auto"
               poster="/laptop.jpg"
               aria-label="Bench Strength team at work"
             >
