@@ -37,6 +37,15 @@ function clean(value, max) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+// For values that end up in mail headers (Subject, Reply-To): collapse line
+// breaks and other control characters so they can't split or garble a header.
+function cleanLine(value, max) {
+  return clean(
+    typeof value === "string" ? value.replace(/[\x00-\x1f\x7f]+/g, " ") : value,
+    max,
+  );
+}
+
 // Escaped once, used in both the HTML body and reused nowhere else — no
 // templating library needed for four interpolated fields.
 function escapeHtml(value) {
@@ -111,7 +120,13 @@ export async function POST(request) {
     return json({ error: "Invalid request body." }, 400);
   }
 
-  const name = clean(payload?.name, 200);
+  // Honeypot: a real user never fills a hidden field. Checked first so a bot
+  // gets the same success response whatever else it sent.
+  if (clean(payload?.company, 100)) {
+    return json({ ok: true });
+  }
+
+  const name = cleanLine(payload?.name, 200);
   const email = clean(payload?.email, 320);
   const message = clean(payload?.message, 5000);
 
@@ -120,10 +135,6 @@ export async function POST(request) {
   }
   if (!EMAIL_RE.test(email)) {
     return json({ error: "That email address doesn't look right." }, 400);
-  }
-  // Honeypot: a real user never fills a hidden field.
-  if (clean(payload?.company, 100)) {
-    return json({ ok: true });
   }
 
   const result = await deliver({ name, email, message });
