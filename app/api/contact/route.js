@@ -62,6 +62,11 @@ function getTransporter() {
       port: 465,
       secure: true,
       auth: { user, pass },
+      // Fail fast rather than leaving the form on "Sending…" for nodemailer's
+      // two-minute defaults if GoDaddy is slow or unreachable.
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     });
   }
   return transporter;
@@ -76,7 +81,9 @@ async function deliver({ name, email, message }) {
       from: `"Bench Strength website" <${process.env.SMTP_USER}>`,
       to: RECIPIENT,
       // So a reply in the inbox goes straight back to the sender.
-      replyTo: `"${name}" <${email}>`,
+      // Address object, not an interpolated string: a name containing quotes
+      // or angle brackets would otherwise produce a malformed header.
+      replyTo: { name, address: email },
       subject: `New enquiry from ${name}`,
       text: `${message}\n\n— sent from the benchstrength.uk contact form\nFrom: ${name} <${email}>`,
       html: `
@@ -86,6 +93,10 @@ async function deliver({ name, email, message }) {
     });
   } catch (err) {
     console.error("[/api/contact] SMTP send failed:", err?.message || err);
+    // Drop the cached transport so the next request logs in afresh — after a
+    // password change it would otherwise keep reusing the stale credentials
+    // until the server restarts.
+    transporter = null;
     return { ok: false, status: 502, error: "send_failed" };
   }
 
