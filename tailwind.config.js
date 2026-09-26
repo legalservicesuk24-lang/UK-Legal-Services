@@ -48,6 +48,16 @@ module.exports = {
           700: "#67421D",
         },
 
+        // Sand — the pale circle in the logo lockup. Card surface on the
+        // dark globe homepage. ink-900 on sand-300 = 13.1:1.
+        sand: {
+          100: "#F8EDD3",
+          200: "#F4E5C1",
+          300: "#F0DCAC", // logo circle
+          400: "#E3C98E",
+          500: "#CFB06E",
+        },
+
         // Success / "audit-ready" signifiers — kept on-palette (ochre)
         confirm: {
           50: "#F9F7F4",
@@ -157,68 +167,6 @@ module.exports = {
         card: "0 1px 2px 0 rgb(30 24 21 / 0.04), 0 1px 3px 0 rgb(30 24 21 / 0.06)",
         "card-hover":
           "0 8px 24px -4px rgb(30 24 21 / 0.12), 0 3px 8px -3px rgb(30 24 21 / 0.07)",
-      },
-      backgroundImage: {
-        "ledger-lines":
-          "repeating-linear-gradient(to bottom, transparent, transparent 27px, rgb(230 211 189 / 0.6) 27px, rgb(230 211 189 / 0.6) 28px)",
-      },
-      keyframes: {
-        /* Masked word reveal for display headlines — each word rides up from
-           behind a clipping parent, so it reads as type being set rather than
-           text fading in. */
-        "rise-in": {
-          from: { transform: "translate3d(0, 110%, 0) rotate(2deg)" },
-          to: { transform: "translate3d(0, 0, 0) rotate(0deg)" },
-        },
-        /* Register ticker. Translates exactly -50% across a duplicated track,
-           so the loop point is seamless. */
-        marquee: {
-          from: { transform: "translate3d(0, 0, 0)" },
-          to: { transform: "translate3d(-50%, 0, 0)" },
-        },
-        /* Slow, organic drift for the hero's soft teal "aurora" shapes.
-           Transform + opacity only, so it stays on the GPU compositor. */
-        "drift-a": {
-          "0%": { transform: "translate3d(0, 0, 0) scale(1)" },
-          "50%": { transform: "translate3d(7%, -5%, 0) scale(1.18)" },
-          "100%": { transform: "translate3d(-5%, 4%, 0) scale(0.92)" },
-        },
-        "drift-b": {
-          "0%": { transform: "translate3d(0, 0, 0) scale(1.05)" },
-          "50%": { transform: "translate3d(-8%, 6%, 0) scale(0.9)" },
-          "100%": { transform: "translate3d(6%, -4%, 0) scale(1.12)" },
-        },
-        "drift-c": {
-          "0%": { transform: "translate3d(0, 0, 0) scale(0.95)" },
-          "50%": { transform: "translate3d(5%, 7%, 0) scale(1.1)" },
-          "100%": { transform: "translate3d(-6%, -5%, 0) scale(1)" },
-        },
-        /* Case-file stack entrance (StackFallback). Each sheet carries its own
-           resting transform as CSS custom properties (--to-x/--to-y/--to-rot,
-           set inline per sheet); this keyframe only defines the shared "from"
-           pose relative to that, scattered wider and rotated further so the
-           sheets read as arriving rather than fading in place. Pure CSS so it
-           plays the instant the fallback paints — no bundle to wait for. */
-        "sheet-settle": {
-          from: {
-            opacity: "0",
-            transform:
-              "translate3d(calc(var(--to-x) * 5), calc(var(--to-y) * 5 - 26px), 0) rotate(calc(var(--to-rot) * 4 - 5deg))",
-          },
-          to: {
-            opacity: "1",
-            transform:
-              "translate3d(var(--to-x), var(--to-y), 0) rotate(var(--to-rot))",
-          },
-        },
-      },
-      animation: {
-        "rise-in": "rise-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
-        marquee: "marquee 38s linear infinite",
-        "drift-a": "drift-a 24s ease-in-out infinite alternate",
-        "drift-b": "drift-b 30s ease-in-out infinite alternate",
-        "drift-c": "drift-c 38s ease-in-out infinite alternate",
-        "sheet-settle": "sheet-settle 0.8s cubic-bezier(0.16, 1, 0.3, 1) both",
       },
     },
   },

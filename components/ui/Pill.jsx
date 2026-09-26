@@ -32,6 +32,13 @@ export const pillStyles = tv({
         "[--pill-border:theme(colors.ink.200)]",
         "[--pill-fg:theme(colors.ink.700)]",
       ],
+      /* On the sand (logo-circle) cards of the globe homepage. ink-800 on
+         the clay-tinted wash = 11.4:1; the clay border is 3.2:1 on sand. */
+      sand: [
+        "[--pill-bg:rgb(156_72_43_/_0.07)]",
+        "[--pill-border:rgb(156_72_43_/_0.45)]",
+        "[--pill-fg:theme(colors.ink.800)]",
+      ],
       /* On the near-black hero. The border is the only thing giving each pill
          a boundary, and at the 20% white first used it measured 1.86:1 against
          the ground — invisible, so the pills ran together into one grey blur.

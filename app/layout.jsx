@@ -1,27 +1,22 @@
-import { Figtree, IBM_Plex_Mono } from "next/font/google";
+import { Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import JsonLd from "../components/JsonLd";
 import { SITE_URL, SITE_NAME } from "../lib/site";
 
-/* One typeface for everything, which is how the Rezibase FE is set up
-   (`--font-sans: 'Figtree'`). Figtree is variable across 300-900, so a single
-   family covers 96px display headings and 12px UI labels without needing
-   Manrope alongside it — and one family loading instead of three is less to
-   download and one less thing to keep consistent.
+/* Jost for everything, JetBrains Mono for the .file-tag / register-reference
+   idiom — the pairing from the Bench Strength homepage handoff. Both are
+   variable fonts, so no `weight` list is needed: one file per family covers
+   the 96px display headings, 12px UI labels and the semibold mono tags.
 
-   This replaces the Inter/Manrope/Fraunces trio. The serif experiment is in
-   git if the editorial direction is wanted back.
-
-   Mono stays: the .file-tag / register-reference idiom depends on it. */
-const sans = Figtree({
+   Replaces Figtree + IBM Plex Mono; that pairing is in git if wanted back. */
+const sans = Jost({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const mono = IBM_Plex_Mono({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["500"],
   variable: "--font-mono",
   display: "swap",
 });

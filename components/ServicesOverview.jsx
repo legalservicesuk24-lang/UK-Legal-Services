@@ -2,8 +2,8 @@ import Link from "next/link";
 import { SERVICES } from "../app/services/servicesData";
 import { ICONS } from "./serviceIcons";
 import { ButtonLink } from "./ui/Button";
+import Chapter from "./globe/Chapter";
 import Pill from "./ui/Pill";
-import Reveal from "./ui/Reveal";
 
 const ARROW = (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -27,19 +27,19 @@ function FeaturedCard({ service }) {
   return (
     <Link
       href={`/services/${service.slug}`}
-      className="group flex flex-col rounded-2xl border border-subtle bg-raised p-8 shadow-card transition-all duration-300 ease-out hovered:-translate-y-1 hovered:border-primary-200 hovered:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 sm:p-10"
+      className="group flex flex-col rounded-2xl border border-sand-400 bg-sand-300 p-8 shadow-card transition-all duration-300 ease-out hovered:-translate-y-1 hovered:border-primary-400 hovered:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 sm:p-10"
     >
       <div className="flex items-start justify-between gap-4">
-        <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
+        <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-primary-600/10 text-primary-700 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
           {ICONS[service.icon]}
         </span>
-        <span className="file-tag pt-2">Register / {service.ref}</span>
+        <span className="file-tag pt-2 !text-primary-700">Register / {service.ref}</span>
       </div>
 
       <h3 className="mt-8 font-display text-3xl font-bold leading-tight text-heading transition-colors group-hover:text-primary-700 sm:text-4xl">
         {service.title}
       </h3>
-      <p className="mt-4 text-base leading-relaxed text-subtle">
+      <p className="mt-4 text-base leading-relaxed text-ink-700">
         {service.summary}
       </p>
 
@@ -48,10 +48,10 @@ function FeaturedCard({ service }) {
       {/* Pills rather than a bulleted list: four short phrases read faster
           side by side than stacked, and it stops the card being a wall of
           left-aligned text. */}
-      <ul className="mt-8 flex flex-wrap gap-2 border-t border-hairline pt-7">
+      <ul className="mt-8 flex flex-wrap gap-2 border-t border-ink-900/10 pt-7">
         {service.includes.map((item) => (
           <li key={item}>
-            <Pill tone="light">{item}</Pill>
+            <Pill tone="sand">{item}</Pill>
           </li>
         ))}
       </ul>
@@ -70,13 +70,13 @@ function CompactCard({ service }) {
   return (
     <Link
       href={`/services/${service.slug}`}
-      className="group flex flex-col rounded-xl border border-subtle bg-raised p-6 shadow-card transition-all duration-300 ease-out hovered:-translate-y-1 hovered:border-primary-200 hovered:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2"
+      className="group flex flex-col rounded-xl border border-sand-400 bg-sand-300 p-6 shadow-card transition-all duration-300 ease-out hovered:-translate-y-1 hovered:border-primary-400 hovered:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
+        <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary-600/10 text-primary-700 transition-colors duration-300 group-hover:bg-primary-600 group-hover:text-white">
           {ICONS[service.icon]}
         </span>
-        <span className="file-tag">{service.ref}</span>
+        <span className="file-tag !text-primary-700">{service.ref}</span>
       </div>
 
       <h3 className="mt-5 font-display text-base font-semibold leading-snug text-heading transition-colors group-hover:text-primary-700">
@@ -87,7 +87,7 @@ function CompactCard({ service }) {
           twice as tall. Icon and title alone left most of that empty, so the
           summary earns its place here rather than being held back for the
           detail page. */}
-      <p className="mt-3 text-sm leading-relaxed text-subtle">
+      <p className="mt-3 text-sm leading-relaxed text-ink-700">
         {service.summary}
       </p>
 
@@ -101,48 +101,60 @@ function CompactCard({ service }) {
   );
 }
 
+/* Chapter 4 of the globe homepage. Taller than a viewport on most screens,
+   so ChapterDirector gives its pin a negative sticky top: it scrolls through
+   to the last card, then holds while the globe forms its horizon. */
 export default function ServicesOverview() {
   return (
-    <section id="services" className="border-t border-subtle bg-surface">
-      <div className="container-page py-24 sm:py-32">
+    <Chapter id="services" label="What we do">
+      <div className="chapter-wrap">
         {/* Header runs left with the CTA opposite, rather than the centered
             eyebrow-over-heading stack used by the other sections. */}
         <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <Reveal className="max-w-2xl">
-            <p className="file-tag mb-5">What we do</p>
-            <h2 className="font-display text-display-xl font-bold text-heading">
+          <div className="max-w-2xl">
+            <p className="file-tag fx mb-5 !text-accent-400" data-fx="0">
+              What we do
+            </p>
+            <h2
+              className="fx font-display text-display-xl font-bold text-on-dark"
+              data-fx="1"
+            >
               Six registers. One accountable team.
             </h2>
-            <p className="mt-5 text-lg leading-relaxed text-muted">
+            <p
+              className="fx mt-5 text-lg leading-relaxed text-ink-300"
+              data-fx="2"
+            >
               Each one runs as its own tracked file, from first assessment to
               closure.
             </p>
-          </Reveal>
-
-          <Reveal delay={90} className="flex-shrink-0">
-            <ButtonLink href="/services" variant="outlined">
+          </div>
+          <div className="fx flex-shrink-0" data-fx="2">
+            <ButtonLink href="/services" color="onDark" variant="outlined">
               View all services
               {ARROW}
             </ButtonLink>
-          </Reveal>
+          </div>
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-5 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3 lg:grid-rows-3">
-          <Reveal className="flex lg:col-span-2 lg:row-span-2 [&>*]:w-full">
+          <div
+            className="fx flex lg:col-span-2 lg:row-span-2 [&>*]:w-full"
+            data-fx="3"
+          >
             <FeaturedCard service={featured} />
-          </Reveal>
-
+          </div>
           {rest.map((service, i) => (
-            <Reveal
+            <div
               key={service.slug}
-              delay={(i + 1) * 70}
-              className="flex [&>*]:w-full"
+              className="fx flex [&>*]:w-full"
+              data-fx={i + 4}
             >
               <CompactCard service={service} />
-            </Reveal>
+            </div>
           ))}
         </div>
       </div>
-    </section>
+    </Chapter>
   );
 }

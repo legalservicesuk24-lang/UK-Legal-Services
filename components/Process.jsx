@@ -1,7 +1,4 @@
-import Image from "next/image";
-
-import Reveal from "./ui/Reveal";
-import ScrollTrack from "./ui/ScrollTrack";
+import Chapter from "./globe/Chapter";
 
 /* ---------------------------------------------------------------------------
    Process — how an engagement actually runs.
@@ -15,11 +12,10 @@ import ScrollTrack from "./ui/ScrollTrack";
    one on mobile, so it reads differently from every card grid on the site —
    part of breaking the uniform section rhythm.
 
-   The rule is scroll-linked: it draws left to right as the section crosses the
-   viewport and each marker lights as the line reaches it. A process that runs
-   from first assessment to closure is genuinely a progression, so tying it to
-   scroll carries meaning rather than being motion for its own sake. Scroll is
-   read, never hijacked — see ScrollTrack.
+   The rule is scroll-linked: it draws left to right as the page moves through
+   this chapter's hold, and each marker lights as the line reaches it. This is
+   the last globe chapter, so it holds over the globe's horizon and never
+   fades out. ChapterDirector writes `--progress` on the `.scroll-track`.
 --------------------------------------------------------------------------- */
 
 const STEPS = [
@@ -47,55 +43,44 @@ const STEPS = [
 
 export default function Process() {
   return (
-    <section
-      id="process"
-      className="relative isolate overflow-hidden border-t border-white/10 bg-ink-950"
-    >
-      {/* Desk photo behind the timeline. Carried on a dark navy wash so the
-          section reads as its own band and the white copy sits at full
-          contrast — the image is texture under it, not competing with it. */}
-      <Image
-        src="/paper.jpg"
-        alt=""
-        aria-hidden
-        fill
-        sizes="100vw"
-        className="-z-10 object-cover object-center"
-      />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-ink-950/85" />
-
-      <div className="container-page py-24 sm:py-32">
-        {/* Asymmetric header — left-aligned and held to a column, against the
-            centered eyebrow/heading stack used elsewhere. */}
-        <Reveal className="max-w-2xl">
-          <p className="file-tag mb-5 !text-accent-400">How it runs</p>
-          <h2 className="font-display text-display-xl font-bold text-on-dark">
+    <Chapter id="process" label="How it runs">
+      <div className="chapter-wrap">
+        {/* Asymmetric header — left-aligned and held to a column. */}
+        <div className="max-w-2xl">
+          <p className="file-tag fx mb-5 !text-accent-400" data-fx="0">
+            How it runs
+          </p>
+          <h2
+            className="fx font-display text-display-xl font-bold text-on-dark"
+            data-fx="1"
+          >
             From first assessment to closure.
           </h2>
-        </Reveal>
+        </div>
 
-        <ScrollTrack>
+        <div className="scroll-track">
           <ol className="mt-16 grid grid-cols-1 gap-10 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
             {STEPS.map((step, i) => (
               <li
                 key={step.ref}
-                className="relative pt-8"
-                /* Where this step sits along the section, so its rule and
+                className="fx relative pt-8"
+                data-fx={i + 2}
+                /* Where this step sits along the chapter, so its rule and
                    marker activate as the scroll progress passes it. */
                 style={{ "--step": (i / STEPS.length).toFixed(3) }}
               >
-                {/* Base rule, then the teal rule that draws over it. */}
+                {/* Base rule, then the clay rule that draws over it. */}
                 <span
                   aria-hidden
                   className="absolute left-0 top-0 h-px w-full bg-white/15"
                 />
                 <span
                   aria-hidden
-                  className="track-rule absolute left-0 top-0 h-px w-full after:absolute after:inset-0 after:bg-primary-600 after:content-['']"
+                  className="track-rule absolute left-0 top-0 h-px w-full after:absolute after:inset-0 after:bg-accent-400 after:content-['']"
                 />
                 <span
                   aria-hidden
-                  className="track-marker absolute -top-[3px] left-0 h-[7px] w-[7px] rounded-full bg-primary-600"
+                  className="track-marker absolute -top-[3px] left-0 h-[7px] w-[7px] rounded-full bg-accent-400"
                 />
 
                 <p className="file-tag !text-accent-400">{step.ref}</p>
@@ -108,8 +93,8 @@ export default function Process() {
               </li>
             ))}
           </ol>
-        </ScrollTrack>
+        </div>
       </div>
-    </section>
+    </Chapter>
   );
 }

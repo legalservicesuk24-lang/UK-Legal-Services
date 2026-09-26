@@ -1,7 +1,8 @@
+import Chapter from "./globe/Chapter";
 import CountUp from "./ui/CountUp";
 
 /* ---------------------------------------------------------------------------
-   StatsBand — full-bleed navy proof band.
+   StatsBand — the proof band, chapter 3 of the globe homepage.
 
    Four columns on desktop: a short section title, then three metrics. Collapses
    to two columns on tablet and one on mobile. The numbers count up from zero
@@ -16,23 +17,25 @@ const STATS = [
 
 export default function StatsBand() {
   return (
-    <section
-      aria-label="Track record"
-      className="border-t border-white/10 bg-ink-950"
-    >
-      <div className="container-page py-16 sm:py-20">
+    <Chapter id="track-record" label="Track record">
+      <div className="chapter-wrap">
         <div className="grid grid-cols-1 gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-12">
           {/* Column 1 — section title */}
           <div className="flex flex-col justify-center">
-            <p className="file-tag !text-accent-400">Track record</p>
-            <h2 className="mt-3 font-display text-2xl font-semibold leading-tight text-white">
+            <p className="file-tag fx !text-accent-400" data-fx="0">
+              Track record
+            </p>
+            <h2
+              className="fx mt-3 font-display text-2xl font-semibold leading-tight text-white"
+              data-fx="1"
+            >
               Measured, not claimed.
             </h2>
           </div>
 
           {/* Columns 2–4 — metrics */}
-          {STATS.map((stat) => (
-            <div key={stat.label} className="flex flex-col">
+          {STATS.map((stat, i) => (
+            <div key={stat.label} className="fx flex flex-col" data-fx={i + 2}>
               <p className="font-display text-4xl font-light tracking-tight text-white sm:text-5xl">
                 <CountUp
                   to={stat.to}
@@ -41,13 +44,13 @@ export default function StatsBand() {
                   className="tabular-nums"
                 />
               </p>
-              <p className="mt-2 text-sm font-normal leading-snug text-ink-400">
+              <p className="mt-2 text-sm font-normal leading-snug text-ink-300">
                 {stat.label}
               </p>
             </div>
           ))}
         </div>
       </div>
-    </section>
+    </Chapter>
   );
 }

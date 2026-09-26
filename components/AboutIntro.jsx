@@ -1,3 +1,4 @@
+import Chapter from "./globe/Chapter";
 import { ButtonLink } from "./ui/Button";
 
 const ARROW = (
@@ -12,32 +13,39 @@ const ARROW = (
   </svg>
 );
 
+/* Chapter 2 of the globe homepage. Copy sits in the right column, opposite
+   the hero's, as the globe starts to grow and sink behind it. */
 export default function AboutIntro() {
   return (
-    <section id="about" className="border-t border-ink-200 bg-white">
-      <div className="container-page py-24 sm:py-32">
-        {/* Copy only, aligned to the left of the section. */}
-        <div className="flex max-w-xl flex-col items-start text-left">
-          <p className="file-tag mb-5">About Bench Strength</p>
-          <h2 className="font-display text-display-lg font-bold text-heading">
+    <Chapter id="about" label="Who we are">
+      <div className="chapter-wrap" data-scrim="inner">
+        <div className="chapter-scrim ml-auto flex max-w-xl flex-col items-start text-left">
+          <p className="file-tag fx mb-5 !text-accent-400" data-fx="0">
+            About Bench Strength
+          </p>
+          <h2
+            className="fx font-display text-display-lg font-bold text-on-dark"
+            data-fx="1"
+          >
             Who we are
           </h2>
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">
+          <p
+            className="fx mt-6 max-w-md text-lg leading-relaxed text-ink-300"
+            data-fx="2"
+          >
             A specialist operations, compliance and case-administration
             partner for UK insolvency, legal and advisory firms — scaled to
             what your firm can carry right now, without the overhead of a
             permanent hire.
           </p>
-
-          {/* CTA — same outlined treatment as the "What we do" section. */}
-          <div className="mt-10 flex w-full justify-start">
-            <ButtonLink href="/about" variant="outlined">
+          <div className="fx mt-10 flex w-full justify-start" data-fx="3">
+            <ButtonLink href="/about" color="onDark" variant="outlined">
               Read More
               {ARROW}
             </ButtonLink>
           </div>
         </div>
       </div>
-    </section>
+    </Chapter>
   );
 }
