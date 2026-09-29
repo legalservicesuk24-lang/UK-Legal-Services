@@ -14,15 +14,15 @@ const ARROW = (
   </svg>
 );
 
-/* Chapter 2 of the globe homepage. Copy sits in the right column, opposite
-   the hero's, as the globe starts to grow and sink behind it. The track-record
+/* Chapter 2 of the globe homepage. Copy sits centred over the globe as it
+   starts to grow and sink behind it. The track-record
    figures run along the bottom of the same chapter instead of taking a screen
    of their own. */
 export default function AboutIntro() {
   return (
     <Chapter id="about" label="Who we are">
       <div className="chapter-wrap" data-scrim="inner">
-        <div className="chapter-scrim ml-auto flex max-w-xl flex-col items-start text-left">
+        <div className="chapter-scrim mx-auto flex max-w-xl flex-col items-center text-center">
           <p className="file-tag fx mb-5 !text-accent-400" data-fx="0">
             About Bench Strength
           </p>
@@ -33,7 +33,7 @@ export default function AboutIntro() {
             Who we are
           </h2>
           <p
-            className="fx mt-6 max-w-md text-lg leading-relaxed text-ink-300"
+            className="fx mt-6 mx-auto max-w-md text-lg leading-relaxed text-ink-300"
             data-fx="2"
           >
             A specialist operations, compliance and case-administration
@@ -41,7 +41,7 @@ export default function AboutIntro() {
             what your firm can carry right now, without the overhead of a
             permanent hire.
           </p>
-          <div className="fx mt-10 flex w-full justify-start" data-fx="3">
+          <div className="fx mt-10 flex w-full justify-center" data-fx="3">
             <ButtonLink href="/about" color="onDark" variant="outlined">
               Read More
               {ARROW}
