@@ -24,7 +24,7 @@ const STATS = [
 
 export default function StatsBand({ fxStart = 0, className = "" }) {
   return (
-    <div id="track-record" className={className}>
+    <div id="track-record" className={`text-center ${className}`}>
       <p className="file-tag fx mb-4 !text-accent-400" data-fx={fxStart}>
         Track record
       </p>
@@ -39,7 +39,7 @@ export default function StatsBand({ fxStart = 0, className = "" }) {
 
         {/* Columns 2–4 — metrics */}
         {STATS.map((stat, i) => (
-          <div key={stat.label} className="fx flex flex-col" data-fx={fxStart + i + 2}>
+          <div key={stat.label} className="fx flex flex-col items-center" data-fx={fxStart + i + 2}>
             <p className="font-display text-4xl font-light tracking-tight text-white sm:text-5xl">
               <CountUp
                 to={stat.to}
