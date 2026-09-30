@@ -22,7 +22,24 @@ export default function Footer() {
 
       <div className="border-t border-ink-800">
         <div className="container-page flex flex-col gap-3 py-6 text-xs text-ink-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Bench Strength. All rights reserved.</p>
+          <div className="space-y-1 leading-relaxed">
+            <p>© {new Date().getFullYear()} Bench Strength. All rights reserved.</p>
+            <p>
+              Bench Strength is a trading name of BENCH STRENGTH CONSULTING LIMITED.
+              Registered in England &amp; Wales.
+            </p>
+            <p>
+              Company Registration Number:{" "}
+              <a
+                href="https://find-and-update.company-information.service.gov.uk/company/17489800"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 transition-colors hover:text-on-dark"
+              >
+                17489800
+              </a>
+            </p>
+          </div>
           <p className="max-w-xl leading-relaxed">
             Bench Strength provides administrative, compliance-support, and case-management
             services. We do not provide regulated legal, insolvency, or financial
