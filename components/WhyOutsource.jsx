@@ -47,7 +47,7 @@ const HIRE_COSTS = [
 
 const BENCH_BENEFITS = [
   "Scale up when things get busy",
-  "Scale down when they don't",
+  "Bring in specialist skills only for the work that needs them",
   "Pay for the work itself, not a fixed headcount on payroll year-round",
 ];
 

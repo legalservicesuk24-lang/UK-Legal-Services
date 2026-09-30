@@ -19,13 +19,9 @@ export default function Hero() {
     <Chapter id="home-hero" label="Overview">
       <div className="chapter-wrap" data-scrim="inner">
         <div className="chapter-scrim max-w-2xl">
-          <p className="file-tag fx mb-6 !text-accent-400" data-fx="0">
-            Operations &amp; Compliance Support
-          </p>
-
           <h1
             className="fx font-display text-display-2xl font-normal text-on-dark"
-            data-fx="1"
+            data-fx="0"
           >
             The back office UK firms trust to get it{" "}
             <span className="text-accent-400">right,</span> not just done.
@@ -33,19 +29,19 @@ export default function Hero() {
 
           <p
             className="fx mt-7 font-display text-lg font-semibold text-accent-400 sm:text-xl"
-            data-fx="2"
+            data-fx="1"
           >
             Minimize Costs. Maximize Reserves.
           </p>
           <p
             className="fx mt-5 max-w-lg text-lg leading-relaxed text-ink-300"
-            data-fx="3"
+            data-fx="2"
           >
             Specialist back-office capacity for UK insolvency, legal and
             advisory firms. Qualified people, not a generic outsourcer.
           </p>
 
-          <ul className="fx mt-7 flex flex-wrap gap-2" data-fx="4">
+          <ul className="fx mt-7 flex flex-wrap gap-2" data-fx="3">
             {[
               "Case administration",
               "Compliance auditing",
@@ -58,7 +54,7 @@ export default function Hero() {
             ))}
           </ul>
 
-          <div className="fx mt-10 flex flex-col gap-3 sm:flex-row" data-fx="5">
+          <div className="fx mt-10 flex flex-col gap-3 sm:flex-row" data-fx="4">
             <ButtonLink href="/contact" color="onDark" lift>
               Book a Consultation
             </ButtonLink>

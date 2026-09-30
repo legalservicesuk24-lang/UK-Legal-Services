@@ -19,9 +19,9 @@ export default function About() {
           </div>
 
           {/* Ambient clip of the team at work. Muted + looping so it plays
-              inline without sound; poster paints immediately while the file
-              streams in. */}
-          <figure className="relative overflow-hidden rounded-2xl border border-ink-200 shadow-card-hover">
+              inline without sound. No poster, so the clip itself is the first
+              thing shown rather than a still image. */}
+          <figure className="relative overflow-hidden bg-ink-900 rounded-2xl border border-ink-200 shadow-card-hover">
             <video
               className="aspect-video h-full w-full object-cover"
               autoPlay
@@ -29,7 +29,6 @@ export default function About() {
               loop
               playsInline
               preload="auto"
-              poster="/laptop.jpg"
               aria-label="Bench Strength team at work"
             >
               <source src="/person-working.mp4" type="video/mp4" />
