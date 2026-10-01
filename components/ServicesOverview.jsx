@@ -49,7 +49,7 @@ function ServiceCard({ service }) {
 
 /* Chapter 3 of the globe homepage. Can be taller than a viewport, in which
    case ChapterDirector gives its pin a negative sticky top and it scrolls
-   through to the last card before the next chapter snaps in. */
+   through to the last card before the next chapter comes in. */
 export default function ServicesOverview() {
   return (
     <Chapter id="services" label="What we do">

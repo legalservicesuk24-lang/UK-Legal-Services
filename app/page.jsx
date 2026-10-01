@@ -10,8 +10,8 @@ import ScrollEndToggle from "../components/ScrollEndToggle";
 import GlobeBackground from "../components/globe/GlobeBackground";
 import ChapterDirector from "../components/globe/ChapterDirector";
 
-/* The homepage is four chapters over one fixed globe, one screen each, snapped
-   so a single scroll moves to the next. The globe's camera keyframes
+/* The homepage is four chapters over one fixed globe, one screen each, scrolling
+   freely. The globe's camera keyframes
    (lib/globe-keyframes.js) are indexed by chapter, so adding, removing or
    reordering one means adding, removing or reordering a key. */
 export default function Home() {

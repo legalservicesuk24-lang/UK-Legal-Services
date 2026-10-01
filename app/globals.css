@@ -244,33 +244,12 @@
   padding-right: max(3rem, var(--rail-lane));
 }
 
-/* One screen per chapter, no hold: a single scroll moves on to the next
-   chapter (and the globe spins once on the way). Tall pins are grown to fit
-   by ChapterDirector. */
+/* One screen per chapter. The page scrolls freely (no snapping) and the globe
+   turns in step with the scroll as each chapter passes. Tall pins are grown to
+   fit by ChapterDirector. */
 .chapter {
   position: relative;
   height: 100vh;
-}
-
-/* Snap so one wheel/trackpad gesture lands squarely on the next chapter.
-   Scoped to the homepage (the only page with .chapters) and to tablet and up:
-   on phones several chapters are taller than the screen and free scrolling
-   reads better. A chapter taller than the viewport still scrolls freely
-   inside itself — browsers only snap at its edges. */
-@media (min-width: 768px) {
-  html:has(.chapters) {
-    scroll-snap-type: y mandatory;
-  }
-
-  .chapter {
-    scroll-snap-align: start;
-  }
-
-  /* The footer follows the last chapter; give it a snap point so it can be
-     reached at all under mandatory snapping. */
-  main:has(.chapters) + * {
-    scroll-snap-align: end;
-  }
 }
 
 /* Top padding clears the sticky header (py-2 + h-14/h-16 logo + 1px border).
