@@ -1,6 +1,7 @@
 import { Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import JsonLd from "../components/JsonLd";
+import PageTransition from "../components/PageTransition";
 import { SITE_URL, SITE_NAME } from "../lib/site";
 
 /* Jost for everything, JetBrains Mono for the .file-tag / register-reference
@@ -110,6 +111,7 @@ export default function RootLayout({ children }) {
           Skip to main content
         </a>
         {children}
+        <PageTransition />
       </body>
     </html>
   );
