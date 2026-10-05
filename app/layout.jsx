@@ -1,33 +1,116 @@
-import { Inter, IBM_Plex_Mono } from "next/font/google";
+import { Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import JsonLd from "../components/JsonLd";
+import { SITE_URL, SITE_NAME } from "../lib/site";
 
-const body = Inter({
+/* Jost for everything, JetBrains Mono for the .file-tag / register-reference
+   idiom — the pairing from the Bench Strength homepage handoff. Both are
+   variable fonts, so no `weight` list is needed: one file per family covers
+   the 96px display headings, 12px UI labels and the semibold mono tags.
+
+   Replaces Figtree + IBM Plex Mono; that pairing is in git if wanted back. */
+const sans = Jost({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const mono = IBM_Plex_Mono({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["500"],
   variable: "--font-mono",
   display: "swap",
 });
 
+/* Home <title>. Descriptive and keyword-led — the slogan lives in the hero,
+   not the tab. `template` appends the brand to every child page's own title
+   ("About" -> "About | Bench Strength") without each page restating it. */
+const DEFAULT_TITLE =
+  "Bench Strength — Insolvency & Compliance Support for UK Firms";
+const DESCRIPTION =
+  "Practical, done-right insolvency case support, legal compliance auditing, and back-office admin for UK firms.";
+
 export const metadata = {
-  title: "Bench Strength — Operations, Compliance & Admin Support",
-  description: "We are currently enhancing our digital platform. Something great is under construction and launching soon.",
-  openGraph: {
-    title: "Bench Strength — Operations, Compliance & Admin Support",
-    description: "We are currently enhancing our digital platform. Something great is under construction and launching soon.",
+  /* Resolves relative OG/canonical URLs against the production origin, so
+     `openGraph.url: "/"` and `alternates.canonical` emit absolute URLs and the
+     build no longer falls back to localhost. */
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: DEFAULT_TITLE,
+    template: `%s | ${SITE_NAME}`,
   },
+  description: DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: SITE_NAME,
+    locale: "en_GB",
+    title: DEFAULT_TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: DEFAULT_TITLE,
+    description: DESCRIPTION,
+  },
+};
+
+/* Organization + WebSite structured data. Rendered once on every page via the
+   root layout so crawlers and AI assistants have a stable entity for the firm
+   regardless of entry point. */
+const ORG_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      email: "info@benchstrength.uk",
+      description:
+        "Specialist operations, compliance, and case-administration support for UK insolvency, legal, and advisory firms.",
+      areaServed: { "@type": "Country", name: "United Kingdom" },
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "info@benchstrength.uk",
+        contactType: "sales",
+        availableLanguage: "English",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      inLanguage: "en-GB",
+    },
+  ],
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${body.variable} ${mono.variable}`}>
-      <body>{children}</body>
+    <html
+      lang="en-GB"
+      /* Next 16 no longer overrides `scroll-behavior: smooth` (set on html in
+         globals.css) during route transitions, so navigation would animate a
+         long smooth scroll to the top instead of jumping. This opts back into
+         the old instant-scroll behaviour while keeping smooth in-page anchors. */
+      data-scroll-behavior="smooth"
+      className={`${sans.variable} ${mono.variable}`}
+    >
+      <body>
+        <JsonLd data={ORG_JSON_LD} />
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-ink-900 focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-white"
+        >
+          Skip to main content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

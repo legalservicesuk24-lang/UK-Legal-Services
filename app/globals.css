@@ -5,18 +5,26 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-ink-50 text-ink-800 font-body antialiased;
+    line-height: 1.65;
+    letter-spacing: 0.005em;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-display text-ink-900;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
 
   ::selection {
-    @apply bg-primary-200 text-primary-900;
+    @apply bg-primary-200 text-ink-900;
   }
 
   /* Consistent, visible focus ring across all interactive elements,
@@ -34,18 +42,466 @@
     @apply mx-auto w-full max-w-8xl px-6 sm:px-8 lg:px-12;
   }
 
-  /* Small mono "file tag" label — the recurring signature motif
-     tying every section back to the case-file / register visual language. */
+  /* Small mono "file tag" label — the recurring signature motif tying every
+     section back to the case-file / register visual language. Rendered in
+     the professional-teal brand accent for a subtle section highlight. */
   .file-tag {
-    @apply font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink-400;
+    @apply font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-600;
   }
 }
 
+/* Scroll-reveal. The pre-animation state lives in CSS rather than in React
+   so the server-rendered HTML is already in it — no flash of positioned
+   content before hydration. `Reveal` adds `.is-visible` when the element
+   intersects the viewport.
+
+   Two escape hatches matter here, because "invisible until JS says so" is a
+   content-blocking failure mode if either assumption breaks:
+     1. no JavaScript  -> the <noscript> block in app/layout.jsx unhides.
+     2. reduced motion -> the media query below unhides.
+   Both are unconditional, so content can never be stranded at opacity 0. */
+/* Scroll-reveal. Three iterations of this got it wrong, so the reasoning is
+   worth keeping.
+
+   1. A transition, not a keyframe animation. A `@keyframes` block declared in
+      tailwind.config.js is only emitted when its matching `animate-*` utility
+      appears in the markup — referencing the name from hand-written CSS gets
+      it tree-shaken, the animation silently does nothing, and every element
+      stays at opacity 0.
+
+   2. Nothing is hidden by default. The server renders these fully visible, so
+      no JavaScript, a blocked bundle, or a failed hydration all leave a
+      perfectly readable page. There is no gate to get stuck in the wrong
+      state and nothing for a pre-paint script to arrange.
+
+   3. `Reveal` adds `.is-armed` on mount, and only to elements sitting entirely
+      below the fold — where becoming invisible cannot be seen. Anything
+      already on screen is left alone, so above-the-fold content is never
+      hidden even briefly, and there is no pre-hydration script mutating
+      <html> (which is what caused a className hydration mismatch). */
+.reveal.is-armed {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-armed.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Scroll-linked process track. `--progress` is written by ScrollTrack; the
+   default of 1 means "finished", so with no JavaScript or under reduced motion
+   the rule is fully drawn and every marker is lit — the correct resting state
+   rather than an empty track. Each step also gets a `--step` (0..1) marking
+   where along the section it sits, so it lights as the line passes it. */
+/* Registered so it can transition: on the homepage, ChapterDirector flips it
+   0 -> 1 when the process chapter arrives and the line draws itself over
+   time, since chapters no longer have a scroll hold to draw it across. */
+@property --progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+.scroll-track {
+  --progress: 1;
+}
+
+.chapters .scroll-track {
+  transition: --progress 1.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.scroll-track .track-rule::after {
+  transform: scaleX(clamp(0, (var(--progress) - var(--step)) * 4, 1));
+  transform-origin: left;
+  transition: transform 0.25s linear;
+}
+
+.scroll-track .track-marker {
+  opacity: clamp(0.25, (var(--progress) - var(--step)) * 8, 1);
+  transform: scale(clamp(0.6, (var(--progress) - var(--step)) * 8, 1));
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+}
+
+/* Scroll-linked reveal for content sitting on a step. Fades and lifts in as
+   the scroll progress passes the step, so a row of these appears one by one
+   rather than all at once. Default `--progress: 1` leaves everything shown,
+   so no-JS and reduced-motion both resolve to the finished state. */
+.scroll-track .track-reveal {
+  opacity: clamp(0, (var(--progress) - var(--step)) * 6, 1);
+  transform: translateY(
+    clamp(0px, (0.16 - (var(--progress) - var(--step))) * 90px, 14px)
+  );
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Reveal skips arming under reduced motion, so this is belt-and-braces for
+     a preference that changes after mount. Full specificity so it outranks
+     the rules above. */
+  .reveal.is-armed,
+  .reveal.is-armed.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* Track resting state: fully drawn, all markers lit. */
+  .scroll-track .track-rule::after {
+    transform: scaleX(1);
+  }
+
+  .scroll-track .track-marker {
+    opacity: 1;
+    transform: none;
+  }
+
+  .scroll-track .track-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===========================================================================
+   Globe homepage — ported from the Bench Strength globe handoff, in the site's
+   clay/ochre palette. Layer stack:
+     .globe-stage   fixed canvas, z 0, never takes pointer events
+     .globe-veil    fixed atmosphere gradient, z 1 (deliberately light)
+     .chapters      the pinned content chapters, z 2
+     header / rail  z 50 / z 40
+   Legibility comes from a local scrim behind each chapter's copy block, not
+   from the veil, so the approaching globe never has to fade to protect text.
+   ======================================================================== */
+.globe-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* The canvas is sized to innerWidth, which includes the scrollbar. */
+  overflow: hidden;
+  pointer-events: none;
+  background: theme("colors.ink.950");
+}
+
+.globe-stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.globe-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgb(18 14 13 / 0.72) 0%,
+    rgb(18 14 13 / 0.42) 16%,
+    rgb(18 14 13 / 0.22) 44%,
+    rgb(18 14 13 / 0.22) 60%,
+    rgb(18 14 13 / 0.44) 86%,
+    rgb(18 14 13 / 0.72) 100%
+  );
+}
+
+/* Content must never run under the rail.
+   overflow-x: clip because the copy scrims (::before, inset -6vw) reach past
+   the viewport's sides; without it the page scrolls sideways, and the
+   horizontal scrollbar shortens the viewport enough that a one-screen chapter
+   no longer fits and snapping stalls inside it. `clip`, not `hidden`, so no
+   scroll container is created and the sticky pins keep working. */
+.chapters {
+  --rail-lane: 0px;
+  position: relative;
+  z-index: 2;
+  overflow-x: clip;
+}
+
+@media (min-width: 981px) {
+  .chapters {
+    --rail-lane: 200px;
+  }
+}
+
+.chapter-wrap {
+  @apply container-page;
+  padding-right: max(3rem, var(--rail-lane));
+}
+
+/* One screen per chapter. The page scrolls freely (no snapping) and the globe
+   turns in step with the scroll as each chapter passes. Tall pins are grown to
+   fit by ChapterDirector. */
+.chapter {
+  position: relative;
+  height: 100vh;
+}
+
+/* Top padding clears the sticky header (py-2 + h-14/h-16 logo + 1px border).
+   `safe center` stops tall content centring up underneath it. */
+.chapter-pin {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  align-items: safe center;
+  min-height: 100vh;
+  padding: calc(4.5rem + 1px + 1.5rem) 0 2.75rem;
+}
+
+@media (min-width: 640px) {
+  .chapter-pin {
+    padding-top: calc(5rem + 1px + 1.5rem);
+  }
+}
+
+.chapter-pin > * {
+  position: relative;
+  width: 100%;
+}
+
+.chapter-pin > *::before {
+  content: "";
+  position: absolute;
+  inset: -7vh -6vw;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    62% 58% at 50% 50%,
+    rgb(18 14 13 / 0.92) 0%,
+    rgb(18 14 13 / 0.74) 46%,
+    rgb(18 14 13 / 0) 100%
+  );
+}
+
+/* A chapter whose copy is a narrow column puts the scrim on that column
+   instead (`chapter-scrim` on the column, `data-scrim="inner"` on the block),
+   so the scrim's dark core does not sit on the globe behind the hero. */
+.chapter-pin > [data-scrim="inner"]::before {
+  display: none;
+}
+
+.chapter-scrim {
+  position: relative;
+}
+
+.chapter-scrim::before {
+  content: "";
+  position: absolute;
+  inset: -9vh -8vw;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgb(18 14 13 / 0.9) 0%,
+    rgb(18 14 13 / 0.7) 55%,
+    rgb(18 14 13 / 0) 100%
+  );
+}
+
+/* Reveal. Hidden only once ChapterDirector is live, so no-JS is readable. */
+.chapters.is-live .fx {
+  opacity: 0;
+  transform: translate3d(0, 46px, 0) scale(0.985);
+  filter: blur(6px);
+  will-change: opacity, transform, filter;
+}
+
+@keyframes chapter-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 44px, 0) scale(0.985);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.chapters .chapter:first-child .fx {
+  animation: chapter-rise 0.95s cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+.chapters .chapter:first-child .fx[data-fx="1"] { animation-delay: 0.085s; }
+.chapters .chapter:first-child .fx[data-fx="2"] { animation-delay: 0.17s; }
+.chapters .chapter:first-child .fx[data-fx="3"] { animation-delay: 0.255s; }
+.chapters .chapter:first-child .fx[data-fx="4"] { animation-delay: 0.34s; }
+.chapters .chapter:first-child .fx[data-fx="5"] { animation-delay: 0.425s; }
+
+/* Scroll hint at the foot of the hero. */
+.chapter-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  width: auto;
+  transform: translateX(-50%);
+  color: rgb(250 246 240 / 0.5);
+}
+
+.chapter-hint::before {
+  display: none;
+}
+
+.chapter-hint b {
+  display: block;
+  width: 1px;
+  height: 46px;
+  background: linear-gradient(to bottom, theme("colors.accent.400"), transparent);
+  animation: chapter-drip 2.4s ease-in-out infinite;
+}
+
+@keyframes chapter-drip {
+  0% { transform: scaleY(0.2); transform-origin: top; opacity: 0.2; }
+  50% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(0.2); transform-origin: bottom; opacity: 0.2; }
+}
+
+/* Chapter rail, right edge, desktop only. */
+.chapter-rail {
+  position: fixed;
+  top: 50%;
+  right: max(18px, 2vw);
+  z-index: 40;
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.25rem;
+  transform: translateY(-50%);
+}
+
+@media (min-width: 981px) {
+  .chapter-rail {
+    display: flex;
+  }
+}
+
+.chapter-rail button {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgb(250 246 240 / 0.45);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.chapter-rail i {
+  display: block;
+  width: 22px;
+  height: 1px;
+  background: rgb(250 246 240 / 0.3);
+  transition: all 0.4s ease;
+}
+
+.chapter-rail span {
+  opacity: 0;
+  transform: translateX(6px);
+  white-space: nowrap;
+  transition: all 0.4s ease;
+}
+
+.chapter-rail button[aria-current="true"] {
+  color: theme("colors.accent.400");
+}
+
+.chapter-rail button[aria-current="true"] i {
+  width: 40px;
+  background: theme("colors.accent.400");
+}
+
+.chapter-rail button[aria-current="true"] span,
+.chapter-rail:hover span,
+.chapter-rail button:focus-visible span {
+  opacity: 1;
+  transform: none;
+}
+
+.chapter-rail button:focus-visible {
+  outline: 2px solid theme("colors.accent.400");
+  outline-offset: 6px;
+  border-radius: 3px;
+}
+
+@media (max-width: 980px) {
+  .chapter {
+    --hold: 80vh;
+  }
+
+  .chapter-pin {
+    align-items: flex-end;
+    align-items: safe flex-end;
+    padding-bottom: 9vh;
+  }
+
+  .chapter-hint {
+    display: none;
+  }
+
+  .globe-veil {
+    background: linear-gradient(
+      to bottom,
+      rgb(18 14 13 / 0.8) 0%,
+      rgb(18 14 13 / 0.5) 30%,
+      rgb(18 14 13 / 0.4) 62%,
+      rgb(18 14 13 / 0.76) 100%
+    );
+  }
+}
+
+/* Short viewports (13" laptops, preview panes). After the max-width block on
+   purpose: same specificity, so source order decides. */
+@media (max-height: 780px) {
+  .chapter-pin {
+    padding-bottom: 1.75rem;
+  }
+
+  .chapters h1 {
+    font-size: clamp(2rem, 3.9vw, 3rem);
+  }
+
+  .chapters h2 {
+    font-size: clamp(1.625rem, 3vw, 2.5rem);
+  }
+
+  .chapter-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapters .fx,
+  .chapters.is-live .fx {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+
+  .chapter-hint b {
+    animation: none;
   }
 }

@@ -1,0 +1,17 @@
+
+> stylehive-landing@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.0 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.56.1:3000
+- Environments: .env.local
+✓ Ready in 1022ms
+✓ Running next.config.mjs took 47ms
+
+ GET / 200 in 2.1s (next.js: 1598ms, application-code: 527ms)
+[/api/contact] SMTP send failed: Invalid login: 535 Authentication Failed for info@benchstrength.uk
+ POST /api/contact 502 in 4.1s (next.js: 119ms, application-code: 4.0s)
+  Reload env: .env.local
+ POST /api/contact 200 in 6.9s (next.js: 50ms, application-code: 6.8s)
+ GET /contact 200 in 319ms (next.js: 102ms, application-code: 217ms)
